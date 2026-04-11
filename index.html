@@ -1,4 +1,189 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html><head><style><style>
+    :root {
+        --accent: #00d2ff;
+        --deep-blue: #1a4f8b;
+        --bg-dark: #02060a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { 
+        scroll-snap-type: y mandatory; 
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--bg-dark);
+        color: #fff;
+        font-family: 'Montserrat', sans-serif;
+        overflow-x: hidden;
+        /* Evita problemas de scroll no mobile */
+        width: 100%;
+        position: relative;
+    }
+
+    #particles-js {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: -1;
+    }
+
+    .cursor-glow {
+        position: fixed;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(0, 210, 255, 0.07) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+    }
+
+    /* Ocultar glow no mobile para melhorar performance */
+    @media (max-width: 768px) {
+        .cursor-glow { display: none; }
+        html { scroll-snap-type: none; } /* Opcional: desativa snap no mobile para fluidez */
+    }
+
+    section {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        scroll-snap-align: start;
+        position: relative;
+        text-align: center;
+    }
+
+    /* Cabeçalho Responsivo */
+    .header-nav {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        mix-blend-mode: difference;
+    }
+
+    .logo-box {
+        width: 35px;
+        height: 35px;
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 900;
+        color: var(--accent);
+    }
+
+    /* Card de Perfil Responsivo */
+    .profile-container {
+        position: relative;
+        padding: 20px;
+        border-radius: 25px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 90%;
+        max-width: 320px;
+    }
+
+    .profile-img-wrapper {
+        width: 100%;
+        height: 300px;
+        background: #000;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid var(--accent);
+    }
+
+    .profile-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .btn-talk {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--deep-blue);
+        color: white;
+        text-decoration: none;
+        padding: 15px 25px;
+        border-radius: 50px;
+        font-weight: 900;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.4s;
+        border: 1px solid var(--accent);
+        width: 100%;
+    }
+
+    /* Tipografia Adaptada */
+    h1 {
+        font-size: clamp(1.8rem, 8vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1.2;
+        padding: 0 10px;
+    }
+
+    h2 {
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        color: var(--accent);
+        margin-bottom: 15px;
+    }
+
+    p {
+        font-size: 1rem;
+        color: #8892b0;
+        max-width: 90%;
+        margin-top: 20px;
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease-out;
+    }
+
+    .active .reveal {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .footer-info {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        padding: 0 20px;
+        font-size: 0.65rem;
+        color: #555;
+    }
+
+    @media (min-width: 768px) {
+        .footer-info {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        .header-nav { top: 40px; left: 50px; }
+    }
+</style></style></head><body><!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -281,5 +466,4 @@
     </script>
 </body>
 
-</html>
-
+</html><script></script></body></html>
