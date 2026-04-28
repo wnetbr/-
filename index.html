@@ -114,6 +114,34 @@
 
         /* Recording UI */
         #recording-ui { display: none; position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 25px; align-items: center; gap: 10px; z-index: 50; }
+    
+        /* Keyboard Fix */
+        @media screen and (max-height: 500px) {
+            header { padding: 8px 15px; }
+            h1 { font-size: 24px !important; }
+            .input-area { padding-bottom: 10px; }
+        }
+        
+        /* Ensure body doesn't scroll when keyboard is up */
+        html, body { 
+            position: fixed; 
+            overflow: hidden; 
+            width: 100%; 
+            height: 100%; 
+            height: -webkit-fill-available;
+        }
+        
+        .screen {
+            height: 100%;
+            height: -webkit-fill-available;
+        }
+
+        /* Better Input Area for Mobile */
+        .input-area {
+            padding: 10px 15px env(safe-area-inset-bottom, 20px) 15px;
+            background: var(--apple-card);
+            transition: padding 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -262,7 +290,7 @@
         </div>
     </div>
 
-    <script>
+        <script>
         let peer, conn, currentCall, localStream, myId;
         let contacts = JSON.parse(localStorage.getItem('p2p_contacts_v4') || '{}');
         let deletedContacts = JSON.parse(localStorage.getItem('p2p_deleted_contacts_v4') || '{}');
@@ -272,6 +300,7 @@
         let html5QrCode;
         let mediaRecorder;
         let audioChunks = [];
+        let onlineStatusMap = {}; // Track stable status
 
         // --- INITIALIZATION ---
         function init() {
@@ -282,13 +311,24 @@
             Object.keys(contacts).forEach(id => contacts[id] = normalizeContact(id, contacts[id]));
             saveContacts();
 
-            peer = new Peer("apple-p2p-v4-" + myId);
+            // PeerJS with better config for stability
+            peer = new Peer("apple-p2p-v4-" + myId, {
+                debug: 1,
+                config: {
+                    'iceServers': [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' },
+                        { urls: 'stun:stun2.l.google.com:19302' }
+                    ]
+                }
+            });
             
             peer.on('open', (id) => {
                 document.getElementById('my-id-display').innerText = myId;
                 generateQR(myId);
                 updateContactsList();
-                setInterval(refreshAllStatus, 10000);
+                // Check status more frequently but with better logic
+                setInterval(refreshAllStatus, 5000);
             });
 
             peer.on('connection', (c) => {
@@ -305,7 +345,7 @@
             });
 
             peer.on('error', (err) => {
-                console.error(err);
+                console.error('Peer Error:', err.type, err);
                 if(err.type === 'unavailable-id') {
                     myId = Math.floor(1000 + Math.random() * 9000).toString();
                     localStorage.setItem('p2p_my_id_v4', myId);
@@ -315,11 +355,24 @@
 
             document.getElementById('username-input').value = myProfile.name;
             if(myProfile.pic) document.getElementById('my-profile-pic-display').src = myProfile.pic;
+
+            // Keyboard fix for mobile
+            if ('visualViewport' in window) {
+                window.visualViewport.addEventListener('resize', () => {
+                    const height = window.visualViewport.height;
+                    document.body.style.height = height + 'px';
+                    if (activeChatId) {
+                        const container = document.getElementById('messages');
+                        container.scrollTop = container.scrollHeight;
+                    }
+                });
+            }
         }
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            if (id === 'main-screen') activeChatId = null;
         }
 
         // --- HELPERS ---
@@ -410,7 +463,7 @@
             const sortedIds = Object.keys(contacts).filter(id => !deletedContacts[id]).sort();
             
             if(sortedIds.length === 0) {
-                list.innerHTML = `<div style=\"text-align:center; padding:50px; color:var(--apple-gray);\">Nenhum contato ainda.<br>Clique no + para adicionar.</div>`;
+                list.innerHTML = `<div style="text-align:center; padding:50px; color:var(--apple-gray);">Nenhum contato ainda.<br>Clique no + para adicionar.</div>`;
                 return;
             }
 
@@ -419,12 +472,13 @@
                 const div = document.createElement('div');
                 div.className = 'contact-item';
                 div.onclick = () => openChat(id);
+                const isOnline = onlineStatusMap[id] === true;
                 div.innerHTML = `
                     <img class="profile-pic" src="${c.pic || 'https://www.w3schools.com/howto/img_avatar.png'}">
                     <div class="contact-info">
                         <div class="contact-name">${escapeHtml(getContactDisplayName(id, c))}</div>
                         <div class="contact-status" id="list-status-${id}">
-                            <span class="status-dot status-offline"></span> Offline
+                            <span class="status-dot ${isOnline ? 'status-online' : 'status-offline'}"></span> ${isOnline ? 'Online' : 'Offline'}
                         </div>
                     </div>
                     <button onclick="showContactProfile('${id}'); event.stopPropagation();" style="background:none; border:none; color:var(--apple-blue); padding:10px;"><i class="fas fa-circle-info"></i></button>
@@ -443,14 +497,21 @@
 
         function checkOnlineStatus(id) {
             if(!peer || peer.destroyed || deletedContacts[id]) return;
-            const tempConn = peer.connect("apple-p2p-v4-" + id);
+            
+            // If we have an active connection, it's online
+            if (conn && conn.open && conn.peer === "apple-p2p-v4-" + id) {
+                updateStatusUI(id, true);
+                return;
+            }
+
+            const tempConn = peer.connect("apple-p2p-v4-" + id, { reliable: false });
             let done = false;
             let timeout = setTimeout(() => {
                 if(done) return;
                 done = true;
                 try { tempConn.close(); } catch(e) {}
                 updateStatusUI(id, false);
-            }, 3000);
+            }, 4000);
 
             tempConn.on('open', () => {
                 if(done) return;
@@ -458,7 +519,7 @@
                 clearTimeout(timeout);
                 updateStatusUI(id, true);
                 try { tempConn.send({type: 'status_probe'}); } catch(e) {}
-                setTimeout(() => { try { tempConn.close(); } catch(e) {} }, 120);
+                setTimeout(() => { try { tempConn.close(); } catch(e) {} }, 500);
             });
             tempConn.on('error', () => {
                 if(done) return;
@@ -469,6 +530,10 @@
         }
 
         function updateStatusUI(id, isOnline) {
+            // Only update if status actually changed to prevent flickering
+            if (onlineStatusMap[id] === isOnline) return;
+            onlineStatusMap[id] = isOnline;
+
             const el = document.getElementById('list-status-' + id);
             if(el) {
                 el.innerHTML = isOnline ? 
@@ -603,6 +668,7 @@
                 if(!firstDataHandled) {
                     firstDataHandled = true;
                     if(data && data.type === 'status_probe') {
+                        updateStatusUI(id, true);
                         try { c.close(); } catch(e) {}
                         return;
                     }
@@ -626,10 +692,10 @@
             });
 
             c.on('open', () => {
-                if(activeChatId === id) updateStatusUI(id, true);
+                updateStatusUI(id, true);
             });
             c.on('close', () => {
-                if(activeChatId === id) updateStatusUI(id, false);
+                updateStatusUI(id, false);
             });
         }
 
@@ -643,14 +709,12 @@
             });
             c.on('data', data => processIncomingData(c, data));
             c.on('close', () => {
-                if(activeChatId === c.peer.replace('apple-p2p-v4-', '')) {
-                    updateStatusUI(activeChatId, false);
-                }
+                const id = c.peer.replace('apple-p2p-v4-', '');
+                updateStatusUI(id, false);
             });
             c.on('error', () => {
-                if(activeChatId === c.peer.replace('apple-p2p-v4-', '')) {
-                    updateStatusUI(activeChatId, false);
-                }
+                const id = c.peer.replace('apple-p2p-v4-', '');
+                updateStatusUI(id, false);
             });
         }
 
@@ -752,14 +816,27 @@
         // --- CALL LOGIC ---
         async function startCall(video) {
             try {
-                if(!conn || !conn.peer) {
+                if(!activeChatId) {
                     alert('Abra um contato online antes de iniciar a chamada.');
                     return;
                 }
-                localStream = await navigator.mediaDevices.getUserMedia({video: video, audio: true});
+                // High quality constraints
+                const constraints = {
+                    video: video ? { 
+                        facingMode: "user",
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } : false,
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                };
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
                 document.getElementById('local-video').srcObject = localStream;
                 document.getElementById('video-call-overlay').style.display = 'flex';
-                const call = peer.call(conn.peer, localStream);
+                const call = peer.call("apple-p2p-v4-" + activeChatId, localStream);
                 setupCallHandlers(call);
             } catch (err) {
                 alert("Erro ao acessar câmera/microfone: " + err);
@@ -768,13 +845,17 @@
 
         function acceptCall() {
             document.getElementById('incoming-call-modal').style.display = 'none';
-            navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(stream => {
+            const constraints = {
+                video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: { echoCancellation: true, noiseSuppression: true }
+            };
+            navigator.mediaDevices.getUserMedia(constraints).then(stream => {
                 localStream = stream;
                 document.getElementById('local-video').srcObject = stream;
                 document.getElementById('video-call-overlay').style.display = 'flex';
                 currentCall.answer(stream);
                 setupCallHandlers(currentCall);
-            });
+            }).catch(err => alert("Erro ao aceitar chamada: " + err));
         }
 
         function rejectCall() {
@@ -785,15 +866,29 @@
         function setupCallHandlers(call) {
             currentCall = call;
             call.on('stream', rs => {
-                document.getElementById('remote-video').srcObject = rs;
+                const remoteVideo = document.getElementById('remote-video');
+                remoteVideo.srcObject = rs;
+                remoteVideo.play().catch(e => console.error("Play error:", e));
             });
             call.on('close', () => endCall());
+            call.on('error', (err) => {
+                console.error("Call error:", err);
+                endCall();
+            });
         }
 
         function endCall() {
-            if(currentCall) currentCall.close();
-            if(localStream) localStream.getTracks().forEach(t => t.stop());
+            if(currentCall) {
+                try { currentCall.close(); } catch(e) {}
+                currentCall = null;
+            }
+            if(localStream) {
+                localStream.getTracks().forEach(t => t.stop());
+                localStream = null;
+            }
             document.getElementById('video-call-overlay').style.display = 'none';
+            document.getElementById('remote-video').srcObject = null;
+            document.getElementById('local-video').srcObject = null;
         }
 
         function toggleMute() {
@@ -814,7 +909,8 @@
 
         // --- VOICE RECORDING ---
         const voiceBtn = document.getElementById('voice-btn');
-        voiceBtn.onmousedown = async () => {
+        voiceBtn.onmousedown = async (e) => {
+            e.preventDefault();
             try {
                 if(!activeChatId) return;
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -839,14 +935,15 @@
                 document.getElementById('recording-ui').style.display = 'flex';
             } catch (err) { alert(err); }
         };
-        voiceBtn.onmouseup = () => {
+        voiceBtn.onmouseup = (e) => {
+            e.preventDefault();
             if(mediaRecorder && mediaRecorder.state === "recording") {
                 mediaRecorder.stop();
                 document.getElementById('recording-ui').style.display = 'none';
             }
         };
-        voiceBtn.ontouchstart = (e) => { e.preventDefault(); voiceBtn.onmousedown(); };
-        voiceBtn.ontouchend = (e) => { e.preventDefault(); voiceBtn.onmouseup(); };
+        voiceBtn.ontouchstart = voiceBtn.onmousedown;
+        voiceBtn.ontouchend = voiceBtn.onmouseup;
 
         function generateQR(text) {
             const qr = qrcode(0, 'M');
