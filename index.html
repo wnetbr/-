@@ -180,7 +180,7 @@
         #video-call-overlay { display: none; position: fixed; inset: 0; background: black; z-index: 1000; flex-direction: column; }
         #remote-video { width: 100%; height: 100%; object-fit: cover; }
         #local-video { position: absolute; top: 40px; right: 20px; width: 110px; height: 160px; border-radius: 15px; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .call-controls { position: absolute; bottom: 50px; left: 0; right: 0; display: flex; justify: center; gap: 25px; }
+        .call-controls { position: absolute; bottom: 50px; left: 0; right: 0; display: flex; justify-content: center; gap: 25px; }
         .call-btn { width: 65px; height: 65px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; transition: transform 0.2s; }
         .call-btn:active { transform: scale(0.9); }
         .btn-hangup { background: var(--apple-red); }
@@ -429,57 +429,72 @@
         let onlineStatusMap = {};
         let statusCheckInterval = null;
 
+        // --- AUDIO ASSETS ---
+        const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+        const ringtoneSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3');
+        ringtoneSound.loop = true;
+
         // --- INITIALIZATION ---
         function init() {
-            if (!myId) {
+            if(!myId) {
                 myId = Math.floor(1000 + Math.random() * 9000).toString();
                 localStorage.setItem('apple_p2p_id_v4', myId);
             }
+            document.getElementById('my-id-display').innerText = myId;
+            document.getElementById('username-input').value = myProfile.name;
+            if(myProfile.pic) document.getElementById('my-profile-pic-display').src = myProfile.pic;
             
-            if ("Notification" in window) {
-                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-                    Notification.requestPermission();
-                }
-            }
+            generateQR(JSON.stringify({id: myId, name: myProfile.name}));
+            applyWallpaper();
+            updateContactsList();
 
             peer = new Peer("apple-p2p-v4-" + myId, {
                 debug: 1,
-                config: {
-                    'iceServers': [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
-                }
+                config: { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
             });
 
             peer.on('open', id => {
-                document.getElementById('my-id-display').innerText = myId;
-                generateQR(JSON.stringify({id: myId, name: myProfile.name}));
+                console.log('My peer ID is: ' + id);
                 startStatusMonitoring();
             });
 
-            peer.on('connection', c => handleIncomingConnection(c));
+            peer.on('connection', handleIncomingConnection);
+            
             peer.on('call', call => {
                 const id = call.peer.replace('apple-p2p-v4-', '');
-                const c = contacts[id] || {name: "Desconhecido"};
-                document.getElementById('caller-name').innerText = c.name || c.customName || "Amigo " + id;
+                if(deletedContacts[id]) return call.close();
+                
+                currentCall = call;
+                const c = contacts[id] || {name: "Amigo " + id};
+                document.getElementById('caller-name').innerText = c.name || "Amigo " + id;
                 document.getElementById('caller-pic').src = c.pic || 'https://www.w3schools.com/howto/img_avatar.png';
                 document.getElementById('incoming-call-modal').style.display = 'flex';
-                currentCall = call;
+                
+                // Play ringtone
+                ringtoneSound.play().catch(e => console.log("Som bloqueado pelo navegador. Clique em qualquer lugar."));
             });
 
-            document.getElementById('username-input').value = myProfile.name;
-            document.getElementById('my-profile-pic-display').src = myProfile.pic || 'https://www.w3schools.com/howto/img_avatar.png';
-            
-            const msgInput = document.getElementById('message-input');
-            msgInput.addEventListener('input', () => {
-                const hasText = msgInput.value.trim().length > 0;
-                document.getElementById('send-btn').style.display = hasText ? 'block' : 'none';
-                document.getElementById('voice-btn').style.display = hasText ? 'none' : 'block';
+            peer.on('error', err => {
+                console.error("Peer error:", err);
+                if(err.type === 'unavailable-id') alert("Erro: Este ID já está em uso em outra aba.");
             });
 
-            applyWallpaper();
-            updateContactsList();
+            // Request Notification Permission
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+
+            // Unlock audio on first interaction
+            document.addEventListener('click', () => {
+                notificationSound.play().then(() => {
+                    notificationSound.pause();
+                    notificationSound.currentTime = 0;
+                }).catch(() => {});
+                ringtoneSound.play().then(() => {
+                    ringtoneSound.pause();
+                    ringtoneSound.currentTime = 0;
+                }).catch(() => {});
+            }, { once: true });
         }
 
         // --- WALLPAPER LOGIC ---
@@ -847,6 +862,9 @@
         }
 
         function showNotification(id, text) {
+            // Play sound
+            notificationSound.play().catch(e => console.log("Som bloqueado pelo navegador."));
+            
             if (Notification.permission === "granted") {
                 const c = contacts[id] || {name: "Amigo"};
                 new Notification(c.name || "Nova Mensagem", { body: text });
@@ -959,8 +977,8 @@
                 if(file.type.startsWith('image/')) html = `<img src="${url}" onclick="openMediaOverlay('${url}', 'image')">`;
                 else if(file.type.startsWith('video/')) html = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
                 else if(file.type.startsWith('audio/')) html = `<audio controls src="${url}"></audio>`;
-                else html = `<i class="fas fa-file"></i> ${escapeHtml(file.name)}`;
-
+                else html = `<a href="${url}" download="${escapeHtml(file.name)}"><i class="fas fa-file"></i> ${escapeHtml(file.name)}</a>`;
+                
                 rememberMessage(activeChatId, html, 'me', msgId, 'sent');
                 addMessageUI(html, 'me', msgId, 'sent');
 
@@ -974,30 +992,30 @@
                 }
             };
             reader.readAsArrayBuffer(file);
-            document.getElementById('file-input').value = '';
         }
 
         // --- CALL LOGIC ---
-        async function startCall(video) {
-            try {
-                if(!activeChatId) return;
-                const constraints = {
-                    video: video ? { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } } : false,
-                    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-                };
-                localStream = await navigator.mediaDevices.getUserMedia(constraints);
-                document.getElementById('local-video').srcObject = localStream;
+        function startCall(video) {
+            if(!activeChatId) return;
+            const constraints = {
+                video: video ? { facingMode: "user" } : false,
+                audio: true
+            };
+            navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+                localStream = stream;
+                document.getElementById('local-video').srcObject = stream;
                 document.getElementById('video-call-overlay').style.display = 'flex';
-                
-                const call = peer.call("apple-p2p-v4-" + activeChatId, localStream);
+                const call = peer.call("apple-p2p-v4-" + activeChatId, stream);
                 setupCallHandlers(call);
-            } catch (err) {
-                alert("Erro ao acessar mídia: " + err);
-            }
+            }).catch(err => alert("Erro ao acessar câmera/microfone: " + err));
         }
 
         function acceptCall() {
+            ringtoneSound.pause();
+            ringtoneSound.currentTime = 0;
             document.getElementById('incoming-call-modal').style.display = 'none';
+            if(!currentCall) return;
+            
             const constraints = {
                 video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
                 audio: { echoCancellation: true, noiseSuppression: true }
@@ -1019,6 +1037,8 @@
         }
 
         function rejectCall() {
+            ringtoneSound.pause();
+            ringtoneSound.currentTime = 0;
             document.getElementById('incoming-call-modal').style.display = 'none';
             if(currentCall) currentCall.close();
         }
@@ -1035,6 +1055,8 @@
         }
 
         function endCall() {
+            ringtoneSound.pause();
+            ringtoneSound.currentTime = 0;
             if(currentCall) { try { currentCall.close(); } catch(e) {} currentCall = null; }
             if(localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
             document.getElementById('video-call-overlay').style.display = 'none';
