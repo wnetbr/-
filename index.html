@@ -92,9 +92,23 @@
             padding: 0 6px;
         }
 
-        /* QR Scanner */
-        #reader { width: 100%; max-width: 400px; margin: auto; border-radius: 20px; overflow: hidden; border: none !important; }
-        #reader video { border-radius: 20px; width: 100% !important; height: auto !important; }
+        /* QR Scanner Fix */
+        #reader { 
+            width: 100% !important; 
+            max-width: 400px; 
+            margin: auto; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            border: none !important;
+            background: #000;
+            min-height: 250px;
+        }
+        #reader video { 
+            width: 100% !important; 
+            height: auto !important; 
+            border-radius: 20px; 
+            object-fit: cover;
+        }
 
         /* Buttons & Inputs */
         .apple-btn { padding: 14px 20px; border-radius: 14px; border: none; background: var(--apple-blue); color: white; font-weight: 600; cursor: pointer; font-size: 16px; transition: opacity 0.2s; }
@@ -298,9 +312,11 @@
             <div style="width: 60px;"></div>
         </header>
         <div style="padding: 20px; flex: 1; overflow-y: auto;">
-            <div id="scanner-placeholder" style="width: 100%; aspect-ratio: 1; background: #000; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 20px; position: relative;">
-                <div id="reader" style="width: 100%;"></div>
-                <p id="start-scan-btn" onclick="startScanner()" style="cursor: pointer; position: absolute; text-align: center;"><i class="fas fa-camera" style="font-size: 40px;"></i><br>Abrir Câmera</p>
+            <div id="scanner-container" style="width: 100%; max-width: 400px; margin: 0 auto 20px auto; position: relative;">
+                <div id="reader"></div>
+                <div id="scanner-placeholder" style="position: absolute; inset: 0; background: #000; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; z-index: 5;">
+                    <p id="start-scan-btn" onclick="startScanner()" style="cursor: pointer; text-align: center;"><i class="fas fa-camera" style="font-size: 40px;"></i><br>Abrir Câmera</p>
+                </div>
             </div>
             
             <p style="color: var(--apple-gray); margin-bottom: 5px; font-size: 13px; text-transform: uppercase;">Adicionar Manualmente</p>
@@ -412,6 +428,7 @@
         let audioChunks = [];
         let onlineStatusMap = {};
         let statusCheckInterval = null;
+        let typingTimeout = null;
 
         // --- INITIALIZATION ---
         function init() {
@@ -745,9 +762,9 @@
                         try { c.close(); } catch(e) {}
                         return;
                     }
-                    if(deletedContacts[id] && activeChatId !== id) {
-                        try { c.close(); } catch(e) {}
-                        return;
+                    if(deletedContacts[id]) {
+                        delete deletedContacts[id];
+                        saveDeletedContacts();
                     }
                     if(!contacts[id]) {
                         contacts[id] = normalizeContact(id, { name: "Novo Amigo" });
@@ -827,10 +844,44 @@
                 c.send({type: 'receipt', msgId: msgId, status: 'delivered'});
             } else if(data.type === 'receipt') {
                 updateMessageStatus(id, data.msgId, data.status);
+            } else if(data.type === 'typing') {
+                if(activeChatId === id) {
+                    const statusText = document.getElementById('chat-status-text');
+                    statusText.innerText = 'Digitando...';
+                    statusText.style.color = 'var(--apple-blue)';
+                    if(typingTimeout) clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(() => {
+                        statusText.innerText = onlineStatusMap[id] ? 'Online' : 'Offline';
+                        statusText.style.color = '';
+                    }, 3000);
+                }
+            } else if(data.type === 'typing_stop') {
+                if(activeChatId === id) {
+                    if(typingTimeout) clearTimeout(typingTimeout);
+                    const statusText = document.getElementById('chat-status-text');
+                    statusText.innerText = onlineStatusMap[id] ? 'Online' : 'Offline';
+                    statusText.style.color = '';
+                }
             }
         }
 
         function showNotification(id, text) {
+            // Play default notification sound
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                oscillator.frequency.exponentialRampToValueAtTime(880.00, audioCtx.currentTime + 0.1); // A5
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } catch(e) { console.error("Som falhou", e); }
+
             if (Notification.permission === "granted") {
                 const c = contacts[id] || {name: "Amigo"};
                 new Notification(c.name || "Nova Mensagem", { body: text });
@@ -922,6 +973,7 @@
 
             if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                 conn.send({type: 'text', content: text, msgId: msgId});
+                conn.send({type: 'typing_stop'});
             } else {
                 conn = peer.connect("apple-p2p-v4-" + activeChatId, { reliable: true });
                 setupConnectionHandlers(conn);
@@ -932,29 +984,36 @@
         }
 
         function sendFile() {
-            const file = document.getElementById('file-input').files[0];
-            if(!file || !activeChatId) return;
-            const msgId = Date.now();
-            const reader = new FileReader();
-            reader.onload = () => {
-                const payload = reader.result;
-                let html = '';
-                const url = URL.createObjectURL(file);
-                if(file.type.startsWith('image/')) html = `<img src="${url}" onclick="openMediaOverlay('${url}', 'image')">`;
-                else if(file.type.startsWith('video/')) html = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
-                else if(file.type.startsWith('audio/')) html = `<audio controls src="${url}"></audio>`;
-                else html = `<i class="fas fa-file"></i> ${escapeHtml(file.name)}`;
+            const file = docume            const reader = new FileReader();
+            reader.onload = (e) => {
+                const msgId = Date.now();
+                const payload = e.target.result;
+                let content = '';
+                
+                if(file.type.startsWith('image/')) {
+                    const url = URL.createObjectURL(file);
+                    content = `<img src="${url}" onclick="openMediaOverlay('${url}', 'image')">`;
+                } else if(file.type.startsWith('video/')) {
+                    const url = URL.createObjectURL(file);
+                    content = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
+                } else {
+                    content = `<i class="fas fa-file"></i> ${escapeHtml(file.name)}`;
+                }
 
-                rememberMessage(activeChatId, html, 'me', msgId, 'sent');
-                addMessageUI(html, 'me', msgId, 'sent');
+                rememberMessage(activeChatId, content, 'me', msgId, 'sent');
+                addMessageUI(content, 'me', msgId, 'sent');
 
                 const sendData = {type: 'file', name: file.name, mime: file.type, payload: payload, msgId: msgId};
                 if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                     conn.send(sendData);
+                    conn.send({type: 'typing_stop'});
                 } else {
                     conn = peer.connect("apple-p2p-v4-" + activeChatId, { reliable: true });
                     setupConnectionHandlers(conn);
-                    conn.on('open', () => conn.send(sendData));
+                    conn.on('open', () => {
+                        conn.send(sendData);
+                        conn.send({type: 'typing_stop'});
+                    });
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -1096,12 +1155,11 @@
         voiceBtn.addEventListener('touchstart', handleStartRecording);
         voiceBtn.addEventListener('touchend', handleStopRecording);
 
-        // --- SCANNER & CONTACTS ---
+        // --- SCANNER & CONTACTS (FIXED) ---
         function startScanner() {
-            document.getElementById('scanner-placeholder').style.display = 'none';
-            document.getElementById('start-scan-btn').style.display = 'none';
+            const placeholder = document.getElementById('scanner-placeholder');
+            placeholder.style.display = 'none';
             
-            // Fix: Clear previous instance if exists
             if(html5QrCode) {
                 html5QrCode.stop().catch(() => {}).finally(() => {
                     html5QrCode = null;
@@ -1114,7 +1172,11 @@
 
         function initScanner() {
             html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            const config = { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            };
             
             html5QrCode.start({ facingMode: "environment" }, config, 
                 (decodedText) => {
@@ -1126,19 +1188,24 @@
                         addContact(decodedText, "");
                     }
                 },
-                () => {}
+                (errorMessage) => {
+                    // Silent error to avoid console spam
+                }
             ).catch(err => {
                 console.error("Scanner error:", err);
-                alert("Erro na câmera. Verifique as permissões.");
+                alert("Erro na câmera. Verifique se deu permissão e se a câmera não está em uso.");
                 stopScanner();
             });
         }
 
         function stopScanner() {
-            document.getElementById('scanner-placeholder').style.display = 'flex';
-            document.getElementById('start-scan-btn').style.display = 'block';
+            const placeholder = document.getElementById('scanner-placeholder');
+            placeholder.style.display = 'flex';
             if(html5QrCode) {
-                html5QrCode.stop().then(() => html5QrCode = null).catch(() => {});
+                html5QrCode.stop().then(() => {
+                    html5QrCode = null;
+                    document.getElementById('reader').innerHTML = '';
+                }).catch(() => {});
             }
         }
 
@@ -1177,7 +1244,14 @@
             document.getElementById('qrcode-display').innerHTML = qr.createImgTag(5);
         }
 
-        document.getElementById('message-input').onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+        document.getElementById('message-input').onkeypress = (e) => { 
+            if(e.key === 'Enter') sendMessage(); 
+            else {
+                if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
+                    conn.send({type: 'typing'});
+                }
+            }
+        };
 
         init();
     </script>
