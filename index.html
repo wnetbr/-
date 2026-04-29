@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>wnet.chat</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
@@ -20,6 +20,8 @@
             --apple-red: #FF3B30;
             --apple-green: #34C759;
             --apple-light-gray: #D1D1D6;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         @media (prefers-color-scheme: dark) {
@@ -32,11 +34,41 @@
             }
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { margin: 0; background-color: var(--apple-bg); color: var(--apple-text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        input, textarea { user-select: text; -webkit-user-select: text; }
+
+        body { 
+            margin: 0; 
+            background-color: var(--apple-bg); 
+            color: var(--apple-text); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
 
         /* Screens */
-        .screen { display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; inset: 0; background: var(--apple-bg); z-index: 1; }
+        .screen { 
+            display: none; 
+            flex-direction: column; 
+            height: 100%; 
+            width: 100%; 
+            position: absolute; 
+            inset: 0; 
+            background: var(--apple-bg); 
+            z-index: 1; 
+            padding-top: var(--safe-top);
+            padding-bottom: var(--safe-bottom);
+        }
         .screen.active { display: flex; z-index: 2; }
 
         /* Header */
@@ -50,6 +82,7 @@
             align-items: center;
             justify-content: space-between;
             z-index: 10;
+            flex-shrink: 0;
         }
         @media (prefers-color-scheme: dark) { header { background: rgba(28,28,30,0.8); } }
 
@@ -68,12 +101,13 @@
             cursor: pointer;
             transition: background 0.2s;
             position: relative;
+            min-height: 70px;
         }
         .contact-item:active { background: var(--apple-light-gray); }
         .contact-info { flex: 1; overflow: hidden; }
         .contact-name { font-weight: 600; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .contact-status { font-size: 13px; color: var(--apple-gray); display: flex; align-items: center; gap: 5px; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .contact-status { font-size: 13px; color: var(--apple-gray); display: flex; align-items: center; gap: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .status-online { background: var(--apple-green); }
         .status-offline { background: var(--apple-gray); }
 
@@ -128,8 +162,9 @@
             background-size: cover;
             background-position: center;
             position: relative;
+            -webkit-overflow-scrolling: touch;
         }
-        .message { max-width: 75%; padding: 10px 16px; border-radius: 20px; font-size: 16px; line-height: 1.4; position: relative; word-wrap: break-word; z-index: 2; }
+        .message { max-width: 85%; padding: 10px 16px; border-radius: 20px; font-size: 16px; line-height: 1.4; position: relative; word-wrap: break-word; z-index: 2; }
         .message.me { align-self: flex-end; background: var(--apple-blue); color: white; border-bottom-right-radius: 4px; }
         .message.them { align-self: flex-start; background: var(--apple-bubble-them); color: var(--apple-text); border-bottom-left-radius: 4px; }
         .message img, .message video { max-width: 100%; border-radius: 12px; margin-top: 5px; display: block; cursor: pointer; }
@@ -172,8 +207,17 @@
         .msg-status.read { color: #00E5FF; }
 
         /* Input Area */
-        .input-area { padding: 10px 15px 30px 15px; background: var(--apple-bg); display: flex; align-items: flex-end; gap: 10px; border-top: 0.5px solid var(--apple-light-gray); z-index: 10; }
-        .input-container { flex: 1; background: var(--apple-card); border: 0.5px solid var(--apple-light-gray); border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; }
+        .input-area { 
+            padding: 10px 15px; 
+            background: var(--apple-card); 
+            display: flex; 
+            align-items: flex-end; 
+            gap: 10px; 
+            border-top: 0.5px solid var(--apple-light-gray); 
+            z-index: 10;
+            flex-shrink: 0;
+        }
+        .input-container { flex: 1; background: var(--apple-bg); border: 0.5px solid var(--apple-light-gray); border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; }
         #message-input { flex: 1; border: none; background: transparent; color: var(--apple-text); font-size: 16px; padding: 8px 0; outline: none; }
 
         /* Video Call Overlay */
@@ -193,30 +237,10 @@
         /* Recording UI */
         #recording-ui { display: none; position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 25px; align-items: center; gap: 10px; z-index: 50; }
     
-        /* Keyboard Fix */
-        @media screen and (max-height: 500px) {
-            header { padding: 8px 15px; }
-            h1 { font-size: 24px !important; }
-            .input-area { padding-bottom: 10px; }
-        }
-        
-        html, body { 
-            position: fixed; 
-            overflow: hidden; 
-            width: 100%; 
-            height: 100%; 
-            height: -webkit-fill-available;
-        }
-        
-        .screen {
-            height: 100%;
-            height: -webkit-fill-available;
-        }
-
-        .input-area {
-            padding: 10px 15px env(safe-area-inset-bottom, 20px) 15px;
-            background: var(--apple-card);
-            transition: padding 0.3s ease;
+        /* Tablet & Desktop Optimizations */
+        @media (min-width: 768px) {
+            .screen { max-width: 500px; margin: 0 auto; border-left: 0.5px solid var(--apple-light-gray); border-right: 0.5px solid var(--apple-light-gray); }
+            body { background: #E5E5EA; }
         }
 
         /* Wallpaper Settings */
@@ -246,7 +270,7 @@
                 <button class="icon-btn" onclick="showScreen('add-contact-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 24px;"><i class="fas fa-plus-circle"></i></button>
             </div>
         </header>
-        <div id="conversations-list" style="flex: 1; overflow-y: auto;">
+        <div id="conversations-list" style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
             <!-- Conversations will appear here -->
         </div>
     </div>
@@ -258,7 +282,7 @@
             <h2 style="margin: 0; font-size: 17px; font-weight: 600;">Contatos</h2>
             <div style="width: 60px;"></div>
         </header>
-        <div id="all-contacts-list" style="flex: 1; overflow-y: auto;">
+        <div id="all-contacts-list" style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
             <!-- All saved contacts will appear here -->
         </div>
     </div>
@@ -270,7 +294,7 @@
             <h2 style="margin: 0; font-size: 17px; font-weight: 600;">Meu Perfil</h2>
             <div style="width: 60px;"></div>
         </header>
-        <div style="padding: 30px; display: flex; flex-direction: column; align-items: center; flex: 1; overflow-y: auto;">
+        <div style="padding: 30px; display: flex; flex-direction: column; align-items: center; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
             <div style="position: relative;">
                 <img id="my-profile-pic-display" class="profile-pic-large" src="https://www.w3schools.com/howto/img_avatar.png">
                 <button onclick="document.getElementById('profile-pic-input').click()" style="position: absolute; bottom: 20px; right: 0; background: var(--apple-blue); color: white; border: none; width: 35px; height: 35px; border-radius: 50%;"><i class="fas fa-camera"></i></button>
@@ -299,7 +323,7 @@
             <h2 style="margin: 0; font-size: 17px; font-weight: 600;">Papel de Parede</h2>
             <div style="width: 60px;"></div>
         </header>
-        <div style="padding: 20px; flex: 1; overflow-y: auto;">
+        <div style="padding: 20px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
             <p style="color: var(--apple-gray); margin-bottom: 15px; font-size: 13px; text-transform: uppercase;">Personalizar Fundo do Chat</p>
             
             <div class="wallpaper-option" onclick="document.getElementById('wallpaper-color-input').click()">
@@ -324,7 +348,7 @@
             <h2 style="margin: 0; font-size: 17px; font-weight: 600;">Novo Contato</h2>
             <div style="width: 60px;"></div>
         </header>
-        <div style="padding: 20px; flex: 1; overflow-y: auto;">
+        <div style="padding: 20px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;">
             <div id="scanner-container" style="width: 100%; max-width: 400px; margin: 0 auto 20px auto; position: relative;">
                 <div id="reader"></div>
                 <div id="scanner-placeholder" style="position: absolute; inset: 0; background: #000; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; z-index: 5;">
@@ -334,7 +358,7 @@
             
             <p style="color: var(--apple-gray); margin-bottom: 5px; font-size: 13px; text-transform: uppercase;">Adicionar Manualmente</p>
             <input type="text" id="contact-name-input" class="apple-input" placeholder="Nome do contato">
-            <input type="text" id="manual-id-input" class="apple-input" placeholder="Código de 4 dígitos" maxlength="4">
+            <input type="text" id="manual-id-input" class="apple-input" placeholder="Código de 4 dígitos" maxlength="4" inputmode="numeric">
             <button class="apple-btn" onclick="addContactManual()" style="width: 100%; margin-top: 10px;">Adicionar Contato</button>
         </div>
     </div>
@@ -342,18 +366,18 @@
     <!-- Chat Screen -->
     <div id="chat-screen" class="screen">
         <header>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <button onclick="showScreen('main-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 17px; font-weight: 500;"><i class="fas fa-chevron-left"></i></button>
+            <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+                <button onclick="showScreen('main-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 17px; font-weight: 500; flex-shrink: 0;"><i class="fas fa-chevron-left"></i></button>
                 <img id="chat-profile-pic" class="profile-pic" src="https://www.w3schools.com/howto/img_avatar.png" onclick="showContactProfile(activeChatId)">
-                <div onclick="showContactProfile(activeChatId)">
-                    <div id="chat-username" style="font-weight: 600; font-size: 17px;">Nome</div>
+                <div onclick="showContactProfile(activeChatId)" style="overflow: hidden;">
+                    <div id="chat-username" style="font-weight: 600; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nome</div>
                     <div class="contact-status" style="font-size: 12px;">
                         <span id="chat-status-dot" class="status-dot status-offline"></span>
                         <span id="chat-status-text">Offline</span>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; gap: 15px;">
+            <div style="display: flex; gap: 15px; flex-shrink: 0;">
                 <button class="icon-btn" onclick="startCall(false)" style="background:none; border:none; color:var(--apple-blue); font-size: 20px;"><i class="fas fa-phone"></i></button>
                 <button class="icon-btn" onclick="startCall(true)" style="background:none; border:none; color:var(--apple-blue); font-size: 20px;"><i class="fas fa-video"></i></button>
             </div>
@@ -370,7 +394,7 @@
             <button onclick="document.getElementById('file-input').click()" style="background:none; border:none; color:var(--apple-blue); font-size: 24px;"><i class="fas fa-plus"></i></button>
             <input type="file" id="file-input" hidden onchange="sendFile()">
             <div class="input-container">
-                <input type="text" id="message-input" placeholder="Mensagem">
+                <input type="text" id="message-input" placeholder="Mensagem" autocomplete="off">
             </div>
             <button id="voice-btn" style="background:none; border:none; color:var(--apple-blue); font-size: 24px;"><i class="fas fa-microphone"></i></button>
             <button id="send-btn" onclick="sendMessage()" style="background:none; border:none; color:var(--apple-blue); font-size: 24px; display: none;"><i class="fas fa-arrow-up-circle"></i></button>
@@ -500,6 +524,11 @@
                 notificationSound.play().then(() => { notificationSound.pause(); notificationSound.currentTime = 0; }).catch(() => {});
                 ringtoneSound.play().then(() => { ringtoneSound.pause(); ringtoneSound.currentTime = 0; }).catch(() => {});
             }, { once: true });
+            
+            // Fix for mobile height issues
+            window.addEventListener('resize', () => {
+                document.body.style.height = window.innerHeight + 'px';
+            });
         }
 
         // --- WALLPAPER LOGIC ---
@@ -1176,7 +1205,7 @@
 
         function removeContactCompletely(e, id) {
             e.stopPropagation();
-            if(confirm("Excluir contato permanentemente? Isso apagará a conversa e o contato da sua lista.")) {
+            if(confirm("Excluir contato permanentemente? Isso apagará a conversa e o contato da sua lista para sempre.")) {
                 delete contacts[id];
                 delete messagesStore[id];
                 delete unreadCounts[id];
