@@ -428,7 +428,6 @@
         let audioChunks = [];
         let onlineStatusMap = {};
         let statusCheckInterval = null;
-        let typingTimeout = null;
 
         // --- INITIALIZATION ---
         function init() {
@@ -762,9 +761,9 @@
                         try { c.close(); } catch(e) {}
                         return;
                     }
-                    if(deletedContacts[id]) {
-                        delete deletedContacts[id];
-                        saveDeletedContacts();
+                    if(deletedContacts[id] && activeChatId !== id) {
+                        try { c.close(); } catch(e) {}
+                        return;
                     }
                     if(!contacts[id]) {
                         contacts[id] = normalizeContact(id, { name: "Novo Amigo" });
@@ -844,44 +843,10 @@
                 c.send({type: 'receipt', msgId: msgId, status: 'delivered'});
             } else if(data.type === 'receipt') {
                 updateMessageStatus(id, data.msgId, data.status);
-            } else if(data.type === 'typing') {
-                if(activeChatId === id) {
-                    const statusText = document.getElementById('chat-status-text');
-                    statusText.innerText = 'Digitando...';
-                    statusText.style.color = 'var(--apple-blue)';
-                    if(typingTimeout) clearTimeout(typingTimeout);
-                    typingTimeout = setTimeout(() => {
-                        statusText.innerText = onlineStatusMap[id] ? 'Online' : 'Offline';
-                        statusText.style.color = '';
-                    }, 3000);
-                }
-            } else if(data.type === 'typing_stop') {
-                if(activeChatId === id) {
-                    if(typingTimeout) clearTimeout(typingTimeout);
-                    const statusText = document.getElementById('chat-status-text');
-                    statusText.innerText = onlineStatusMap[id] ? 'Online' : 'Offline';
-                    statusText.style.color = '';
-                }
             }
         }
 
         function showNotification(id, text) {
-            // Play default notification sound
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-                oscillator.frequency.exponentialRampToValueAtTime(880.00, audioCtx.currentTime + 0.1); // A5
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.5);
-            } catch(e) { console.error("Som falhou", e); }
-
             if (Notification.permission === "granted") {
                 const c = contacts[id] || {name: "Amigo"};
                 new Notification(c.name || "Nova Mensagem", { body: text });
@@ -973,7 +938,6 @@
 
             if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                 conn.send({type: 'text', content: text, msgId: msgId});
-                conn.send({type: 'typing_stop'});
             } else {
                 conn = peer.connect("apple-p2p-v4-" + activeChatId, { reliable: true });
                 setupConnectionHandlers(conn);
@@ -984,36 +948,29 @@
         }
 
         function sendFile() {
-            const file = docume            const reader = new FileReader();
-            reader.onload = (e) => {
-                const msgId = Date.now();
-                const payload = e.target.result;
-                let content = '';
-                
-                if(file.type.startsWith('image/')) {
-                    const url = URL.createObjectURL(file);
-                    content = `<img src="${url}" onclick="openMediaOverlay('${url}', 'image')">`;
-                } else if(file.type.startsWith('video/')) {
-                    const url = URL.createObjectURL(file);
-                    content = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
-                } else {
-                    content = `<i class="fas fa-file"></i> ${escapeHtml(file.name)}`;
-                }
+            const file = document.getElementById('file-input').files[0];
+            if(!file || !activeChatId) return;
+            const msgId = Date.now();
+            const reader = new FileReader();
+            reader.onload = () => {
+                const payload = reader.result;
+                let html = '';
+                const url = URL.createObjectURL(file);
+                if(file.type.startsWith('image/')) html = `<img src="${url}" onclick="openMediaOverlay('${url}', 'image')">`;
+                else if(file.type.startsWith('video/')) html = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
+                else if(file.type.startsWith('audio/')) html = `<audio controls src="${url}"></audio>`;
+                else html = `<i class="fas fa-file"></i> ${escapeHtml(file.name)}`;
 
-                rememberMessage(activeChatId, content, 'me', msgId, 'sent');
-                addMessageUI(content, 'me', msgId, 'sent');
+                rememberMessage(activeChatId, html, 'me', msgId, 'sent');
+                addMessageUI(html, 'me', msgId, 'sent');
 
                 const sendData = {type: 'file', name: file.name, mime: file.type, payload: payload, msgId: msgId};
                 if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                     conn.send(sendData);
-                    conn.send({type: 'typing_stop'});
                 } else {
                     conn = peer.connect("apple-p2p-v4-" + activeChatId, { reliable: true });
                     setupConnectionHandlers(conn);
-                    conn.on('open', () => {
-                        conn.send(sendData);
-                        conn.send({type: 'typing_stop'});
-                    });
+                    conn.on('open', () => conn.send(sendData));
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -1244,14 +1201,7 @@
             document.getElementById('qrcode-display').innerHTML = qr.createImgTag(5);
         }
 
-        document.getElementById('message-input').onkeypress = (e) => { 
-            if(e.key === 'Enter') sendMessage(); 
-            else {
-                if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
-                    conn.send({type: 'typing'});
-                }
-            }
-        };
+        document.getElementById('message-input').onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
 
         init();
     </script>
