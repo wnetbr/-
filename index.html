@@ -236,17 +236,30 @@
 </head>
 <body>
 
-    <!-- Main Screen (Contacts) -->
+    <!-- Main Screen (Conversas) -->
     <div id="main-screen" class="screen active">
         <header>
             <h1 style="font-size: 34px; margin: 0; font-weight: 800;">Mensagens</h1>
             <div style="display: flex; gap: 15px;">
+                <button class="icon-btn" onclick="showScreen('contacts-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 24px;"><i class="fas fa-address-book"></i></button>
                 <button class="icon-btn" onclick="showScreen('profile-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 24px;"><i class="fas fa-user-circle"></i></button>
                 <button class="icon-btn" onclick="showScreen('add-contact-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 24px;"><i class="fas fa-plus-circle"></i></button>
             </div>
         </header>
-        <div id="contacts-list" style="flex: 1; overflow-y: auto;">
-            <!-- Contacts will appear here -->
+        <div id="conversations-list" style="flex: 1; overflow-y: auto;">
+            <!-- Conversations will appear here -->
+        </div>
+    </div>
+
+    <!-- Contacts Screen -->
+    <div id="contacts-screen" class="screen">
+        <header>
+            <button onclick="showScreen('main-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 17px; font-weight: 500;"><i class="fas fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; font-size: 17px; font-weight: 600;">Contatos</h2>
+            <div style="width: 60px;"></div>
+        </header>
+        <div id="all-contacts-list" style="flex: 1; overflow-y: auto;">
+            <!-- All saved contacts will appear here -->
         </div>
     </div>
 
@@ -401,10 +414,14 @@
     <div id="contact-profile-modal" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
             <img id="contact-profile-pic-modal" class="profile-pic-large" src="">
-            <h2 id="contact-profile-name-modal" style="margin: 10px 0 5px 0;"></h2>
-            <p id="contact-profile-saved-name-modal" style="color: var(--apple-gray); font-size: 14px; margin: 0;"></p>
+            <div style="margin-bottom: 15px;">
+                <p style="color: var(--apple-gray); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Nome do Contato</p>
+                <input type="text" id="contact-edit-name-input" class="apple-input" style="text-align: center; margin-bottom: 5px;">
+                <button class="apple-btn" style="padding: 8px 15px; font-size: 14px; width: 100%;" onclick="updateContactName()">Salvar Nome</button>
+            </div>
             <p id="contact-profile-id-modal" style="font-weight: 600; color: var(--apple-blue); margin: 15px 0;"></p>
-            <button class="apple-btn" style="background: var(--apple-red); width: 100%;" onclick="deleteContact(event, activeChatId)">Excluir Contato</button>
+            <button class="apple-btn" style="background: var(--apple-red); width: 100%;" onclick="deleteConversation(event, activeChatId)">Apagar Conversa</button>
+            <button class="apple-btn" style="background: #555; width: 100%; margin-top: 10px;" onclick="removeContactCompletely(event, activeChatId)">Excluir Contato Permanentemente</button>
         </div>
     </div>
 
@@ -413,7 +430,7 @@
         let myId = localStorage.getItem('apple_p2p_id_v4');
         let myProfile = JSON.parse(localStorage.getItem('apple_p2p_profile_v4') || '{"name":"","pic":""}');
         let contacts = JSON.parse(localStorage.getItem('apple_p2p_contacts_v4') || '{}');
-        let deletedContacts = JSON.parse(localStorage.getItem('apple_p2p_deleted_v4') || '{}');
+        let deletedConversations = JSON.parse(localStorage.getItem('apple_p2p_deleted_conv_v4') || '{}');
         let messagesStore = JSON.parse(localStorage.getItem('apple_p2p_messages_v4') || '{}');
         let unreadCounts = JSON.parse(localStorage.getItem('apple_p2p_unread_v4') || '{}');
         let wallpaper = JSON.parse(localStorage.getItem('apple_p2p_wallpaper_v4') || '{"type":"default","value":""}');
@@ -446,7 +463,7 @@
             
             generateQR(JSON.stringify({id: myId, name: myProfile.name}));
             applyWallpaper();
-            updateContactsList();
+            updateConversationsList();
 
             peer = new Peer("apple-p2p-v4-" + myId, {
                 debug: 1,
@@ -462,16 +479,12 @@
             
             peer.on('call', call => {
                 const id = call.peer.replace('apple-p2p-v4-', '');
-                if(deletedContacts[id]) return call.close();
-                
                 currentCall = call;
                 const c = contacts[id] || {name: "Amigo " + id};
-                document.getElementById('caller-name').innerText = c.name || "Amigo " + id;
+                document.getElementById('caller-name').innerText = getContactDisplayName(id, c);
                 document.getElementById('caller-pic').src = c.pic || 'https://www.w3schools.com/howto/img_avatar.png';
                 document.getElementById('incoming-call-modal').style.display = 'flex';
-                
-                // Play ringtone
-                ringtoneSound.play().catch(e => console.log("Som bloqueado pelo navegador. Clique em qualquer lugar."));
+                ringtoneSound.play().catch(e => console.log("Som bloqueado pelo navegador."));
             });
 
             peer.on('error', err => {
@@ -479,21 +492,13 @@
                 if(err.type === 'unavailable-id') alert("Erro: Este ID já está em uso em outra aba.");
             });
 
-            // Request Notification Permission
             if (Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
             }
 
-            // Unlock audio on first interaction
             document.addEventListener('click', () => {
-                notificationSound.play().then(() => {
-                    notificationSound.pause();
-                    notificationSound.currentTime = 0;
-                }).catch(() => {});
-                ringtoneSound.play().then(() => {
-                    ringtoneSound.pause();
-                    ringtoneSound.currentTime = 0;
-                }).catch(() => {});
+                notificationSound.play().then(() => { notificationSound.pause(); notificationSound.currentTime = 0; }).catch(() => {});
+                ringtoneSound.play().then(() => { ringtoneSound.pause(); ringtoneSound.currentTime = 0; }).catch(() => {});
             }, { once: true });
         }
 
@@ -541,7 +546,6 @@
             const overlay = document.getElementById('media-overlay');
             const content = document.getElementById('media-content');
             const downloadBtn = document.getElementById('download-media-btn');
-            
             content.innerHTML = '';
             if(type === 'image') {
                 const img = document.createElement('img');
@@ -554,7 +558,6 @@
                 video.autoplay = true;
                 content.appendChild(video);
             }
-            
             downloadBtn.onclick = () => {
                 const a = document.createElement('a');
                 a.href = src;
@@ -563,7 +566,6 @@
                 a.click();
                 document.body.removeChild(a);
             };
-            
             overlay.style.display = 'flex';
         }
 
@@ -578,12 +580,15 @@
             document.getElementById(id).classList.add('active');
             if(id === 'main-screen') {
                 activeChatId = null;
-                updateContactsList();
+                updateConversationsList();
+            }
+            if(id === 'contacts-screen') {
+                updateAllContactsList();
             }
             if(id === 'chat-screen' && activeChatId) {
                 unreadCounts[activeChatId] = 0;
                 saveUnread();
-                updateContactsList();
+                updateConversationsList();
                 sendReadReceipt(activeChatId);
             }
         }
@@ -612,7 +617,7 @@
         }
 
         function saveContacts() { localStorage.setItem('apple_p2p_contacts_v4', JSON.stringify(contacts)); }
-        function saveDeletedContacts() { localStorage.setItem('apple_p2p_deleted_v4', JSON.stringify(deletedContacts)); }
+        function saveDeletedConversations() { localStorage.setItem('apple_p2p_deleted_conv_v4', JSON.stringify(deletedConversations)); }
         function saveMessages() { localStorage.setItem('apple_p2p_messages_v4', JSON.stringify(messagesStore)); }
         function saveUnread() { localStorage.setItem('apple_p2p_unread_v4', JSON.stringify(unreadCounts)); }
 
@@ -637,21 +642,22 @@
             return div.innerHTML;
         }
 
-        // --- CONTACTS LIST ---
-        function updateContactsList() {
-            const list = document.getElementById('contacts-list');
+        // --- CONTACTS & CONVERSATIONS LISTS ---
+        function updateConversationsList() {
+            const list = document.getElementById('conversations-list');
             list.innerHTML = '';
-            const sortedIds = Object.keys(contacts).filter(id => !deletedContacts[id]);
+            const conversationIds = Object.keys(messagesStore).filter(id => !deletedConversations[id]);
             
-            if(sortedIds.length === 0) {
-                list.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--apple-gray);">Nenhum contato ainda.</div>';
+            if(conversationIds.length === 0) {
+                list.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--apple-gray);">Nenhuma conversa ativa. Vá em contatos para iniciar uma.</div>';
                 return;
             }
 
-            sortedIds.forEach(id => {
+            conversationIds.forEach(id => {
                 const c = normalizeContact(id, contacts[id]);
                 const isOnline = onlineStatusMap[id] || false;
                 const unread = unreadCounts[id] || 0;
+                const lastMsg = (messagesStore[id] && messagesStore[id].length > 0) ? messagesStore[id][messagesStore[id].length-1] : null;
                 
                 const item = document.createElement('div');
                 item.className = 'contact-item';
@@ -660,13 +666,45 @@
                     <img class="profile-pic" src="${c.pic || 'https://www.w3schools.com/howto/img_avatar.png'}">
                     <div class="contact-info">
                         <div class="contact-name">${getContactDisplayName(id, c)}</div>
-                        <div class="contact-status" id="list-status-${id}">
+                        <div class="contact-status">
                             <span class="status-dot ${isOnline ? 'status-online' : 'status-offline'}"></span>
-                            ${isOnline ? 'Online' : 'Offline'}
+                            ${lastMsg ? (lastMsg.type === 'me' ? 'Você: ' : '') + lastMsg.content.replace(/<[^>]*>?/gm, '').substring(0, 30) : (isOnline ? 'Online' : 'Offline')}
                         </div>
                     </div>
                     ${unread > 0 ? `<div class="unread-badge">${unread}</div>` : ''}
-                    <button onclick="deleteContact(event, '${id}')" style="background:none; border:none; color:var(--apple-red); padding: 10px;"><i class="fas fa-trash"></i></button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function updateAllContactsList() {
+            const list = document.getElementById('all-contacts-list');
+            list.innerHTML = '';
+            const contactIds = Object.keys(contacts);
+            
+            if(contactIds.length === 0) {
+                list.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--apple-gray);">Nenhum contato salvo.</div>';
+                return;
+            }
+
+            contactIds.forEach(id => {
+                const c = normalizeContact(id, contacts[id]);
+                const isOnline = onlineStatusMap[id] || false;
+                
+                const item = document.createElement('div');
+                item.className = 'contact-item';
+                item.onclick = () => {
+                    delete deletedConversations[id];
+                    saveDeletedConversations();
+                    openChat(id);
+                };
+                item.innerHTML = `
+                    <img class="profile-pic" src="${c.pic || 'https://www.w3schools.com/howto/img_avatar.png'}">
+                    <div class="contact-info">
+                        <div class="contact-name">${getContactDisplayName(id, c)}</div>
+                        <div class="contact-status">ID: ${id} • ${isOnline ? 'Online' : 'Offline'}</div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--apple-light-gray);"></i>
                 `;
                 list.appendChild(item);
             });
@@ -680,9 +718,7 @@
         }
 
         function checkAllStatuses() {
-            Object.keys(contacts).forEach(id => {
-                if(!deletedContacts[id]) probeStatus(id);
-            });
+            Object.keys(contacts).forEach(id => probeStatus(id));
         }
 
         function probeStatus(id) {
@@ -691,7 +727,6 @@
                 updateStatusUI(id, true);
                 return;
             }
-
             const tempConn = peer.connect("apple-p2p-v4-" + id, { reliable: false });
             let done = false;
             let timeout = setTimeout(() => {
@@ -700,7 +735,6 @@
                 try { tempConn.close(); } catch(e) {}
                 updateStatusUI(id, false);
             }, 3000);
-
             tempConn.on('open', () => {
                 if(done) return;
                 done = true;
@@ -720,13 +754,6 @@
         function updateStatusUI(id, isOnline) {
             if (onlineStatusMap[id] === isOnline) return;
             onlineStatusMap[id] = isOnline;
-
-            const el = document.getElementById('list-status-' + id);
-            if(el) {
-                el.innerHTML = isOnline ? 
-                    `<span class="status-dot status-online"></span> Online` : 
-                    `<span class="status-dot status-offline"></span> Offline`;
-            }
             if(activeChatId === id) {
                 document.getElementById('chat-status-dot').className = 'status-dot ' + (isOnline ? 'status-online' : 'status-offline');
                 document.getElementById('chat-status-text').innerText = isOnline ? 'Online' : 'Offline';
@@ -735,18 +762,15 @@
 
         // --- CHAT LOGIC ---
         function openChat(id, existingConn) {
-            if(!contacts[id] || deletedContacts[id]) return;
+            if(!contacts[id]) return;
             activeChatId = id;
             const c = contacts[id] = normalizeContact(id, contacts[id]);
             document.getElementById('chat-username').innerText = getContactDisplayName(id, c);
             document.getElementById('chat-profile-pic').src = c.pic || 'https://www.w3schools.com/howto/img_avatar.png';
-            
             unreadCounts[id] = 0;
             saveUnread();
-            
             renderMessages(id);
             showScreen('chat-screen');
-
             if(existingConn) {
                 if(conn && conn !== existingConn) conn.close();
                 conn = existingConn;
@@ -754,7 +778,6 @@
                 sendReadReceipt(id);
                 return;
             }
-
             if(conn && conn.open && conn.peer === "apple-p2p-v4-" + id) {
                 sendReadReceipt(id);
                 return;
@@ -767,7 +790,6 @@
         function handleIncomingConnection(c) {
             const id = c.peer.replace('apple-p2p-v4-', '');
             let firstDataHandled = false;
-
             c.on('data', data => {
                 if(!firstDataHandled) {
                     firstDataHandled = true;
@@ -776,15 +798,12 @@
                         try { c.close(); } catch(e) {}
                         return;
                     }
-                    if(deletedContacts[id] && activeChatId !== id) {
-                        try { c.close(); } catch(e) {}
-                        return;
-                    }
                     if(!contacts[id]) {
                         contacts[id] = normalizeContact(id, { name: "Novo Amigo" });
                         saveContacts();
-                        updateContactsList();
                     }
+                    delete deletedConversations[id];
+                    saveDeletedConversations();
                     if(activeChatId !== id) {
                         setupConnectionHandlers(c);
                     } else {
@@ -795,7 +814,6 @@
                 }
                 processIncomingData(c, data);
             });
-
             c.on('open', () => updateStatusUI(id, true));
             c.on('close', () => updateStatusUI(id, false));
         }
@@ -804,7 +822,6 @@
             if(!c || c._handlersReady) return;
             c._handlersReady = true;
             const id = c.peer.replace('apple-p2p-v4-', '');
-            
             c.on('open', () => {
                 updateStatusUI(id, true);
                 c.send({type: 'profile_sync', profile: myProfile});
@@ -818,7 +835,6 @@
         function processIncomingData(c, data) {
             if(!data || data.type === 'status_probe') return;
             const id = c.peer.replace('apple-p2p-v4-', '');
-            
             if(data.type === 'profile_sync') {
                 contacts[id] = normalizeContact(id, contacts[id]);
                 contacts[id].profileName = data.profile.name || contacts[id].profileName || '';
@@ -828,11 +844,9 @@
                     document.getElementById('chat-username').innerText = getContactDisplayName(id, contacts[id]);
                     document.getElementById('chat-profile-pic').src = contacts[id].pic || 'https://www.w3schools.com/howto/img_avatar.png';
                 }
-                updateContactsList();
             } else if(data.type === 'text' || data.type === 'file') {
                 let content = '';
                 let msgId = data.msgId || Date.now();
-                
                 if(data.type === 'text') {
                     content = escapeHtml(data.content);
                 } else {
@@ -843,16 +857,13 @@
                     else if(data.mime.startsWith('audio/')) content = `<audio controls src="${url}"></audio>`;
                     else content = `<a href="${url}" download="${escapeHtml(data.name)}"><i class="fas fa-file"></i> ${escapeHtml(data.name)}</a>`;
                 }
-
                 rememberMessage(id, content, 'them', msgId);
-                
                 if(activeChatId === id) {
                     addMessageUI(content, 'them', msgId);
                     sendReadReceipt(id);
                 } else {
                     unreadCounts[id] = (unreadCounts[id] || 0) + 1;
                     saveUnread();
-                    updateContactsList();
                     showNotification(id, data.type === 'text' ? data.content : "Arquivo recebido");
                 }
                 c.send({type: 'receipt', msgId: msgId, status: 'delivered'});
@@ -862,12 +873,10 @@
         }
 
         function showNotification(id, text) {
-            // Play sound
             notificationSound.play().catch(e => console.log("Som bloqueado pelo navegador."));
-            
             if (Notification.permission === "granted") {
                 const c = contacts[id] || {name: "Amigo"};
-                new Notification(c.name || "Nova Mensagem", { body: text });
+                new Notification(getContactDisplayName(id, c), { body: text });
             }
         }
 
@@ -897,12 +906,7 @@
             }
         }
 
-        function syncMessageStatus(id) {
-            const msgs = messagesStore[id] || [];
-            msgs.forEach(m => {
-                if(m.type === 'me' && m.status === 'sent') {}
-            });
-        }
+        function syncMessageStatus(id) {}
 
         function rememberMessage(contactId, content, type, id, status = 'sent') {
             if(!messagesStore[contactId]) messagesStore[contactId] = [];
@@ -924,7 +928,6 @@
             const div = document.createElement('div');
             div.className = `message ${type}`;
             div.id = `msg-${id}`;
-            
             let statusHtml = '';
             if(type === 'me') {
                 let icon = '<i class="fas fa-check"></i>';
@@ -933,7 +936,6 @@
                 if(status === 'read') { icon = '<i class="fas fa-check-double"></i>'; statusClass = 'read'; }
                 statusHtml = `<span class="msg-status ${statusClass}">${icon}</span>`;
             }
-            
             div.innerHTML = `${content}${statusHtml}`;
             const container = document.getElementById('messages');
             container.appendChild(div);
@@ -944,24 +946,19 @@
             const input = document.getElementById('message-input');
             const text = input.value.trim();
             if(!text || !activeChatId) return;
-            
             const msgId = Date.now();
             const safe = escapeHtml(text);
             input.value = '';
             document.getElementById('send-btn').style.display = 'none';
             document.getElementById('voice-btn').style.display = 'block';
-
             rememberMessage(activeChatId, safe, 'me', msgId, 'sent');
             addMessageUI(safe, 'me', msgId, 'sent');
-
             if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                 conn.send({type: 'text', content: text, msgId: msgId});
             } else {
                 conn = peer.connect("apple-p2p-v4-" + activeChatId, { reliable: true });
                 setupConnectionHandlers(conn);
-                conn.on('open', () => {
-                    conn.send({type: 'text', content: text, msgId: msgId});
-                });
+                conn.on('open', () => conn.send({type: 'text', content: text, msgId: msgId}));
             }
         }
 
@@ -978,10 +975,8 @@
                 else if(file.type.startsWith('video/')) html = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
                 else if(file.type.startsWith('audio/')) html = `<audio controls src="${url}"></audio>`;
                 else html = `<a href="${url}" download="${escapeHtml(file.name)}"><i class="fas fa-file"></i> ${escapeHtml(file.name)}</a>`;
-                
                 rememberMessage(activeChatId, html, 'me', msgId, 'sent');
                 addMessageUI(html, 'me', msgId, 'sent');
-
                 const sendData = {type: 'file', name: file.name, mime: file.type, payload: payload, msgId: msgId};
                 if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                     conn.send(sendData);
@@ -997,10 +992,7 @@
         // --- CALL LOGIC ---
         function startCall(video) {
             if(!activeChatId) return;
-            const constraints = {
-                video: video ? { facingMode: "user" } : false,
-                audio: true
-            };
+            const constraints = { video: video ? { facingMode: "user" } : false, audio: true };
             navigator.mediaDevices.getUserMedia(constraints).then(stream => {
                 localStream = stream;
                 document.getElementById('local-video').srcObject = stream;
@@ -1011,15 +1003,10 @@
         }
 
         function acceptCall() {
-            ringtoneSound.pause();
-            ringtoneSound.currentTime = 0;
+            ringtoneSound.pause(); ringtoneSound.currentTime = 0;
             document.getElementById('incoming-call-modal').style.display = 'none';
             if(!currentCall) return;
-            
-            const constraints = {
-                video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-                audio: { echoCancellation: true, noiseSuppression: true }
-            };
+            const constraints = { video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } }, audio: { echoCancellation: true, noiseSuppression: true } };
             navigator.mediaDevices.getUserMedia(constraints).then(stream => {
                 localStream = stream;
                 document.getElementById('local-video').srcObject = stream;
@@ -1037,8 +1024,7 @@
         }
 
         function rejectCall() {
-            ringtoneSound.pause();
-            ringtoneSound.currentTime = 0;
+            ringtoneSound.pause(); ringtoneSound.currentTime = 0;
             document.getElementById('incoming-call-modal').style.display = 'none';
             if(currentCall) currentCall.close();
         }
@@ -1055,8 +1041,7 @@
         }
 
         function endCall() {
-            ringtoneSound.pause();
-            ringtoneSound.currentTime = 0;
+            ringtoneSound.pause(); ringtoneSound.currentTime = 0;
             if(currentCall) { try { currentCall.close(); } catch(e) {} currentCall = null; }
             if(localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
             document.getElementById('video-call-overlay').style.display = 'none';
@@ -1067,19 +1052,13 @@
         function toggleMute() {
             if(!localStream) return;
             const track = localStream.getAudioTracks()[0];
-            if(track) {
-                track.enabled = !track.enabled;
-                document.getElementById('call-mute-icon').className = track.enabled ? 'fas fa-microphone' : 'fas fa-microphone-slash';
-            }
+            if(track) { track.enabled = !track.enabled; document.getElementById('call-mute-icon').className = track.enabled ? 'fas fa-microphone' : 'fas fa-microphone-slash'; }
         }
 
         function toggleCamera() {
             if(!localStream) return;
             const track = localStream.getVideoTracks()[0];
-            if(track) {
-                track.enabled = !track.enabled;
-                document.getElementById('call-camera-icon').className = track.enabled ? 'fas fa-video' : 'fas fa-video-slash';
-            }
+            if(track) { track.enabled = !track.enabled; document.getElementById('call-camera-icon').className = track.enabled ? 'fas fa-video' : 'fas fa-video-slash'; }
         }
 
         // --- VOICE RECORDING ---
@@ -1100,10 +1079,8 @@
                         const payload = reader.result;
                         const url = URL.createObjectURL(blob);
                         const html = `<audio controls src="${url}"></audio>`;
-                        
                         rememberMessage(activeChatId, html, 'me', msgId, 'sent');
                         addMessageUI(html, 'me', msgId, 'sent');
-
                         const sendData = {type: 'file', name: 'audio.ogg', mime: 'audio/ogg', payload: payload, msgId: msgId};
                         if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                             conn.send(sendData);
@@ -1134,45 +1111,30 @@
         voiceBtn.addEventListener('touchstart', handleStartRecording);
         voiceBtn.addEventListener('touchend', handleStopRecording);
 
-        // --- SCANNER & CONTACTS (FIXED) ---
+        // --- SCANNER & CONTACTS ---
         function startScanner() {
             const placeholder = document.getElementById('scanner-placeholder');
             placeholder.style.display = 'none';
-            
             if(html5QrCode) {
-                html5QrCode.stop().catch(() => {}).finally(() => {
-                    html5QrCode = null;
-                    initScanner();
-                });
-            } else {
-                initScanner();
-            }
+                html5QrCode.stop().catch(() => {}).finally(() => { html5QrCode = null; initScanner(); });
+            } else { initScanner(); }
         }
 
         function initScanner() {
             html5QrCode = new Html5Qrcode("reader");
-            const config = { 
-                fps: 10, 
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0
-            };
-            
+            const config = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
             html5QrCode.start({ facingMode: "environment" }, config, 
                 (decodedText) => {
                     stopScanner();
                     try {
                         const parsed = JSON.parse(decodedText);
                         addContact(parsed.id, parsed.name);
-                    } catch(e) {
-                        addContact(decodedText, "");
-                    }
+                    } catch(e) { addContact(decodedText, ""); }
                 },
-                (errorMessage) => {
-                    // Silent error to avoid console spam
-                }
+                (errorMessage) => {}
             ).catch(err => {
                 console.error("Scanner error:", err);
-                alert("Erro na câmera. Verifique se deu permissão e se a câmera não está em uso.");
+                alert("Erro na câmera.");
                 stopScanner();
             });
         }
@@ -1181,10 +1143,7 @@
             const placeholder = document.getElementById('scanner-placeholder');
             placeholder.style.display = 'flex';
             if(html5QrCode) {
-                html5QrCode.stop().then(() => {
-                    html5QrCode = null;
-                    document.getElementById('reader').innerHTML = '';
-                }).catch(() => {});
+                html5QrCode.stop().then(() => { html5QrCode = null; document.getElementById('reader').innerHTML = ''; }).catch(() => {});
             }
         }
 
@@ -1198,22 +1157,53 @@
         function addContact(id, name) {
             if(id === myId) return alert("Você não pode se adicionar.");
             contacts[id] = normalizeContact(id, { customName: name });
-            delete deletedContacts[id];
+            delete deletedConversations[id];
             saveContacts();
-            saveDeletedContacts();
-            updateContactsList();
+            saveDeletedConversations();
             showScreen('main-screen');
             openChat(id);
         }
 
-        function deleteContact(e, id) {
+        function deleteConversation(e, id) {
             e.stopPropagation();
-            if(confirm("Excluir contato?")) {
-                deletedContacts[id] = Date.now();
-                saveDeletedContacts();
-                if(activeChatId === id) showScreen('main-screen');
-                updateContactsList();
+            if(confirm("Apagar conversa da tela inicial? O contato continuará salvo na sua lista.")) {
+                deletedConversations[id] = Date.now();
+                saveDeletedConversations();
+                document.getElementById('contact-profile-modal').style.display = 'none';
+                showScreen('main-screen');
             }
+        }
+
+        function removeContactCompletely(e, id) {
+            e.stopPropagation();
+            if(confirm("Excluir contato permanentemente? Isso apagará a conversa e o contato da sua lista.")) {
+                delete contacts[id];
+                delete messagesStore[id];
+                delete unreadCounts[id];
+                saveContacts();
+                saveMessages();
+                saveUnread();
+                document.getElementById('contact-profile-modal').style.display = 'none';
+                showScreen('main-screen');
+            }
+        }
+
+        function showContactProfile(id) {
+            const c = contacts[id];
+            if(!c) return;
+            document.getElementById('contact-profile-pic-modal').src = c.pic || 'https://www.w3schools.com/howto/img_avatar.png';
+            document.getElementById('contact-edit-name-input').value = getContactDisplayName(id, c);
+            document.getElementById('contact-profile-id-modal').innerText = "ID: " + id;
+            document.getElementById('contact-profile-modal').style.display = 'flex';
+        }
+
+        function updateContactName() {
+            const newName = document.getElementById('contact-edit-name-input').value.trim();
+            if(!newName || !activeChatId) return;
+            contacts[activeChatId].customName = newName;
+            saveContacts();
+            document.getElementById('chat-username').innerText = newName;
+            alert("Nome atualizado!");
         }
 
         function generateQR(text) {
@@ -1224,6 +1214,12 @@
         }
 
         document.getElementById('message-input').onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+        document.getElementById('message-input').oninput = function() {
+            const sendBtn = document.getElementById('send-btn');
+            const voiceBtn = document.getElementById('voice-btn');
+            if(this.value.trim().length > 0) { sendBtn.style.display = 'block'; voiceBtn.style.display = 'none'; }
+            else { sendBtn.style.display = 'none'; voiceBtn.style.display = 'block'; }
+        };
 
         init();
     </script>
