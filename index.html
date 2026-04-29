@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>wnet.chat</title>
+    <title>wnet.chat - Ultimate</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -94,7 +94,7 @@
 
         /* QR Scanner */
         #reader { width: 100%; max-width: 400px; margin: auto; border-radius: 20px; overflow: hidden; border: none !important; }
-        #reader video { border-radius: 20px; }
+        #reader video { border-radius: 20px; width: 100% !important; height: auto !important; }
 
         /* Buttons & Inputs */
         .apple-btn { padding: 14px 20px; border-radius: 14px; border: none; background: var(--apple-blue); color: white; font-weight: 600; cursor: pointer; font-size: 16px; transition: opacity 0.2s; }
@@ -103,20 +103,62 @@
         .apple-input:focus { border-color: var(--apple-blue); }
 
         /* Chat Messages */
-        #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; background: var(--apple-bg); }
-        .message { max-width: 75%; padding: 10px 16px; border-radius: 20px; font-size: 16px; line-height: 1.4; position: relative; word-wrap: break-word; }
+        #messages { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            background-color: var(--apple-bg);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .message { max-width: 75%; padding: 10px 16px; border-radius: 20px; font-size: 16px; line-height: 1.4; position: relative; word-wrap: break-word; z-index: 2; }
         .message.me { align-self: flex-end; background: var(--apple-blue); color: white; border-bottom-right-radius: 4px; }
         .message.them { align-self: flex-start; background: var(--apple-bubble-them); color: var(--apple-text); border-bottom-left-radius: 4px; }
-        .message img, .message video { max-width: 100%; border-radius: 12px; margin-top: 5px; display: block; }
+        .message img, .message video { max-width: 100%; border-radius: 12px; margin-top: 5px; display: block; cursor: pointer; }
         
+        /* Media Overlay */
+        .media-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .media-overlay img, .media-overlay video {
+            max-width: 95%;
+            max-height: 80%;
+            border-radius: 10px;
+        }
+        .media-controls {
+            position: absolute;
+            top: 40px;
+            right: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .media-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
         /* Message Status */
         .msg-status { font-size: 10px; margin-left: 5px; vertical-align: middle; }
         .msg-status.sent { color: rgba(255,255,255,0.7); }
         .msg-status.delivered { color: rgba(255,255,255,0.9); }
-        .msg-status.read { color: #00E5FF; } /* Bright blue for read */
+        .msg-status.read { color: #00E5FF; }
 
         /* Input Area */
-        .input-area { padding: 10px 15px 30px 15px; background: var(--apple-bg); display: flex; align-items: flex-end; gap: 10px; border-top: 0.5px solid var(--apple-light-gray); }
+        .input-area { padding: 10px 15px 30px 15px; background: var(--apple-bg); display: flex; align-items: flex-end; gap: 10px; border-top: 0.5px solid var(--apple-light-gray); z-index: 10; }
         .input-container { flex: 1; background: var(--apple-card); border: 0.5px solid var(--apple-light-gray); border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; }
         #message-input { flex: 1; border: none; background: transparent; color: var(--apple-text); font-size: 16px; padding: 8px 0; outline: none; }
 
@@ -162,6 +204,20 @@
             background: var(--apple-card);
             transition: padding 0.3s ease;
         }
+
+        /* Wallpaper Settings */
+        .wallpaper-option {
+            width: 100%;
+            padding: 15px;
+            background: var(--apple-card);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border: 1px solid var(--apple-light-gray);
+        }
     </style>
 </head>
 <body>
@@ -198,12 +254,39 @@
             <input type="text" id="username-input" class="apple-input" style="max-width: 300px;" placeholder="Seu nome">
             <button class="apple-btn" onclick="saveProfile()" style="width: 100%; max-width: 300px; margin-top: 10px;">Salvar Alterações</button>
 
+            <button class="apple-btn" onclick="showScreen('wallpaper-screen')" style="width: 100%; max-width: 300px; margin-top: 15px; background: var(--apple-gray);"><i class="fas fa-image"></i> Papel de Parede</button>
+
             <div style="margin-top: 40px; text-align: center; width: 100%; background: var(--apple-card); padding: 20px; border-radius: 20px;">
                 <p style="color: var(--apple-gray); margin-bottom: 10px;">Seu Código de Conexão</p>
                 <div id="my-id-display" style="font-size: 28px; font-weight: 800; letter-spacing: 6px; color: var(--apple-blue); margin-bottom: 15px;">----</div>
                 <div id="qrcode-display" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
                 <button class="apple-btn" onclick="copyMyId()" style="background: var(--apple-light-gray); color: var(--apple-text); width: 100%;"><i class="fas fa-copy"></i> Copiar Código</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Wallpaper Screen -->
+    <div id="wallpaper-screen" class="screen">
+        <header>
+            <button onclick="showScreen('profile-screen')" style="background:none; border:none; color:var(--apple-blue); font-size: 17px; font-weight: 500;"><i class="fas fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; font-size: 17px; font-weight: 600;">Papel de Parede</h2>
+            <div style="width: 60px;"></div>
+        </header>
+        <div style="padding: 20px; flex: 1; overflow-y: auto;">
+            <p style="color: var(--apple-gray); margin-bottom: 15px; font-size: 13px; text-transform: uppercase;">Personalizar Fundo do Chat</p>
+            
+            <div class="wallpaper-option" onclick="document.getElementById('wallpaper-color-input').click()">
+                <span>Cor Sólida</span>
+                <input type="color" id="wallpaper-color-input" style="width: 40px; height: 40px; border: none; padding: 0; background: none;" onchange="updateWallpaperColor(this.value)">
+            </div>
+
+            <div class="wallpaper-option" onclick="document.getElementById('wallpaper-image-input').click()">
+                <span>Foto da Galeria</span>
+                <i class="fas fa-chevron-right" style="color: var(--apple-gray);"></i>
+            </div>
+            <input type="file" id="wallpaper-image-input" hidden accept="image/*" onchange="updateWallpaperImage()">
+
+            <button class="apple-btn" onclick="resetWallpaper()" style="width: 100%; margin-top: 20px; background: var(--apple-red);">Restaurar Padrão</button>
         </div>
     </div>
 
@@ -215,9 +298,9 @@
             <div style="width: 60px;"></div>
         </header>
         <div style="padding: 20px; flex: 1; overflow-y: auto;">
-            <div id="scanner-placeholder" style="width: 100%; aspect-ratio: 1; background: #000; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 20px;">
-                <div id="reader"></div>
-                <p id="start-scan-btn" onclick="startScanner()" style="cursor: pointer;"><i class="fas fa-camera" style="font-size: 40px;"></i><br>Abrir Câmera</p>
+            <div id="scanner-placeholder" style="width: 100%; aspect-ratio: 1; background: #000; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 20px; position: relative;">
+                <div id="reader" style="width: 100%;"></div>
+                <p id="start-scan-btn" onclick="startScanner()" style="cursor: pointer; position: absolute; text-align: center;"><i class="fas fa-camera" style="font-size: 40px;"></i><br>Abrir Câmera</p>
             </div>
             
             <p style="color: var(--apple-gray); margin-bottom: 5px; font-size: 13px; text-transform: uppercase;">Adicionar Manualmente</p>
@@ -265,6 +348,15 @@
         </div>
     </div>
 
+    <!-- Media Overlay -->
+    <div id="media-overlay" class="media-overlay">
+        <div class="media-controls">
+            <button class="media-btn" id="download-media-btn"><i class="fas fa-download"></i></button>
+            <button class="media-btn" onclick="closeMediaOverlay()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="media-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+    </div>
+
     <!-- Video Call Overlay -->
     <div id="video-call-overlay">
         <video id="remote-video" autoplay playsinline></video>
@@ -308,6 +400,7 @@
         let deletedContacts = JSON.parse(localStorage.getItem('apple_p2p_deleted_v4') || '{}');
         let messagesStore = JSON.parse(localStorage.getItem('apple_p2p_messages_v4') || '{}');
         let unreadCounts = JSON.parse(localStorage.getItem('apple_p2p_unread_v4') || '{}');
+        let wallpaper = JSON.parse(localStorage.getItem('apple_p2p_wallpaper_v4') || '{"type":"default","value":""}');
         
         let peer = null;
         let conn = null;
@@ -327,7 +420,6 @@
                 localStorage.setItem('apple_p2p_id_v4', myId);
             }
             
-            // Request Notification Permission
             if ("Notification" in window) {
                 if (Notification.permission !== "granted" && Notification.permission !== "denied") {
                     Notification.requestPermission();
@@ -360,15 +452,6 @@
                 currentCall = call;
             });
 
-            peer.on('error', err => {
-                console.error("Peer error:", err);
-                if(err.type === 'unavailable-id') {
-                    // If ID is taken, it might be us in another tab or a collision.
-                    // For this app, we stick to the fixed ID.
-                }
-            });
-
-            // UI Setup
             document.getElementById('username-input').value = myProfile.name;
             document.getElementById('my-profile-pic-display').src = myProfile.pic || 'https://www.w3schools.com/howto/img_avatar.png';
             
@@ -379,7 +462,83 @@
                 document.getElementById('voice-btn').style.display = hasText ? 'none' : 'block';
             });
 
+            applyWallpaper();
             updateContactsList();
+        }
+
+        // --- WALLPAPER LOGIC ---
+        function updateWallpaperColor(color) {
+            wallpaper = { type: 'color', value: color };
+            localStorage.setItem('apple_p2p_wallpaper_v4', JSON.stringify(wallpaper));
+            applyWallpaper();
+        }
+
+        function updateWallpaperImage() {
+            const file = document.getElementById('wallpaper-image-input').files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                wallpaper = { type: 'image', value: e.target.result };
+                localStorage.setItem('apple_p2p_wallpaper_v4', JSON.stringify(wallpaper));
+                applyWallpaper();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetWallpaper() {
+            wallpaper = { type: 'default', value: '' };
+            localStorage.setItem('apple_p2p_wallpaper_v4', JSON.stringify(wallpaper));
+            applyWallpaper();
+        }
+
+        function applyWallpaper() {
+            const msgContainer = document.getElementById('messages');
+            if(wallpaper.type === 'color') {
+                msgContainer.style.backgroundColor = wallpaper.value;
+                msgContainer.style.backgroundImage = 'none';
+            } else if(wallpaper.type === 'image') {
+                msgContainer.style.backgroundImage = `url(${wallpaper.value})`;
+                msgContainer.style.backgroundColor = 'transparent';
+            } else {
+                msgContainer.style.backgroundColor = '';
+                msgContainer.style.backgroundImage = 'none';
+            }
+        }
+
+        // --- MEDIA OVERLAY LOGIC ---
+        function openMediaOverlay(src, type) {
+            const overlay = document.getElementById('media-overlay');
+            const content = document.getElementById('media-content');
+            const downloadBtn = document.getElementById('download-media-btn');
+            
+            content.innerHTML = '';
+            if(type === 'image') {
+                const img = document.createElement('img');
+                img.src = src;
+                content.appendChild(img);
+            } else if(type === 'video') {
+                const video = document.createElement('video');
+                video.src = src;
+                video.controls = true;
+                video.autoplay = true;
+                content.appendChild(video);
+            }
+            
+            downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = src;
+                a.download = 'wnet_media_' + Date.now();
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+            
+            overlay.style.display = 'flex';
+        }
+
+        function closeMediaOverlay() {
+            document.getElementById('media-overlay').style.display = 'none';
+            document.getElementById('media-content').innerHTML = '';
         }
 
         // --- HELPERS ---
@@ -394,7 +553,6 @@
                 unreadCounts[activeChatId] = 0;
                 saveUnread();
                 updateContactsList();
-                // Mark messages as read when opening chat
                 sendReadReceipt(activeChatId);
             }
         }
@@ -487,7 +645,7 @@
         function startStatusMonitoring() {
             if(statusCheckInterval) clearInterval(statusCheckInterval);
             checkAllStatuses();
-            statusCheckInterval = setInterval(checkAllStatuses, 10000); // Check every 10s
+            statusCheckInterval = setInterval(checkAllStatuses, 10000);
         }
 
         function checkAllStatuses() {
@@ -498,7 +656,6 @@
 
         function probeStatus(id) {
             if (id === myId) return;
-            // If we have an active connection, it's online
             if (conn && conn.open && conn.peer === "apple-p2p-v4-" + id) {
                 updateStatusUI(id, true);
                 return;
@@ -598,7 +755,6 @@
                         updateContactsList();
                     }
                     if(activeChatId !== id) {
-                        // Background connection
                         setupConnectionHandlers(c);
                     } else {
                         if(conn && conn !== c) conn.close();
@@ -621,7 +777,6 @@
             c.on('open', () => {
                 updateStatusUI(id, true);
                 c.send({type: 'profile_sync', profile: myProfile});
-                // Check for pending messages to mark as delivered
                 syncMessageStatus(id);
             });
             c.on('data', data => processIncomingData(c, data));
@@ -652,8 +807,8 @@
                 } else {
                     const blob = new Blob([data.payload], {type: data.mime});
                     const url = URL.createObjectURL(blob);
-                    if(data.mime.startsWith('image/')) content = `<img src="${url}">`;
-                    else if(data.mime.startsWith('video/')) content = `<video controls src="${url}"></video>`;
+                    if(data.mime.startsWith('image/')) content = `<img src="${url}" onclick="openMediaOverlay('${url}', 'image')">`;
+                    else if(data.mime.startsWith('video/')) content = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
                     else if(data.mime.startsWith('audio/')) content = `<audio controls src="${url}"></audio>`;
                     else content = `<a href="${url}" download="${escapeHtml(data.name)}"><i class="fas fa-file"></i> ${escapeHtml(data.name)}</a>`;
                 }
@@ -669,7 +824,6 @@
                     updateContactsList();
                     showNotification(id, data.type === 'text' ? data.content : "Arquivo recebido");
                 }
-                // Send delivery receipt
                 c.send({type: 'receipt', msgId: msgId, status: 'delivered'});
             } else if(data.type === 'receipt') {
                 updateMessageStatus(id, data.msgId, data.status);
@@ -700,7 +854,6 @@
             const msgs = messagesStore[contactId] || [];
             const msg = msgs.find(m => m.id === msgId);
             if(msg) {
-                // Only upgrade status (sent -> delivered -> read)
                 const statusOrder = { 'sent': 1, 'delivered': 2, 'read': 3 };
                 if(statusOrder[status] > (statusOrder[msg.status] || 0)) {
                     msg.status = status;
@@ -713,16 +866,12 @@
         function syncMessageStatus(id) {
             const msgs = messagesStore[id] || [];
             msgs.forEach(m => {
-                if(m.type === 'me' && m.status === 'sent') {
-                    // We don't know if it was delivered while we were offline, 
-                    // but the other side will send a receipt now that we are connected.
-                }
+                if(m.type === 'me' && m.status === 'sent') {}
             });
         }
 
         function rememberMessage(contactId, content, type, id, status = 'sent') {
             if(!messagesStore[contactId]) messagesStore[contactId] = [];
-            // Avoid duplicates
             if(!messagesStore[contactId].find(m => m.id === id)) {
                 messagesStore[contactId].push({ id, content, type, status, time: Date.now() });
                 saveMessages();
@@ -744,7 +893,7 @@
             
             let statusHtml = '';
             if(type === 'me') {
-                let icon = '<i class="fas fa-check"></i>'; // Sent
+                let icon = '<i class="fas fa-check"></i>';
                 let statusClass = 'sent';
                 if(status === 'delivered') { icon = '<i class="fas fa-check-double"></i>'; statusClass = 'delivered'; }
                 if(status === 'read') { icon = '<i class="fas fa-check-double"></i>'; statusClass = 'read'; }
@@ -774,8 +923,6 @@
             if(conn && conn.open && conn.peer === "apple-p2p-v4-" + activeChatId) {
                 conn.send({type: 'text', content: text, msgId: msgId});
             } else {
-                // Offline message - will stay as 'sent' (single check) until delivered
-                // We try to connect
                 conn = peer.connect("apple-p2p-v4-" + activeChatId, { reliable: true });
                 setupConnectionHandlers(conn);
                 conn.on('open', () => {
@@ -793,8 +940,8 @@
                 const payload = reader.result;
                 let html = '';
                 const url = URL.createObjectURL(file);
-                if(file.type.startsWith('image/')) html = `<img src="${url}">`;
-                else if(file.type.startsWith('video/')) html = `<video controls src="${url}"></video>`;
+                if(file.type.startsWith('image/')) html = `<img src="${url}" onclick="openMediaOverlay('${url}', 'image')">`;
+                else if(file.type.startsWith('video/')) html = `<video src="${url}" onclick="openMediaOverlay('${url}', 'video')"></video>`;
                 else if(file.type.startsWith('audio/')) html = `<audio controls src="${url}"></audio>`;
                 else html = `<i class="fas fa-file"></i> ${escapeHtml(file.name)}`;
 
@@ -835,7 +982,6 @@
 
         function acceptCall() {
             document.getElementById('incoming-call-modal').style.display = 'none';
-            const videoRequested = currentCall.options && currentCall.options._payload && currentCall.options._payload.video;
             const constraints = {
                 video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
                 audio: { echoCancellation: true, noiseSuppression: true }
@@ -847,7 +993,6 @@
                 currentCall.answer(stream);
                 setupCallHandlers(currentCall);
             }).catch(err => {
-                // Try audio only if video fails
                 navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
                     localStream = stream;
                     document.getElementById('video-call-overlay').style.display = 'flex';
@@ -955,8 +1100,23 @@
         function startScanner() {
             document.getElementById('scanner-placeholder').style.display = 'none';
             document.getElementById('start-scan-btn').style.display = 'none';
+            
+            // Fix: Clear previous instance if exists
+            if(html5QrCode) {
+                html5QrCode.stop().catch(() => {}).finally(() => {
+                    html5QrCode = null;
+                    initScanner();
+                });
+            } else {
+                initScanner();
+            }
+        }
+
+        function initScanner() {
             html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, 
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            html5QrCode.start({ facingMode: "environment" }, config, 
                 (decodedText) => {
                     stopScanner();
                     try {
@@ -968,7 +1128,8 @@
                 },
                 () => {}
             ).catch(err => {
-                alert("Erro na câmera: " + err);
+                console.error("Scanner error:", err);
+                alert("Erro na câmera. Verifique as permissões.");
                 stopScanner();
             });
         }
