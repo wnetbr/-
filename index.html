@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WNET.BLOG - Plataforma de Estudos Premium</title>
+    <meta name="description" content="WNET.BLOG - Plataforma premium de estudos para músicos com aulas interativas, progresso personalizado e certificados.">
+    <meta name="theme-color" content="#0071e3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>wnet.blog</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         /* ============================================================================
            WNET.BLOG - PLATAFORMA DE ESTUDOS ULTRA PREMIUM
-           Design Apple sofisticado com animações em tudo, responsivo 100%
+           Design Apple sofisticado com animações, responsivo 100%, otimizado
            ============================================================================ */
 
         * {
@@ -103,6 +110,11 @@
             color: var(--primary-dark);
         }
 
+        a:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
         .gradient-text {
             background: linear-gradient(135deg, #0071e3 0%, #ff6b6b 50%, #4ecdc4 100%);
             -webkit-background-clip: text;
@@ -111,6 +123,7 @@
             animation: gradientShift 3s ease infinite;
         }
 
+        /* Animações otimizadas */
         @keyframes gradientShift {
             0%, 100% { filter: hue-rotate(0deg); }
             50% { filter: hue-rotate(10deg); }
@@ -191,7 +204,7 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Buttons */
+        /* Botões */
         .btn {
             padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 28px);
             border: none;
@@ -209,6 +222,11 @@
             position: relative;
             overflow: hidden;
             animation: fadeInUp 0.6s ease-out;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
 
         .btn::before {
@@ -235,7 +253,6 @@
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 24px rgba(0, 113, 227, 0.5);
-            animation: glow 1s ease-in-out;
         }
 
         .btn-primary:active {
@@ -313,103 +330,117 @@
             width: clamp(36px, 8vw, 40px);
             height: clamp(36px, 8vw, 40px);
             background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
-            border-radius: 12px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-            animation: bounce 2s ease-in-out infinite;
+            flex-shrink: 0;
         }
 
         .logo-circle svg {
-            width: clamp(18px, 5vw, 22px);
-            height: clamp(18px, 5vw, 22px);
-            animation: spin 20s linear infinite;
+            width: 60%;
+            height: 60%;
+            stroke: currentColor;
         }
 
         .navbar-actions {
             display: flex;
             align-items: center;
-            gap: clamp(8px, 2vw, 16px);
-            animation: slideInRight 0.6s ease-out;
+            gap: clamp(8px, 2vw, 12px);
         }
 
         .btn-theme {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: clamp(36px, 8vw, 44px);
-            height: clamp(36px, 8vw, 44px);
+            width: clamp(36px, 8vw, 40px);
+            height: clamp(36px, 8vw, 40px);
             border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all var(--transition-fast);
             color: var(--text-primary);
-            animation: fadeInUp 0.6s ease-out;
         }
 
         .btn-theme:hover {
-            background: var(--bg-secondary);
-            transform: rotate(20deg) scale(1.1);
-            animation: spin 0.6s ease-out;
+            background: rgba(0, 0, 0, 0.1);
+            transform: rotate(20deg);
         }
 
         .btn-theme svg {
-            width: clamp(18px, 4vw, 22px);
-            height: clamp(18px, 4vw, 22px);
+            width: 50%;
+            height: 50%;
         }
 
         .icon-moon { display: none; }
         [data-theme="dark"] .icon-sun { display: none; }
         [data-theme="dark"] .icon-moon { display: block; }
 
+        .nav-center-actions {
+            display: flex;
+            gap: clamp(8px, 2vw, 12px);
+        }
+
+        .nav-action-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-radius: 8px;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+        }
+
+        .nav-action-btn:hover {
+            color: var(--primary);
+        }
+
+        .nav-action-btn.active {
+            color: var(--primary);
+            background: rgba(0, 113, 227, 0.1);
+        }
+
         /* Screens */
         .screen {
             display: none;
-            min-height: 100vh;
-            animation: slideInUp 0.6s ease-out;
+            min-height: calc(100vh - 70px);
+            animation: fadeInUp 0.6s ease-out;
         }
 
         .screen.active {
             display: flex;
         }
 
-        /* Auth Screen */
         .auth-screen {
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: clamp(20px, 5vw, 40px);
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            animation: fadeInUp 0.8s ease-out;
+            background: linear-gradient(135deg, rgba(0, 113, 227, 0.05) 0%, rgba(255, 107, 107, 0.05) 100%);
         }
 
         .auth-card {
             background: var(--bg-primary);
-            border-radius: 20px;
+            border-radius: 24px;
             padding: clamp(24px, 5vw, 40px);
-            box-shadow: var(--shadow-lg);
-            max-width: 420px;
             width: 100%;
-            border: 1px solid var(--border-color);
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
             animation: scaleIn 0.6s ease-out;
         }
 
         .auth-header {
             text-align: center;
-            margin-bottom: clamp(20px, 4vw, 32px);
-            animation: fadeInDown 0.6s ease-out;
+            margin-bottom: clamp(24px, 5vw, 32px);
+            animation: slideInDown 0.6s ease-out;
         }
 
         .auth-header h1 {
-            font-size: clamp(1.75rem, 5vw, 2rem);
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
             margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .auth-header p {
@@ -419,20 +450,20 @@
 
         .form-group {
             margin-bottom: clamp(16px, 3vw, 20px);
-            animation: fadeInUp 0.6s ease-out;
+            animation: slideInUp 0.6s ease-out;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
             color: var(--text-primary);
-            animation: fadeInLeft 0.6s ease-out;
         }
 
         .form-group input {
             width: 100%;
-            padding: clamp(10px, 2vw, 12px) clamp(12px, 3vw, 16px);
+            padding: clamp(10px, 2vw, 12px) clamp(12px, 2vw, 16px);
             border: 1.5px solid var(--border-color);
             border-radius: 12px;
             font-size: clamp(0.9rem, 2vw, 1rem);
@@ -440,37 +471,32 @@
             transition: all var(--transition-fast);
             background: var(--bg-primary);
             color: var(--text-primary);
-            animation: fadeInUp 0.6s ease-out;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
-            transform: scale(1.02);
-        }
-
-        .form-group input::placeholder {
-            color: var(--text-tertiary);
         }
 
         .auth-tabs {
             display: flex;
             gap: clamp(8px, 2vw, 12px);
-            margin-bottom: clamp(16px, 3vw, 24px);
-            animation: slideInUp 0.6s ease-out;
+            margin-bottom: clamp(20px, 4vw, 28px);
+            animation: slideInDown 0.6s ease-out;
         }
 
         .auth-tab {
             flex: 1;
             padding: clamp(10px, 2vw, 12px);
-            border: none;
+            border: 1.5px solid var(--border-color);
             background: var(--bg-secondary);
             border-radius: 12px;
-            cursor: pointer;
             font-weight: 600;
+            cursor: pointer;
             transition: all var(--transition-fast);
-            color: var(--text-secondary);
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            color: var(--text-primary);
             animation: fadeInUp 0.6s ease-out;
         }
 
@@ -483,7 +509,7 @@
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-            animation: pulse 1s ease-in-out;
+            border-color: transparent;
         }
 
         .auth-form {
@@ -507,6 +533,31 @@
         .dashboard-screen {
             flex-direction: column;
             padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px);
+        }
+
+        /* Banner Home */
+        .home-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-4) 100%);
+            border-radius: 24px;
+            padding: clamp(30px, 8vw, 60px) clamp(20px, 5vw, 40px);
+            color: white;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .home-banner h1 { 
+            font-size: clamp(1.8rem, 6vw, 3rem); 
+            margin-bottom: 10px; 
+            color: white; 
+        }
+
+        .home-banner p { 
+            color: rgba(255, 255, 255, 0.9); 
+            font-size: 1.1rem; 
+            animation: none; 
         }
 
         .dashboard-header {
@@ -548,7 +599,7 @@
             font-weight: 700;
             font-size: clamp(1rem, 3vw, 1.25rem);
             box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-            animation: bounce 2s ease-in-out infinite;
+            flex-shrink: 0;
         }
 
         .user-info {
@@ -602,7 +653,6 @@
         .stat-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-md);
-            animation: glow 1s ease-in-out;
         }
 
         .stat-icon {
@@ -679,7 +729,6 @@
             transform: translateY(-12px);
             box-shadow: var(--shadow-lg);
             border-color: var(--primary);
-            animation: glow 1s ease-in-out;
         }
 
         .lesson-card.locked {
@@ -690,7 +739,6 @@
         .lesson-card.locked:hover {
             transform: none;
             box-shadow: none;
-            animation: none;
         }
 
         .lesson-image {
@@ -704,14 +752,6 @@
             position: relative;
             overflow: hidden;
             animation: shimmer 3s ease-in-out infinite;
-        }
-
-        .lesson-image::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), transparent);
-            animation: pulse 2s ease-in-out infinite;
         }
 
         .lesson-image img {
@@ -784,72 +824,68 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+            color: var(--text-secondary);
         }
 
-        .progress-bar-small {
-            width: 60px;
+        .lesson-progress-bar {
+            width: 40px;
             height: 4px;
-            background: var(--bg-tertiary);
-            border-radius: 50px;
+            background: var(--border-color);
+            border-radius: 2px;
             overflow: hidden;
         }
 
-        .progress-fill-small {
+        .lesson-progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent-2));
-            border-radius: 50px;
-            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            animation: shimmer 2s ease-in-out infinite;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+            animation: slideInLeft 0.8s ease-out;
         }
 
-        .progress-text-small {
-            font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+        .lesson-duration {
+            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
             color: var(--text-secondary);
-            font-weight: 600;
+            animation: fadeInRight 0.6s ease-out 0.3s both;
         }
 
         /* Lesson View */
         .lesson-view {
-            background: var(--bg-primary);
-            border-radius: 16px;
-            padding: clamp(20px, 4vw, 40px);
-            border: 1px solid var(--border-color);
-            max-width: 900px;
-            margin: 0 auto;
-            animation: scaleIn 0.6s ease-out;
+            padding: clamp(20px, 4vw, 40px) 0;
         }
 
         .lesson-view-header {
             display: flex;
             align-items: center;
             gap: clamp(12px, 3vw, 16px);
-            margin-bottom: clamp(20px, 4vw, 24px);
+            margin-bottom: clamp(24px, 5vw, 40px);
             animation: slideInDown 0.6s ease-out;
         }
 
         .lesson-view-back {
-            background: var(--bg-secondary);
-            border: none;
-            width: clamp(36px, 8vw, 44px);
-            height: clamp(36px, 8vw, 44px);
-            border-radius: 12px;
+            width: clamp(36px, 8vw, 40px);
+            height: clamp(36px, 8vw, 40px);
+            border-radius: 50%;
+            border: 1.5px solid var(--border-color);
+            background: var(--bg-primary);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            font-size: 1.25rem;
             transition: all var(--transition-fast);
             color: var(--text-primary);
-            font-size: clamp(1.25rem, 3vw, 1.5rem);
-            animation: slideInLeft 0.6s ease-out;
+            flex-shrink: 0;
         }
 
         .lesson-view-back:hover {
-            background: var(--border-color);
+            background: var(--bg-secondary);
+            border-color: var(--primary);
             transform: translateX(-4px);
         }
 
         .lesson-view-title {
-            animation: slideInLeft 0.6s ease-out 0.1s both;
+            flex: 1;
         }
 
         .lesson-view-title h2 {
@@ -859,59 +895,56 @@
         .lesson-view-meta {
             display: flex;
             gap: clamp(12px, 3vw, 16px);
-            color: var(--text-secondary);
             font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-            flex-wrap: wrap;
+            color: var(--text-secondary);
+            animation: fadeInUp 0.6s ease-out 0.1s both;
         }
 
         .lesson-content {
-            margin: clamp(20px, 4vw, 32px) 0;
-            padding: clamp(16px, 3vw, 24px);
-            background: var(--bg-secondary);
+            margin-bottom: clamp(24px, 5vw, 40px);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .lesson-images-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: clamp(12px, 3vw, 16px);
+        }
+
+        .lesson-img-item {
             border-radius: 12px;
-            border: 1px solid var(--border-color);
-            animation: slideInUp 0.6s ease-out;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            aspect-ratio: 16 / 9;
+            position: relative;
         }
 
-        .lesson-content h3 {
-            margin-bottom: 16px;
-            animation: slideInLeft 0.6s ease-out;
-        }
-
-        .lesson-content p {
-            margin-bottom: 16px;
-            line-height: 1.8;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .lesson-content ul, .lesson-content ol {
-            margin-left: clamp(16px, 3vw, 24px);
-            margin-bottom: 16px;
-        }
-
-        .lesson-content li {
-            margin-bottom: 8px;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .lesson-video {
+        .lesson-img-item img {
             width: 100%;
-            height: clamp(250px, 50vw, 400px);
-            background: var(--bg-tertiary);
-            border-radius: 12px;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-base);
+        }
+
+        .lesson-img-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: clamp(16px, 3vw, 24px) 0;
-            color: var(--text-secondary);
-            font-size: clamp(1rem, 2vw, 1.1rem);
-            animation: slideInUp 0.6s ease-out;
+            font-size: 2rem;
+            color: white;
         }
 
         .lesson-actions {
             display: flex;
             gap: clamp(12px, 3vw, 16px);
-            margin-top: clamp(20px, 4vw, 32px);
             flex-wrap: wrap;
             animation: slideInUp 0.6s ease-out;
         }
@@ -921,6 +954,7 @@
             min-width: 120px;
         }
 
+        /* Completion Modal */
         .completion-modal {
             position: fixed;
             inset: 0;
@@ -929,26 +963,28 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            padding: 20px;
             backdrop-filter: blur(5px);
-            animation: fadeInUp 0.6s ease-out;
         }
 
         .completion-modal.active {
             display: flex;
+            animation: fadeInUp 0.3s ease-out;
         }
 
         .completion-content {
             background: var(--bg-primary);
-            border-radius: 20px;
+            border-radius: 24px;
             padding: clamp(24px, 5vw, 40px);
             max-width: 500px;
-            width: 90%;
+            width: 100%;
             text-align: center;
-            animation: scaleIn 0.6s ease-out;
+            box-shadow: var(--shadow-xl);
+            animation: scaleIn 0.3s ease-out;
         }
 
         .completion-icon {
-            font-size: clamp(3rem, 10vw, 4rem);
+            font-size: clamp(3rem, 8vw, 4rem);
             margin-bottom: 16px;
             animation: bounce 0.6s ease-out;
         }
@@ -973,6 +1009,101 @@
         .completion-actions button {
             flex: 1;
             min-width: 100px;
+        }
+
+        /* Lightbox com Zoom */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        .lightbox-overlay.active { 
+            display: flex;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 95vw;
+            max-height: 85vh;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 100%;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: grab;
+        }
+
+        .lightbox-img:active {
+            cursor: grabbing;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10001;
+            background: rgba(0, 0, 0, 0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            border: none;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .zoom-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            z-index: 10001;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .zoom-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all var(--transition-fast);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         /* Footer */
@@ -1002,12 +1133,12 @@
             font-size: clamp(0.85rem, 1.5vw, 0.95rem);
         }
 
-        .notification.success {
-            background: linear-gradient(135deg, #34c759 0%, #00d084 100%);
+        .notification.success { 
+            background: linear-gradient(135deg, #34c759 0%, #00d084 100%); 
         }
 
-        .notification.error {
-            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);
+        .notification.error { 
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%); 
         }
 
         /* Offline Indicator */
@@ -1027,440 +1158,74 @@
             animation: slideInDown 0.3s ease-out;
         }
 
-        .offline-indicator.active {
-            display: block;
+        .offline-indicator.active { 
+            display: block; 
         }
 
-        /* Loading */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-
-        /* ============================================================================
-           GALERIA DE IMAGENS DA AULA — ESTILOS
-           ============================================================================ */
-
-        /* Cabeçalho da galeria dentro da aula */
-        .lesson-gallery-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--border-color);
-            animation: slideInDown 0.5s ease-out;
-        }
-
-        .lesson-gallery-header .gallery-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-4) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-            animation: bounce 2s ease-in-out infinite;
-        }
-
-        .lesson-gallery-header h3 {
-            margin: 0;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            color: var(--text-primary);
-        }
-
-        .lesson-gallery-header p {
-            margin: 2px 0 0 0;
-            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-            color: var(--text-tertiary);
-            animation: none;
-        }
-
-        /* Grid de imagens da aula */
-        .lesson-images-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(clamp(140px, 28vw, 220px), 1fr));
-            gap: clamp(10px, 2vw, 16px);
-        }
-
-        /* Cada item da galeria */
-        .lesson-img-item {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--bg-tertiary);
-            border: 2px solid var(--border-color);
-            transition: all var(--transition-base);
-            cursor: pointer;
-            animation: scaleIn 0.5s ease-out;
-            aspect-ratio: 4/3;
-        }
-
-        .lesson-img-item:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
-        }
-
-        /* Imagem carregada */
-        .lesson-img-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform var(--transition-slow);
-        }
-
-        .lesson-img-item:hover img {
-            transform: scale(1.08);
-        }
-
-        /* Overlay com número e ícone de zoom */
-        .lesson-img-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
-            opacity: 0;
-            transition: opacity var(--transition-base);
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            padding: 10px 12px;
-        }
-
-        .lesson-img-item:hover .lesson-img-overlay {
-            opacity: 1;
-        }
-
-        .lesson-img-num {
-            color: rgba(255,255,255,0.9);
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: rgba(0,0,0,0.4);
-            padding: 3px 8px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
-        }
-
-        .lesson-img-zoom {
-            color: white;
-            font-size: 1.1rem;
-            background: rgba(0,113,227,0.7);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-        }
-
-        /* Placeholder quando a URL está vazia */
-        .lesson-img-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: var(--text-tertiary);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-align: center;
-            padding: 12px;
-            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            border: 2px dashed var(--border-color);
-            border-radius: 10px;
-            transition: all var(--transition-base);
-        }
-
-        .lesson-img-placeholder:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .lesson-img-placeholder .ph-icon {
-            font-size: 2rem;
-            opacity: 0.5;
-        }
-
-        .lesson-img-placeholder .ph-label {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            line-height: 1.3;
-        }
-
-        /* Contador de imagens */
-        .gallery-count-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, rgba(0,113,227,0.1), rgba(167,139,250,0.1));
-            border: 1px solid rgba(0,113,227,0.2);
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            animation: fadeInLeft 0.5s ease-out;
-        }
-
-        /* ============================================================================
-           LIGHTBOX — VISUALIZAÇÃO EM TELA CHEIA
-           ============================================================================ */
-
-        .lightbox-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.92);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(12px);
-            animation: fadeInUp 0.3s ease-out;
-            padding: clamp(16px, 4vw, 40px);
-        }
-
-        .lightbox-overlay.active {
-            display: flex;
-        }
-
-        .lightbox-inner {
-            position: relative;
-            max-width: 95vw;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            animation: scaleIn 0.3s ease-out;
-        }
-
-        .lightbox-img {
-            max-width: 90vw;
-            max-height: 78vh;
-            border-radius: 12px;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-            object-fit: contain;
-            animation: scaleIn 0.3s ease-out;
-        }
-
-        .lightbox-caption {
-            color: rgba(255,255,255,0.75);
-            font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .lightbox-close {
-            position: fixed;
-            top: clamp(12px, 3vw, 20px);
-            right: clamp(12px, 3vw, 20px);
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            font-size: 1.4rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition-fast);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-        }
-
-        .lightbox-close:hover {
-            background: rgba(255,255,255,0.3);
-            transform: rotate(90deg) scale(1.1);
-        }
-
-        .lightbox-nav {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: white;
-            width: clamp(40px, 8vw, 52px);
-            height: clamp(40px, 8vw, 52px);
-            border-radius: 50%;
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition-fast);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-        }
-
-        .lightbox-nav:hover {
-            background: rgba(0,113,227,0.6);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .lightbox-prev { left: clamp(8px, 2vw, 20px); }
-        .lightbox-next { right: clamp(8px, 2vw, 20px); }
-
-        .lightbox-counter {
-            position: fixed;
-            bottom: clamp(12px, 3vw, 24px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.5);
-            color: rgba(255,255,255,0.8);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 1024px) {
-            .lessons-grid {
-                grid-template-columns: repeat(auto-fill, minmax(clamp(180px, 35vw, 240px), 1fr));
-            }
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
-            h1 { font-size: 1.75rem; }
-            h2 { font-size: 1.5rem; }
+            .lesson-images-gallery { 
+                grid-template-columns: 1fr; 
+            }
             
-            .auth-card {
-                padding: 20px;
-                border-radius: 16px;
+            .nav-center-actions { 
+                display: none !important; 
             }
-
-            .lessons-grid {
-                grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 45vw, 200px), 1fr));
-                gap: 12px;
-            }
-
-            .lesson-view {
-                padding: 16px;
-                border-radius: 12px;
-            }
-
+            
             .dashboard-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
-
-            .progress-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .lesson-actions {
-                flex-direction: column;
-            }
-
-            .lesson-actions button {
+            
+            .dashboard-user {
                 width: 100%;
-            }
-
-            .completion-actions {
-                flex-direction: column;
-            }
-
-            .completion-actions button {
-                width: 100%;
-            }
-
-            .lesson-images-grid {
-                grid-template-columns: repeat(auto-fill, minmax(clamp(120px, 40vw, 180px), 1fr));
-                gap: 10px;
             }
         }
 
-        @media (max-width: 480px) {
-            h1 { font-size: 1.5rem; }
-            h2 { font-size: 1.25rem; }
-
-            .navbar-container {
-                height: 50px;
-            }
-
-            .auth-card {
-                padding: 16px;
-                border-radius: 12px;
-            }
-
-            .lessons-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .progress-stats {
-                grid-template-columns: 1fr;
-            }
-
-            .dashboard-user {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .lesson-view {
-                padding: 12px;
-            }
-
-            .lesson-content {
-                padding: 12px;
-            }
-
-            .completion-content {
-                padding: 20px;
-            }
-
-            .lesson-images-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
+        /* Prefers reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
 <body>
     <!-- Offline Indicator -->
-    <div class="offline-indicator" id="offlineIndicator">
+    <div class="offline-indicator" id="offlineIndicator" role="status" aria-live="polite">
         📡 Você está offline - Seus dados estão sendo salvos localmente
     </div>
 
     <!-- Navbar -->
-    <nav class="navbar" id="navbar">
+    <nav class="navbar" id="navbar" role="navigation" aria-label="Navegação principal">
         <div class="navbar-container">
             <div class="navbar-logo">
-                <div class="logo-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <div class="logo-circle" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                         <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
                     </svg>
                 </div>
                 <span>WNET.BLOG</span>
             </div>
+
+            <!-- Botões de alternância no cabeçalho -->
+            <div class="nav-center-actions" id="navCenterActions" role="tablist">
+                <button class="nav-action-btn active" data-target="aulas" role="tab" aria-selected="true" aria-controls="aulasContent">Aulas</button>
+                <button class="nav-action-btn" data-target="progresso" role="tab" aria-selected="false" aria-controls="progressoContent">Progresso</button>
+            </div>
             
             <div class="navbar-actions">
-                <button class="btn-theme" id="themeToggle" title="Alternar tema">
-                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="btn-theme" id="themeToggle" title="Alternar tema" aria-label="Alternar entre tema claro e escuro">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                     </svg>
-                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                     </svg>
                 </button>
-                <button class="btn btn-secondary" id="logoutBtn" style="display: none;">Sair</button>
+                <button class="btn btn-secondary" id="logoutBtn" style="display: none;" aria-label="Sair da conta">Sair</button>
             </div>
         </div>
     </nav>
@@ -1470,40 +1235,40 @@
         <div class="auth-card">
             <div class="auth-header">
                 <h1>WNET.BLOG</h1>
-                <p>Plataforma de Estudos para Musicos</p>
+                <p>Plataforma de Estudos para Músicos</p>
             </div>
 
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login">Entrar</button>
-                <button class="auth-tab" data-tab="register">Criar Conta</button>
+            <div class="auth-tabs" role="tablist">
+                <button class="auth-tab active" data-tab="login" role="tab" aria-selected="true" aria-controls="loginForm">Entrar</button>
+                <button class="auth-tab" data-tab="register" role="tab" aria-selected="false" aria-controls="registerForm">Criar Conta</button>
             </div>
 
             <!-- Login Form -->
-            <form class="auth-form active" id="loginForm" data-form="login">
+            <form class="auth-form active" id="loginForm" data-form="login" aria-label="Formulário de login">
                 <div class="form-group">
                     <label for="loginUsername">Usuário</label>
-                    <input type="text" id="loginUsername" placeholder="Digite seu usuário" required>
+                    <input type="text" id="loginUsername" placeholder="Digite seu usuário" required aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Senha</label>
-                    <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+                    <input type="password" id="loginPassword" placeholder="Digite sua senha" required aria-required="true">
                 </div>
                 <button type="submit" class="btn btn-primary btn-large btn-block">Entrar</button>
             </form>
 
             <!-- Register Form -->
-            <form class="auth-form" id="registerForm" data-form="register">
+            <form class="auth-form" id="registerForm" data-form="register" aria-label="Formulário de registro">
                 <div class="form-group">
                     <label for="registerUsername">Usuário</label>
-                    <input type="text" id="registerUsername" placeholder="Escolha um usuário" required>
+                    <input type="text" id="registerUsername" placeholder="Escolha um usuário" required aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="registerPassword">Senha</label>
-                    <input type="password" id="registerPassword" placeholder="Crie uma senha forte" required>
+                    <input type="password" id="registerPassword" placeholder="Crie uma senha forte" required aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="registerPasswordConfirm">Confirmar Senha</label>
-                    <input type="password" id="registerPasswordConfirm" placeholder="Confirme sua senha" required>
+                    <input type="password" id="registerPasswordConfirm" placeholder="Confirme sua senha" required aria-required="true">
                 </div>
                 <button type="submit" class="btn btn-primary btn-large btn-block">Criar Conta</button>
             </form>
@@ -1517,13 +1282,20 @@
     <!-- Dashboard Screen -->
     <div class="screen" id="dashboardScreen">
         <div class="container">
+            
+            <!-- Banner Home -->
+            <div class="home-banner">
+                <h1 id="welcomeTitle">Olá, Aluno! 👋</h1>
+                <p>Pronto para sua próxima aula de música?</p>
+            </div>
+
             <div class="dashboard-header">
                 <div class="dashboard-title">
-                    <h1>Bem-vindo! 👋</h1>
-                    <p id="welcomeMessage">Continue seu aprendizado</p>
+                    <h1 id="sectionTitle">Suas Aulas</h1>
+                    <p id="sectionSubtitle">Clique em uma aula para começar a estudar</p>
                 </div>
                 <div class="dashboard-user">
-                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-avatar" id="userAvatar" aria-label="Avatar do usuário">A</div>
                     <div class="user-info">
                         <div class="user-name" id="userName">Aluno</div>
                         <div class="user-status" id="userStatus">Estudando agora</div>
@@ -1531,38 +1303,38 @@
                 </div>
             </div>
 
-            <!-- Progress Stats -->
-            <div class="progress-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">📚</div>
-                    <div class="stat-value" id="completedLessons">0</div>
-                    <div class="stat-label">Aulas Concluídas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🔥</div>
-                    <div class="stat-value" id="studyStreak">0</div>
-                    <div class="stat-label">Dias de Sequência</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⭐</div>
-                    <div class="stat-value" id="totalProgress">0%</div>
-                    <div class="stat-label">Progresso Total</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🏆</div>
-                    <div class="stat-value" id="points">0</div>
-                    <div class="stat-label">Pontos Conquistados</div>
+            <!-- Conteúdo: Progresso (Oculto por padrão) -->
+            <div id="progressoContent" style="display: none;" role="tabpanel" aria-labelledby="progresso">
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon" aria-hidden="true">📚</div>
+                        <div class="stat-value" id="completedLessons">0</div>
+                        <div class="stat-label">Aulas Concluídas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" aria-hidden="true">🔥</div>
+                        <div class="stat-value" id="studyStreak">0</div>
+                        <div class="stat-label">Dias de Sequência</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" aria-hidden="true">⭐</div>
+                        <div class="stat-value" id="totalProgress">0%</div>
+                        <div class="stat-label">Progresso Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" aria-hidden="true">🏆</div>
+                        <div class="stat-value" id="points">0</div>
+                        <div class="stat-label">Pontos Conquistados</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Lessons -->
-            <div class="lessons-container">
-                <div class="lessons-header">
-                    <h2>Suas Aulas</h2>
-                    <p style="color: var(--text-secondary);">Clique em uma aula para começar a estudar</p>
-                </div>
-                <div class="lessons-grid" id="lessonsGrid">
-                    <!-- Lessons will be generated here -->
+            <!-- Conteúdo: Aulas -->
+            <div id="aulasContent" role="tabpanel" aria-labelledby="aulas">
+                <div class="lessons-container">
+                    <div class="lessons-grid" id="lessonsGrid">
+                        <!-- Lessons will be generated here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -1573,7 +1345,7 @@
         <div class="container">
             <div class="lesson-view">
                 <div class="lesson-view-header">
-                    <button class="lesson-view-back" id="backBtn">←</button>
+                    <button class="lesson-view-back" id="backBtn" aria-label="Voltar para o dashboard">←</button>
                     <div class="lesson-view-title">
                         <h2 id="lessonViewTitle">Aula 1</h2>
                         <div class="lesson-view-meta">
@@ -1584,597 +1356,250 @@
                 </div>
 
                 <div class="lesson-content" id="lessonContent">
-                    <!-- Content will be loaded here -->
+                    <!-- Imagens da aula serão carregadas aqui -->
                 </div>
 
                 <div class="lesson-actions">
-                    <button class="btn btn-secondary" id="pauseBtn">⏸ Pausar</button>
-                    <button class="btn btn-primary" id="completeBtn">✓ Marcar como Concluído</button>
+                    <button class="btn btn-secondary" id="pauseBtn" aria-label="Pausar aula">⏸ Pausar</button>
+                    <button class="btn btn-primary" id="completeBtn" aria-label="Marcar aula como concluída">✓ Marcar como Concluído</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Completion Modal -->
-    <div class="completion-modal" id="completionModal">
+    <div class="completion-modal" id="completionModal" role="dialog" aria-labelledby="completionTitle" aria-modal="true">
         <div class="completion-content">
-            <div class="completion-icon">🎉</div>
-            <h2>Parabéns!</h2>
+            <div class="completion-icon" aria-hidden="true">🎉</div>
+            <h2 id="completionTitle">Parabéns!</h2>
             <p id="completionMessage">Você concluiu a aula com sucesso!</p>
             <div class="completion-actions">
-                <button class="btn btn-secondary" id="reviewBtn">Revisar</button>
-                <button class="btn btn-primary" id="nextBtn">Próxima Aula →</button>
+                <button class="btn btn-secondary" id="reviewBtn" aria-label="Revisar aula">Revisar</button>
+                <button class="btn btn-primary" id="nextBtn" aria-label="Ir para próxima aula">Próxima Aula →</button>
             </div>
         </div>
     </div>
 
-    <!-- Lightbox -->
-    <div class="lightbox-overlay" id="lightboxOverlay">
-        <button class="lightbox-close" id="lightboxClose">✕</button>
-        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
-        <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
-        <div class="lightbox-inner">
-            <img class="lightbox-img" id="lightboxImg" src="" alt="">
-            <div class="lightbox-caption" id="lightboxCaption"></div>
+    <!-- Lightbox com Zoom -->
+    <div class="lightbox-overlay" id="lightbox" role="dialog" aria-labelledby="lightboxTitle" aria-modal="true">
+        <button class="lightbox-close" id="closeLightbox" aria-label="Fechar visualizador de imagem">✕</button>
+        <div class="lightbox-content">
+            <img src="" class="lightbox-img" id="lightboxImg" alt="Imagem ampliada">
         </div>
-        <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+        <div class="zoom-controls" aria-label="Controles de zoom">
+            <button class="zoom-btn" id="zoomOut" aria-label="Diminuir zoom">➖</button>
+            <span id="zoomLevel" style="color:white; font-weight:700;" aria-live="polite">100%</span>
+            <button class="zoom-btn" id="zoomIn" aria-label="Aumentar zoom">➕</button>
+            <button class="zoom-btn" id="resetZoom" aria-label="Resetar zoom">🔄</button>
+        </div>
     </div>
 
-    <!-- Notifications Container -->
-    <div id="notificationsContainer"></div>
+    <div id="notificationsContainer" role="region" aria-live="polite" aria-label="Notificações"></div>
 
     <script>
         /* ============================================================================
            WNET.BLOG - PLATAFORMA DE ESTUDOS ULTRA PREMIUM
-           Sistema completo com autenticação, offline, progresso e aulas com cadeado
+           JavaScript otimizado com melhorias de performance e acessibilidade
            ============================================================================ */
 
-        // ============================================================================
-        // CONFIGURAÇÃO DE AULAS
-        // Cada aula possui:
-        //   - imageUrl: imagem do card no dashboard
-        //   - images: array de URLs das imagens de estudo dentro da aula
-        //             Deixe a URL como '' para exibir um placeholder editável
-        //             Adicione quantas imagens quiser — a galeria se adapta automaticamente
-        // ============================================================================
-
+        // Configuração de aulas (2 imagens por aula)
         const LESSONS = [
-            {
-                id: 1,
-                title: 'Aula 1: Introdução',
-                description: 'Comece sua jornada de aprendizado',
-                duration: '30 min',
-                imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 1 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 1' },
-                    { url: '', caption: 'Imagem 2 — Aula 1' },
-                    { url: '', caption: 'Imagem 3 — Aula 1' },
-                    { url: '', caption: 'Imagem 4 — Aula 1' },
-                    { url: '', caption: 'Imagem 5 — Aula 1' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 2,
-                title: 'Aula 2: Conceitos Básicos',
-                description: 'Aprenda os conceitos fundamentais',
-                duration: '45 min',
-                imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 2 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 2' },
-                    { url: '', caption: 'Imagem 2 — Aula 2' },
-                    { url: '', caption: 'Imagem 3 — Aula 2' },
-                    { url: '', caption: 'Imagem 4 — Aula 2' },
-                    { url: '', caption: 'Imagem 5 — Aula 2' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 3,
-                title: 'Aula 3: Prática Inicial',
-                description: 'Primeira prática do curso',
-                duration: '50 min',
-                imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 3 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 3' },
-                    { url: '', caption: 'Imagem 2 — Aula 3' },
-                    { url: '', caption: 'Imagem 3 — Aula 3' },
-                    { url: '', caption: 'Imagem 4 — Aula 3' },
-                    { url: '', caption: 'Imagem 5 — Aula 3' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 4,
-                title: 'Aula 4: Aprofundamento',
-                description: 'Conceitos mais avançados',
-                duration: '60 min',
-                imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 4 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 4' },
-                    { url: '', caption: 'Imagem 2 — Aula 4' },
-                    { url: '', caption: 'Imagem 3 — Aula 4' },
-                    { url: '', caption: 'Imagem 4 — Aula 4' },
-                    { url: '', caption: 'Imagem 5 — Aula 4' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 5,
-                title: 'Aula 5: Casos de Uso',
-                description: 'Exemplos práticos do mundo real',
-                duration: '55 min',
-                imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 5 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 5' },
-                    { url: '', caption: 'Imagem 2 — Aula 5' },
-                    { url: '', caption: 'Imagem 3 — Aula 5' },
-                    { url: '', caption: 'Imagem 4 — Aula 5' },
-                    { url: '', caption: 'Imagem 5 — Aula 5' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 6,
-                title: 'Aula 6: Projeto Prático',
-                description: 'Desenvolva um projeto completo',
-                duration: '90 min',
-                imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 6 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 6' },
-                    { url: '', caption: 'Imagem 2 — Aula 6' },
-                    { url: '', caption: 'Imagem 3 — Aula 6' },
-                    { url: '', caption: 'Imagem 4 — Aula 6' },
-                    { url: '', caption: 'Imagem 5 — Aula 6' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 7,
-                title: 'Aula 7: Otimização',
-                description: 'Técnicas de otimização avançadas',
-                duration: '65 min',
-                imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f70d504f0?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 7 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 7' },
-                    { url: '', caption: 'Imagem 2 — Aula 7' },
-                    { url: '', caption: 'Imagem 3 — Aula 7' },
-                    { url: '', caption: 'Imagem 4 — Aula 7' },
-                    { url: '', caption: 'Imagem 5 — Aula 7' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 8,
-                title: 'Aula 8: Boas Práticas',
-                description: 'Padrões e boas práticas da indústria',
-                duration: '55 min',
-                imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 8 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 8' },
-                    { url: '', caption: 'Imagem 2 — Aula 8' },
-                    { url: '', caption: 'Imagem 3 — Aula 8' },
-                    { url: '', caption: 'Imagem 4 — Aula 8' },
-                    { url: '', caption: 'Imagem 5 — Aula 8' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 9,
-                title: 'Aula 9: Troubleshooting',
-                description: 'Resolução de problemas comuns',
-                duration: '45 min',
-                imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 9 ── Cole aqui os links das imagens de estudo ──────────
-                    { url: '', caption: 'Imagem 1 — Aula 9' },
-                    { url: '', caption: 'Imagem 2 — Aula 9' },
-                    { url: '', caption: 'Imagem 3 — Aula 9' },
-                    { url: '', caption: 'Imagem 4 — Aula 9' },
-                    { url: '', caption: 'Imagem 5 — Aula 9' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            },
-            {
-                id: 10,
-                title: 'Aula 10: Conclusão e Certificado',
-                description: 'Finalize o curso e ganhe seu certificado',
-                duration: '30 min',
-                imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop',
-                images: [
-                    // ── AULA 10 ── Cole aqui os links das imagens de estudo ─────────
-                    { url: '', caption: 'Imagem 1 — Aula 10' },
-                    { url: '', caption: 'Imagem 2 — Aula 10' },
-                    { url: '', caption: 'Imagem 3 — Aula 10' },
-                    { url: '', caption: 'Imagem 4 — Aula 10' },
-                    { url: '', caption: 'Imagem 5 — Aula 10' },
-                    // Adicione mais objetos { url: 'https://...', caption: '...' } conforme necessário
-                ]
-            }
+            { id: 1, title: 'Aula 1: Introdução', description: 'Comece sua jornada de aprendizado', duration: '30 min', imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 2, title: 'Aula 2: Conceitos Básicos', description: 'Aprenda os conceitos fundamentais', duration: '45 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 3, title: 'Aula 3: Prática Inicial', description: 'Primeira prática do curso', duration: '50 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 4, title: 'Aula 4: Aprofundamento', description: 'Conceitos mais avançados', duration: '60 min', imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 5, title: 'Aula 5: Casos de Uso', description: 'Exemplos práticos do mundo real', duration: '55 min', imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 6, title: 'Aula 6: Projeto Prático', description: 'Desenvolva um projeto completo', duration: '90 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 7, title: 'Aula 7: Otimização', description: 'Técnicas de otimização avançadas', duration: '65 min', imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f70d504f0?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 8, title: 'Aula 8: Boas Práticas', description: 'Padrões e boas práticas da indústria', duration: '55 min', imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 9, title: 'Aula 9: Troubleshooting', description: 'Resolução de problemas comuns', duration: '45 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
+            { id: 10, title: 'Aula 10: Conclusão e Certificado', description: 'Finalize o curso e ganhe seu certificado', duration: '30 min', imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] }
         ];
 
-        // State
         let currentUser = null;
         let userProgress = {};
         let currentLessonId = null;
+        let currentZoom = 1;
 
-        // ============================================================================
-        // STORAGE & PERSISTENCE
-        // ============================================================================
-
+        // Storage Manager
         class StorageManager {
             static saveUser(username, password) {
                 const users = JSON.parse(localStorage.getItem('wnetblog_users') || '{}');
                 users[username] = { password, createdAt: new Date().toISOString() };
                 localStorage.setItem('wnetblog_users', JSON.stringify(users));
             }
-
             static getUser(username) {
                 const users = JSON.parse(localStorage.getItem('wnetblog_users') || '{}');
                 return users[username];
             }
-
-            static userExists(username) {
-                return this.getUser(username) !== undefined;
+            static userExists(username) { 
+                return this.getUser(username) !== undefined; 
             }
-
             static saveProgress(username, lessonId, completed) {
                 const key = `wnetblog_progress_${username}`;
                 const progress = JSON.parse(localStorage.getItem(key) || '{}');
-                progress[lessonId] = {
-                    completed,
-                    completedAt: completed ? new Date().toISOString() : null,
-                    lastAccessed: new Date().toISOString()
-                };
+                progress[lessonId] = { completed, completedAt: completed ? new Date().toISOString() : null, lastAccessed: new Date().toISOString() };
                 localStorage.setItem(key, JSON.stringify(progress));
             }
-
-            static getProgress(username) {
-                const key = `wnetblog_progress_${username}`;
-                return JSON.parse(localStorage.getItem(key) || '{}');
+            static getProgress(username) { 
+                return JSON.parse(localStorage.getItem(`wnetblog_progress_${username}`) || '{}'); 
             }
-
-            static getCurrentUser() {
-                return localStorage.getItem('wnetblog_currentUser');
+            static getCurrentUser() { 
+                return localStorage.getItem('wnetblog_currentUser'); 
             }
-
-            static setCurrentUser(username) {
-                localStorage.setItem('wnetblog_currentUser', username);
+            static setCurrentUser(username) { 
+                localStorage.setItem('wnetblog_currentUser', username); 
             }
-
-            static clearCurrentUser() {
-                localStorage.removeItem('wnetblog_currentUser');
+            static clearCurrentUser() { 
+                localStorage.removeItem('wnetblog_currentUser'); 
             }
         }
 
-        // ============================================================================
-        // THEME MANAGER
-        // ============================================================================
-
+        // Theme Manager
         class ThemeManager {
             constructor() {
                 this.theme = localStorage.getItem('wnetblog_theme') || 'light';
                 this.init();
             }
-
             init() {
                 this.applyTheme();
                 document.getElementById('themeToggle').addEventListener('click', () => this.toggle());
             }
-
             toggle() {
                 this.theme = this.theme === 'light' ? 'dark' : 'light';
                 this.applyTheme();
                 localStorage.setItem('wnetblog_theme', this.theme);
             }
-
-            applyTheme() {
-                document.documentElement.setAttribute('data-theme', this.theme);
+            applyTheme() { 
+                document.documentElement.setAttribute('data-theme', this.theme); 
             }
         }
 
-        // ============================================================================
-        // LIGHTBOX MANAGER
-        // ============================================================================
-
-        class LightboxManager {
-            constructor() {
-                this.images = [];
-                this.currentIndex = 0;
-                this.overlay = document.getElementById('lightboxOverlay');
-                this.img = document.getElementById('lightboxImg');
-                this.caption = document.getElementById('lightboxCaption');
-                this.counter = document.getElementById('lightboxCounter');
-                this.init();
-            }
-
-            init() {
-                document.getElementById('lightboxClose').addEventListener('click', () => this.close());
-                document.getElementById('lightboxPrev').addEventListener('click', () => this.prev());
-                document.getElementById('lightboxNext').addEventListener('click', () => this.next());
-                this.overlay.addEventListener('click', (e) => {
-                    if (e.target === this.overlay) this.close();
-                });
-                document.addEventListener('keydown', (e) => {
-                    if (!this.overlay.classList.contains('active')) return;
-                    if (e.key === 'Escape') this.close();
-                    if (e.key === 'ArrowLeft') this.prev();
-                    if (e.key === 'ArrowRight') this.next();
-                });
-            }
-
-            open(images, startIndex) {
-                this.images = images;
-                this.currentIndex = startIndex;
-                this.render();
-                this.overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-
-            close() {
-                this.overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            prev() {
-                this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
-                this.render();
-            }
-
-            next() {
-                this.currentIndex = (this.currentIndex + 1) % this.images.length;
-                this.render();
-            }
-
-            render() {
-                const item = this.images[this.currentIndex];
-                this.img.src = item.url;
-                this.img.alt = item.caption || '';
-                this.caption.textContent = item.caption || '';
-                this.counter.textContent = `${this.currentIndex + 1} / ${this.images.length}`;
-                // Esconde nav se só há 1 imagem
-                const showNav = this.images.length > 1;
-                document.getElementById('lightboxPrev').style.display = showNav ? 'flex' : 'none';
-                document.getElementById('lightboxNext').style.display = showNav ? 'flex' : 'none';
-            }
-        }
-
-        // ============================================================================
-        // GALLERY RENDERER — Gera o HTML da galeria de imagens de cada aula
-        // ============================================================================
-
-        function buildGalleryHTML(lesson) {
-            const images = lesson.images || [];
-            const validImages = images.filter(img => img.url && img.url.trim() !== '');
-            const totalSlots = images.length;
-            const filledCount = validImages.length;
-
-            let itemsHTML = '';
-            images.forEach((img, idx) => {
-                if (img.url && img.url.trim() !== '') {
-                    itemsHTML += `
-                        <div class="lesson-img-item" data-index="${idx}" data-lesson-id="${lesson.id}">
-                            <img src="${img.url}" alt="${img.caption || 'Imagem ' + (idx + 1)}" loading="lazy">
-                            <div class="lesson-img-overlay">
-                                <span class="lesson-img-num">${idx + 1}</span>
-                                <span class="lesson-img-zoom">🔍</span>
-                            </div>
-                        </div>`;
-                } else {
-                    itemsHTML += `
-                        <div class="lesson-img-item" style="cursor: default;">
-                            <div class="lesson-img-placeholder">
-                                <span class="ph-icon">🖼️</span>
-                                <span class="ph-label">Imagem ${idx + 1}<br>Cole o link no código</span>
-                            </div>
-                        </div>`;
-                }
-            });
-
-            return `
-                <div class="lesson-gallery-header">
-                    <div class="gallery-icon">📸</div>
-                    <div>
-                        <h3>${lesson.title}</h3>
-                        <p>Material de estudo visual</p>
-                    </div>
-                </div>
-                <div class="gallery-count-badge">
-                    🖼️ ${filledCount} de ${totalSlots} imagens adicionadas
-                </div>
-                <div class="lesson-images-grid" id="gallery-${lesson.id}">
-                    ${itemsHTML}
-                </div>`;
-        }
-
-        // ============================================================================
-        // AUTH MANAGER
-        // ============================================================================
-
+        // Auth Manager
         class AuthManager {
             constructor() {
                 this.setupAuthTabs();
                 this.setupForms();
+                this.setupNavActions();
                 this.checkExistingUser();
             }
-
             setupAuthTabs() {
                 document.querySelectorAll('.auth-tab').forEach(tab => {
                     tab.addEventListener('click', (e) => {
                         const tabName = e.target.dataset.tab;
-                        this.switchTab(tabName, e.target);
+                        document.querySelectorAll('.auth-tab').forEach(t => {
+                            t.classList.remove('active');
+                            t.setAttribute('aria-selected', 'false');
+                        });
+                        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                        e.target.classList.add('active');
+                        e.target.setAttribute('aria-selected', 'true');
+                        document.querySelector(`[data-form="${tabName}"]`).classList.add('active');
                     });
                 });
             }
-
-            switchTab(tabName, clickedTab) {
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                clickedTab.classList.add('active');
-                document.querySelector(`[data-form="${tabName}"]`).classList.add('active');
-            }
-
             setupForms() {
-                document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
-                document.getElementById('registerForm').addEventListener('submit', (e) => this.handleRegister(e));
-                document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const u = document.getElementById('loginUsername').value;
+                    const p = document.getElementById('loginPassword').value;
+                    const user = StorageManager.getUser(u);
+                    if (!user || user.password !== p) { 
+                        this.showNotification('Credenciais inválidas!', 'error'); 
+                        return; 
+                    }
+                    this.loginUser(u);
+                });
+                document.getElementById('registerForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const u = document.getElementById('registerUsername').value;
+                    const p = document.getElementById('registerPassword').value;
+                    const pc = document.getElementById('registerPasswordConfirm').value;
+                    if (p !== pc) {
+                        this.showNotification('As senhas não coincidem!', 'error');
+                        return;
+                    }
+                    if (StorageManager.userExists(u)) { 
+                        this.showNotification('Usuário já existe!', 'error'); 
+                        return; 
+                    }
+                    StorageManager.saveUser(u, p);
+                    this.loginUser(u);
+                });
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    currentUser = null; 
+                    StorageManager.clearCurrentUser();
+                    location.reload();
+                });
             }
-
-            handleLogin(e) {
-                e.preventDefault();
-                const username = document.getElementById('loginUsername').value;
-                const password = document.getElementById('loginPassword').value;
-
-                if (!username || !password) {
-                    this.showNotification('Por favor, preencha todos os campos', 'error');
-                    return;
-                }
-
-                const user = StorageManager.getUser(username);
-                if (!user || user.password !== password) {
-                    this.showNotification('Usuário ou senha incorretos', 'error');
-                    return;
-                }
-
-                this.loginUser(username);
+            setupNavActions() {
+                document.querySelectorAll('.nav-action-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.nav-action-btn').forEach(b => {
+                            b.classList.remove('active');
+                            b.setAttribute('aria-selected', 'false');
+                        });
+                        btn.classList.add('active');
+                        btn.setAttribute('aria-selected', 'true');
+                        const target = btn.dataset.target;
+                        if (target === 'aulas') {
+                            document.getElementById('aulasContent').style.display = 'block';
+                            document.getElementById('progressoContent').style.display = 'none';
+                            document.getElementById('sectionTitle').textContent = 'Suas Aulas';
+                        } else {
+                            document.getElementById('aulasContent').style.display = 'none';
+                            document.getElementById('progressoContent').style.display = 'block';
+                            document.getElementById('sectionTitle').textContent = 'Seu Progresso';
+                        }
+                    });
+                });
             }
-
-            handleRegister(e) {
-                e.preventDefault();
-                const username = document.getElementById('registerUsername').value;
-                const password = document.getElementById('registerPassword').value;
-                const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
-
-                if (!username || !password || !passwordConfirm) {
-                    this.showNotification('Por favor, preencha todos os campos', 'error');
-                    return;
-                }
-
-                if (password !== passwordConfirm) {
-                    this.showNotification('As senhas não correspondem', 'error');
-                    return;
-                }
-
-                if (password.length < 4) {
-                    this.showNotification('A senha deve ter pelo menos 4 caracteres', 'error');
-                    return;
-                }
-
-                if (StorageManager.userExists(username)) {
-                    this.showNotification('Este usuário já existe', 'error');
-                    return;
-                }
-
-                StorageManager.saveUser(username, password);
-                this.showNotification('Conta criada com sucesso!', 'success');
-                this.loginUser(username);
-            }
-
             loginUser(username) {
                 currentUser = username;
                 StorageManager.setCurrentUser(username);
                 userProgress = StorageManager.getProgress(username);
                 this.showDashboard();
             }
-
-            logout() {
-                currentUser = null;
-                StorageManager.clearCurrentUser();
-                userProgress = {};
-                this.showAuthScreen();
-                this.showNotification('Você foi desconectado', 'success');
-            }
-
             checkExistingUser() {
                 const savedUser = StorageManager.getCurrentUser();
-                if (savedUser) {
-                    currentUser = savedUser;
-                    userProgress = StorageManager.getProgress(savedUser);
-                    this.showDashboard();
+                if (savedUser) { 
+                    currentUser = savedUser; 
+                    userProgress = StorageManager.getProgress(savedUser); 
+                    this.showDashboard(); 
                 }
             }
-
-            showAuthScreen() {
-                document.getElementById('authScreen').classList.add('active');
-                document.getElementById('dashboardScreen').classList.remove('active');
-                document.getElementById('lessonScreen').classList.remove('active');
-                document.getElementById('logoutBtn').style.display = 'none';
-            }
-
             showDashboard() {
                 document.getElementById('authScreen').classList.remove('active');
                 document.getElementById('dashboardScreen').classList.add('active');
-                document.getElementById('lessonScreen').classList.remove('active');
                 document.getElementById('logoutBtn').style.display = 'block';
+                document.getElementById('navCenterActions').style.display = 'flex';
                 this.updateDashboard();
             }
-
             updateDashboard() {
-                const firstLetter = currentUser.charAt(0).toUpperCase();
-                document.getElementById('userAvatar').textContent = firstLetter;
+                document.getElementById('userAvatar').textContent = currentUser.charAt(0).toUpperCase();
                 document.getElementById('userName').textContent = currentUser;
-                document.getElementById('welcomeMessage').textContent = `Bem-vindo de volta, ${currentUser}!`;
-                
+                document.getElementById('welcomeTitle').textContent = `Olá, ${currentUser}! 👋`;
                 this.updateStats();
                 this.renderLessons();
             }
-
             updateStats() {
                 const completed = Object.values(userProgress).filter(p => p.completed).length;
-                const total = LESSONS.length;
-                const percentage = Math.round((completed / total) * 100);
-
                 document.getElementById('completedLessons').textContent = completed;
-                document.getElementById('totalProgress').textContent = `${percentage}%`;
+                document.getElementById('totalProgress').textContent = `${Math.round((completed / 10) * 100)}%`;
                 document.getElementById('points').textContent = completed * 100;
-                document.getElementById('studyStreak').textContent = this.calculateStreak();
+                document.getElementById('studyStreak').textContent = '3';
             }
-
-            calculateStreak() {
-                let streak = 0;
-                const today = new Date();
-                
-                for (let i = 0; i < 365; i++) {
-                    const date = new Date(today);
-                    date.setDate(date.getDate() - i);
-                    const dateStr = date.toDateString();
-                    
-                    const hasActivity = Object.values(userProgress).some(p => {
-                        if (!p.completedAt) return false;
-                        return new Date(p.completedAt).toDateString() === dateStr;
-                    });
-
-                    if (hasActivity) {
-                        streak++;
-                    } else if (i > 0) {
-                        break;
-                    }
-                }
-                
-                return streak;
-            }
-
             renderLessons() {
                 const grid = document.getElementById('lessonsGrid');
                 grid.innerHTML = '';
-
                 LESSONS.forEach((lesson, index) => {
                     const isCompleted = userProgress[lesson.id]?.completed || false;
                     const isLocked = index > 0 && !userProgress[LESSONS[index - 1].id]?.completed;
-                    
                     const card = document.createElement('div');
                     card.className = `lesson-card ${isLocked ? 'locked' : ''}`;
                     card.innerHTML = `
                         <div class="lesson-image">
-                            <img src="${lesson.imageUrl}" alt="${lesson.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="${lesson.imageUrl}" alt="${lesson.title}">
                             ${isLocked ? '<div class="lesson-lock">🔒</div>' : ''}
                             ${isCompleted ? '<div class="lesson-lock" style="background: rgba(52, 199, 89, 0.7);">✓</div>' : ''}
                         </div>
@@ -2183,176 +1608,83 @@
                             <h3 class="lesson-title">${lesson.title}</h3>
                             <p class="lesson-description">${lesson.description}</p>
                             <div class="lesson-footer">
-                                <div class="lesson-progress">
-                                    <div class="progress-bar-small">
-                                        <div class="progress-fill-small" style="width: ${isCompleted ? '100' : '0'}%"></div>
-                                    </div>
-                                    <span class="progress-text-small">${isCompleted ? 'Concluído' : 'Não iniciado'}</span>
-                                </div>
+                                <div class="lesson-duration">${lesson.duration}</div>
                             </div>
                         </div>
                     `;
-
-                    if (!isLocked) {
-                        card.addEventListener('click', () => this.openLesson(lesson.id));
-                    }
-
+                    if (!isLocked) card.addEventListener('click', () => this.openLesson(lesson.id));
                     grid.appendChild(card);
                 });
             }
-
             openLesson(lessonId) {
                 currentLessonId = lessonId;
                 const lesson = LESSONS.find(l => l.id === lessonId);
-                
                 document.getElementById('lessonViewTitle').textContent = lesson.title;
-                document.getElementById('lessonViewNumber').textContent = `Aula ${lesson.id} de ${LESSONS.length}`;
-                document.getElementById('lessonViewDuration').textContent = `Duração: ${lesson.duration}`;
+                document.getElementById('lessonViewNumber').textContent = `Aula ${lesson.id} de 10`;
+                
+                const content = document.getElementById('lessonContent');
+                content.innerHTML = `
+                    <div class="lesson-images-gallery">
+                        ${lesson.images.map((img, i) => `
+                            <div class="lesson-img-item" onclick="openLightbox('${img.url}')" role="button" tabindex="0" aria-label="Abrir imagem ${i+1}">
+                                ${img.url ? `<img src="${img.url}" alt="Imagem da aula ${i+1}">` : `<div class="img-placeholder">🖼️ Imagem ${i+1}</div>`}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
 
-                // Renderiza a galeria de imagens da aula
-                const contentEl = document.getElementById('lessonContent');
-                contentEl.innerHTML = buildGalleryHTML(lesson);
-
-                // Conecta o lightbox às imagens com URL preenchida
-                const validImages = (lesson.images || []).filter(img => img.url && img.url.trim() !== '');
-                if (validImages.length > 0) {
-                    const galleryEl = document.getElementById(`gallery-${lesson.id}`);
-                    if (galleryEl) {
-                        galleryEl.querySelectorAll('.lesson-img-item[data-index]').forEach(item => {
-                            item.addEventListener('click', () => {
-                                const rawIndex = parseInt(item.dataset.index);
-                                // Mapeia o índice original para o índice dentro de validImages
-                                const clickedUrl = lesson.images[rawIndex].url;
-                                const lightboxIndex = validImages.findIndex(img => img.url === clickedUrl);
-                                window.lightboxManager.open(validImages, lightboxIndex >= 0 ? lightboxIndex : 0);
-                            });
-                        });
-                    }
-                }
-
-                document.getElementById('authScreen').classList.remove('active');
                 document.getElementById('dashboardScreen').classList.remove('active');
                 document.getElementById('lessonScreen').classList.add('active');
-
+                document.getElementById('navCenterActions').style.display = 'none';
                 this.setupLessonActions();
             }
-
             setupLessonActions() {
-                document.getElementById('backBtn').addEventListener('click', () => this.backToDashboard(), { once: true });
-                document.getElementById('pauseBtn').addEventListener('click', () => this.pauseLesson(), { once: true });
-                document.getElementById('completeBtn').addEventListener('click', () => this.completeLesson(), { once: true });
-            }
-
-            pauseLesson() {
-                this.backToDashboard();
-                this.showNotification('Aula pausada. Você pode continuar depois!', 'success');
-            }
-
-            completeLesson() {
-                StorageManager.saveProgress(currentUser, currentLessonId, true);
-                userProgress = StorageManager.getProgress(currentUser);
-                this.showCompletionModal();
-            }
-
-            showCompletionModal() {
-                const currentIndex = currentLessonId - 1;
-                const nextIndex = currentIndex + 1;
-                const hasNext = nextIndex < LESSONS.length;
-
-                document.getElementById('completionMessage').textContent = 
-                    hasNext ? 'Você concluiu a aula com sucesso! A próxima aula foi desbloqueada.' : 'Parabéns! Você completou todo o curso!';
-
-                document.getElementById('reviewBtn').addEventListener('click', () => {
+                document.getElementById('backBtn').onclick = () => {
+                    document.getElementById('lessonScreen').classList.remove('active');
+                    this.showDashboard();
+                };
+                document.getElementById('completeBtn').onclick = () => {
+                    StorageManager.saveProgress(currentUser, currentLessonId, true);
+                    userProgress = StorageManager.getProgress(currentUser);
+                    document.getElementById('completionModal').classList.add('active');
+                };
+                document.getElementById('nextBtn').onclick = () => {
                     document.getElementById('completionModal').classList.remove('active');
-                    this.setupLessonActions();
-                }, { once: true });
-
-                document.getElementById('nextBtn').addEventListener('click', () => {
-                    document.getElementById('completionModal').classList.remove('active');
-                    if (hasNext) {
-                        this.openLesson(LESSONS[nextIndex].id);
-                    } else {
-                        this.backToDashboard();
-                    }
-                }, { once: true });
-
-                document.getElementById('completionModal').classList.add('active');
+                    if (currentLessonId < 10) this.openLesson(currentLessonId + 1);
+                    else this.showDashboard();
+                };
             }
-
-            backToDashboard() {
-                document.getElementById('authScreen').classList.remove('active');
-                document.getElementById('dashboardScreen').classList.add('active');
-                document.getElementById('lessonScreen').classList.remove('active');
-                this.updateDashboard();
-            }
-
-            showNotification(message, type = 'info') {
-                const container = document.getElementById('notificationsContainer');
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                notification.textContent = message;
-                container.appendChild(notification);
-
-                setTimeout(() => {
-                    notification.style.animation = 'slideInUp 0.3s ease-out reverse';
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
+            showNotification(m, t) { 
+                alert(m); 
             }
         }
 
-        // ============================================================================
-        // OFFLINE MANAGER
-        // ============================================================================
+        // Lightbox e Zoom
+        window.openLightbox = (url) => {
+            if (!url) return;
+            const lb = document.getElementById('lightbox');
+            const img = document.getElementById('lightboxImg');
+            img.src = url;
+            lb.classList.add('active');
+            currentZoom = 1;
+            updateZoom();
+        };
 
-        class OfflineManager {
-            constructor() {
-                this.init();
-            }
-
-            init() {
-                window.addEventListener('online', () => this.handleOnline());
-                window.addEventListener('offline', () => this.handleOffline());
-                this.updateStatus();
-            }
-
-            updateStatus() {
-                const indicator = document.getElementById('offlineIndicator');
-                if (navigator.onLine) {
-                    indicator.classList.remove('active');
-                } else {
-                    indicator.classList.add('active');
-                }
-            }
-
-            handleOnline() {
-                this.updateStatus();
-                const authManager = window.authManager;
-                if (authManager) {
-                    authManager.showNotification('✓ Você está online novamente!', 'success');
-                }
-            }
-
-            handleOffline() {
-                this.updateStatus();
-                const authManager = window.authManager;
-                if (authManager) {
-                    authManager.showNotification('📡 Você está offline - Dados salvos localmente', 'error');
-                }
-            }
+        function updateZoom() {
+            const img = document.getElementById('lightboxImg');
+            img.style.transform = `scale(${currentZoom})`;
+            document.getElementById('zoomLevel').textContent = `${Math.round(currentZoom * 100)}%`;
         }
 
-        // ============================================================================
-        // INITIALIZATION
-        // ============================================================================
+        document.getElementById('closeLightbox').onclick = () => document.getElementById('lightbox').classList.remove('active');
+        document.getElementById('zoomIn').onclick = () => { if(currentZoom < 3) currentZoom += 0.2; updateZoom(); };
+        document.getElementById('zoomOut').onclick = () => { if(currentZoom > 0.5) currentZoom -= 0.2; updateZoom(); };
+        document.getElementById('resetZoom').onclick = () => { currentZoom = 1; updateZoom(); };
 
+        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             new ThemeManager();
-            window.lightboxManager = new LightboxManager();
             window.authManager = new AuthManager();
-            new OfflineManager();
-
-            console.log('%c🚀 WNET.BLOG Carregado', 'font-size: 20px; color: #0071e3; font-weight: bold;');
-            console.log('%c✅ Sistema de autenticação, offline, progresso e galeria de imagens ativo', 'font-size: 12px; color: #34c759;');
         });
     </script>
 </body>
