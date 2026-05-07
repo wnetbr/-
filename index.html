@@ -1,1691 +1,404 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="WNET.BLOG - Plataforma premium de estudos para músicos com aulas interativas, progresso personalizado e certificados.">
-    <meta name="theme-color" content="#0071e3">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <title>wnet.blog</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>wnet</title>
+    <!-- Importando fontes premium -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ============================================================================
-           WNET.BLOG - PLATAFORMA DE ESTUDOS ULTRA PREMIUM
-           Design Apple sofisticado com animações, responsivo 100%, otimizado
-           ============================================================================ */
+        :root {
+            --bg: #000000;
+            --card-bg: rgba(28, 28, 30, 0.8);
+            --accent: #0071e3;
+            --text: #f5f5f7;
+            --text-dim: #86868b;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        :root {
-            --primary: #0071e3;
-            --primary-light: #0a84ff;
-            --primary-dark: #0051ba;
-            --accent-1: #ff6b6b;
-            --accent-2: #4ecdc4;
-            --accent-3: #ffd93d;
-            --accent-4: #a78bfa;
-            --accent-5: #ff9500;
-            
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --text-tertiary: #94a3b8;
-            
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
-            
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.16);
-            --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.20);
-            
-            --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-base: 300ms cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-slow: 500ms cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        [data-theme="dark"] {
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-tertiary: #94a3b8;
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --border-color: #475569;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            transition: background-color var(--transition-base), color var(--transition-base);
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            animation: fadeInDown 0.6s ease-out;
-        }
-
-        h1 { font-size: clamp(1.75rem, 5vw, 4rem); font-weight: 900; }
-        h2 { font-size: clamp(1.5rem, 4vw, 2.75rem); font-weight: 800; }
-        h3 { font-size: clamp(1.25rem, 3vw, 1.5rem); font-weight: 700; }
-        h4 { font-size: 1.125rem; font-weight: 600; }
-
-        p {
-            font-size: clamp(0.9rem, 2vw, 1rem);
-            color: var(--text-secondary);
-            line-height: 1.7;
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        a {
-            color: var(--primary);
-            text-decoration: none;
-            transition: color var(--transition-fast);
-        }
-
-        a:hover {
-            color: var(--primary-dark);
-        }
-
-        a:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #0071e3 0%, #ff6b6b 50%, #4ecdc4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease infinite;
-        }
-
-        /* Animações otimizadas */
-        @keyframes gradientShift {
-            0%, 100% { filter: hue-rotate(0deg); }
-            50% { filter: hue-rotate(10deg); }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 113, 227, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(0, 113, 227, 0.6); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInDown {
-            from { opacity: 0; transform: translateY(-40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes zoom {
-            from { transform: scale(1.1); }
-            to { transform: scale(1); }
-        }
-
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Botões */
-        .btn {
-            padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 28px);
-            border: none;
-            border-radius: 9999px;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            font-family: inherit;
-            display: inline-flex;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            white-space: nowrap;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            overflow-x: hidden;
+            background: radial-gradient(circle at 50% 50%, #1c1c1e 0%, #000000 100%);
+        }
+
+        html {
+            height: -webkit-fill-available;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% -10%, rgba(0, 113, 227, 0.2), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
             position: relative;
+            width: 92%;
+            max-width: 400px;
+            padding: 40px 24px;
+            background: var(--card-bg);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 36px;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: containerAppear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 1;
+        }
+
+        @keyframes containerAppear {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .logo-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 24px;
+            animation: logoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .logo-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
             overflow: hidden;
-            animation: fadeInUp 0.6s ease-out;
+            background: #fff;
+            padding: 2px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 2;
         }
 
-        .btn:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 22px;
         }
 
-        .btn::before {
-            content: '';
+        .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 130%;
+            height: 130%;
+            background: radial-gradient(circle, rgba(0, 113, 227, 0.3), transparent 70%);
+            z-index: 1;
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+            background: linear-gradient(180deg, #fff 0%, #a1a1a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--text-dim);
+            line-height: 1.4;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .download-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            padding: 18px 24px;
+            border-radius: 18px;
+            font-size: 17px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 113, 227, 0.3);
+        }
+
+        .download-btn:active {
+            transform: scale(0.96);
+            background: #0062c4;
+        }
+
+        .btn-shine {
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: left var(--transition-fast);
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
         }
 
-        .btn:hover::before {
-            left: 100%;
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 113, 227, 0.5);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            color: var(--text-primary);
-            border: 1.5px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.9);
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .btn-large {
-            padding: clamp(12px, 3vw, 14px) clamp(24px, 5vw, 32px);
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
-        }
-
-        .btn-block {
-            width: 100%;
-        }
-
-        /* Containers */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 clamp(16px, 4vw, 24px);
-        }
-
-        /* Navbar */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-            transition: all var(--transition-base);
-            animation: slideInDown 0.6s ease-out;
-        }
-
-        [data-theme="dark"] .navbar {
-            background: rgba(15, 23, 42, 0.7);
-            border-bottom-color: rgba(255, 255, 255, 0.08);
-        }
-
-        .navbar-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 clamp(16px, 4vw, 24px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: clamp(60px, 12vw, 70px);
-        }
-
-        .navbar-logo {
-            display: flex;
-            align-items: center;
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
-            font-weight: 900;
-            color: var(--text-primary);
-            animation: slideInLeft 0.6s ease-out;
-            letter-spacing: -0.05em;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
         }
 
-        .logo-circle {
-            width: clamp(36px, 8vw, 40px);
-            height: clamp(36px, 8vw, 40px);
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .logo-circle svg {
-            width: 60%;
-            height: 60%;
-            stroke: currentColor;
-        }
-
-        .navbar-actions {
-            display: flex;
-            align-items: center;
-            gap: clamp(8px, 2vw, 12px);
-        }
-
-        .btn-theme {
-            width: clamp(36px, 8vw, 40px);
-            height: clamp(36px, 8vw, 40px);
-            border-radius: 50%;
-            border: none;
-            background: rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition-fast);
-            color: var(--text-primary);
-        }
-
-        .btn-theme:hover {
-            background: rgba(0, 0, 0, 0.1);
-            transform: rotate(20deg);
-        }
-
-        .btn-theme svg {
-            width: 50%;
-            height: 50%;
-        }
-
-        .icon-moon { display: none; }
-        [data-theme="dark"] .icon-sun { display: none; }
-        [data-theme="dark"] .icon-moon { display: block; }
-
-        .nav-center-actions {
-            display: flex;
-            gap: clamp(8px, 2vw, 12px);
-        }
-
-        .nav-action-btn {
-            padding: 8px 16px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            border-radius: 8px;
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-        }
-
-        .nav-action-btn:hover {
-            color: var(--primary);
-        }
-
-        .nav-action-btn.active {
-            color: var(--primary);
-            background: rgba(0, 113, 227, 0.1);
-        }
-
-        /* Screens */
-        .screen {
-            display: none;
-            min-height: calc(100vh - 70px);
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        .auth-screen {
-            align-items: center;
-            justify-content: center;
-            padding: clamp(20px, 5vw, 40px);
-            background: linear-gradient(135deg, rgba(0, 113, 227, 0.05) 0%, rgba(255, 107, 107, 0.05) 100%);
-        }
-
-        .auth-card {
-            background: var(--bg-primary);
-            border-radius: 24px;
-            padding: clamp(24px, 5vw, 40px);
-            width: 100%;
-            max-width: 400px;
-            box-shadow: var(--shadow-lg);
-            animation: scaleIn 0.6s ease-out;
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: clamp(24px, 5vw, 32px);
-            animation: slideInDown 0.6s ease-out;
-        }
-
-        .auth-header h1 {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            margin-bottom: 8px;
-        }
-
-        .auth-header p {
-            color: var(--text-secondary);
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        .form-group {
-            margin-bottom: clamp(16px, 3vw, 20px);
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-            color: var(--text-primary);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: clamp(10px, 2vw, 12px) clamp(12px, 2vw, 16px);
-            border: 1.5px solid var(--border-color);
-            border-radius: 12px;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-            font-family: inherit;
-            transition: all var(--transition-fast);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
-        }
-
-        .auth-tabs {
-            display: flex;
-            gap: clamp(8px, 2vw, 12px);
-            margin-bottom: clamp(20px, 4vw, 28px);
-            animation: slideInDown 0.6s ease-out;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: clamp(10px, 2vw, 12px);
-            border: 1.5px solid var(--border-color);
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-            color: var(--text-primary);
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .auth-tab:hover {
-            transform: translateY(-2px);
-            background: var(--bg-tertiary);
-        }
-
-        .auth-tab.active {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-            border-color: transparent;
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        .auth-footer {
-            text-align: center;
-            margin-top: clamp(16px, 3vw, 24px);
-            color: var(--text-secondary);
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            animation: fadeInUp 0.6s ease-out 0.2s both;
-        }
-
-        /* Dashboard Screen */
-        .dashboard-screen {
-            flex-direction: column;
-            padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px);
-        }
-
-        /* Banner Home */
-        .home-banner {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-4) 100%);
-            border-radius: 24px;
-            padding: clamp(30px, 8vw, 60px) clamp(20px, 5vw, 40px);
-            color: white;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .home-banner h1 { 
-            font-size: clamp(1.8rem, 6vw, 3rem); 
-            margin-bottom: 10px; 
-            color: white; 
-        }
-
-        .home-banner p { 
-            color: rgba(255, 255, 255, 0.9); 
-            font-size: 1.1rem; 
-            animation: none; 
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: clamp(24px, 5vw, 40px);
-            flex-wrap: wrap;
-            gap: clamp(12px, 3vw, 16px);
-            animation: slideInDown 0.6s ease-out;
-        }
-
-        .dashboard-title h1 {
-            font-size: clamp(1.75rem, 5vw, 2.5rem);
-            margin-bottom: 8px;
-        }
-
-        .dashboard-title p {
-            color: var(--text-secondary);
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        .dashboard-user {
-            display: flex;
-            align-items: center;
-            gap: clamp(12px, 3vw, 16px);
-            animation: slideInRight 0.6s ease-out;
-        }
-
-        .user-avatar {
-            width: clamp(40px, 10vw, 48px);
-            height: clamp(40px, 10vw, 48px);
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: clamp(1rem, 3vw, 1.25rem);
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-            flex-shrink: 0;
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            animation: slideInRight 0.6s ease-out 0.1s both;
-        }
-
-        .user-name {
-            font-weight: 700;
-            color: var(--text-primary);
-            font-size: clamp(0.95rem, 2vw, 1.05rem);
-        }
-
-        .user-status {
-            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-            color: var(--text-secondary);
-        }
-
-        /* Progress Stats */
-        .progress-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 30vw, 200px), 1fr));
-            gap: clamp(12px, 3vw, 16px);
-            margin-bottom: clamp(24px, 5vw, 40px);
-        }
-
-        .stat-card {
-            background: var(--bg-primary);
-            padding: clamp(16px, 4vw, 24px);
+        .info-item {
+            background: var(--glass);
+            padding: 12px;
             border-radius: 16px;
-            border: 1px solid var(--border-color);
-            transition: all var(--transition-base);
-            position: relative;
-            overflow: hidden;
-            animation: slideInUp 0.6s ease-out;
+            border: 1px solid var(--border);
         }
 
-        .stat-card::before {
-            content: '';
-            position: absolute;
+        .info-item i {
+            font-size: 16px;
+            color: var(--accent);
+            margin-bottom: 6px;
+            display: block;
+            animation: iconBounce 2.5s infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .info-label {
+            display: block;
+            font-size: 10px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .status-overlay {
+            position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent-1));
-            border-radius: 16px 16px 0 0;
-            animation: slideInLeft 0.8s ease-out;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-icon {
-            font-size: clamp(1.5rem, 4vw, 1.75rem);
-            margin-bottom: 8px;
-            animation: bounce 2s ease-in-out infinite;
-        }
-
-        .stat-value {
-            font-size: clamp(1.5rem, 4vw, 2rem);
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        .stat-label {
-            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-            color: var(--text-secondary);
-            font-weight: 600;
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        /* Lessons Grid */
-        .lessons-container {
-            margin-bottom: clamp(24px, 5vw, 40px);
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .lessons-header {
-            margin-bottom: clamp(16px, 3vw, 24px);
-            animation: slideInDown 0.6s ease-out;
-        }
-
-        .lessons-header h2 {
-            margin-bottom: 8px;
-        }
-
-        .lessons-header p {
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        .lessons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 40vw, 280px), 1fr));
-            gap: clamp(16px, 3vw, 24px);
-        }
-
-        .lesson-card {
-            background: var(--bg-primary);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: all var(--transition-base);
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            position: relative;
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        .lesson-card:nth-child(1) { animation-delay: 0s; }
-        .lesson-card:nth-child(2) { animation-delay: 0.1s; }
-        .lesson-card:nth-child(3) { animation-delay: 0.2s; }
-        .lesson-card:nth-child(4) { animation-delay: 0.3s; }
-        .lesson-card:nth-child(5) { animation-delay: 0.4s; }
-        .lesson-card:nth-child(6) { animation-delay: 0.5s; }
-        .lesson-card:nth-child(7) { animation-delay: 0.6s; }
-        .lesson-card:nth-child(8) { animation-delay: 0.7s; }
-        .lesson-card:nth-child(9) { animation-delay: 0.8s; }
-        .lesson-card:nth-child(10) { animation-delay: 0.9s; }
-
-        .lesson-card:hover {
-            transform: translateY(-12px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
-        }
-
-        .lesson-card.locked {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .lesson-card.locked:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
-        .lesson-image {
-            width: 100%;
-            height: clamp(150px, 30vw, 200px);
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 50%, var(--accent-2) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
-            position: relative;
-            overflow: hidden;
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        .lesson-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            animation: zoom 0.6s ease-out;
-        }
-
-        .lesson-lock {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(2rem, 6vw, 3rem);
-            backdrop-filter: blur(5px);
-            animation: bounce 1s ease-in-out infinite;
-        }
-
-        .lesson-body {
-            padding: clamp(16px, 3vw, 24px);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .lesson-number {
-            display: inline-block;
-            padding: clamp(4px, 1vw, 6px) clamp(10px, 2vw, 14px);
-            background: linear-gradient(135deg, rgba(0, 113, 227, 0.1), rgba(255, 107, 107, 0.1));
-            color: var(--primary);
-            border-radius: 50px;
-            font-size: clamp(0.65rem, 1.5vw, 0.75rem);
-            font-weight: 700;
-            margin-bottom: 12px;
-            width: fit-content;
-            border: 1px solid rgba(0, 113, 227, 0.2);
-            animation: fadeInLeft 0.6s ease-out;
-        }
-
-        .lesson-title {
-            font-size: clamp(1.1rem, 2.5vw, 1.25rem);
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            animation: slideInLeft 0.6s ease-out 0.1s both;
-        }
-
-        .lesson-description {
-            font-size: clamp(0.85rem, 1.5vw, 0.9rem);
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            flex: 1;
-            animation: fadeInUp 0.6s ease-out 0.2s both;
-        }
-
-        .lesson-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
-            animation: slideInUp 0.6s ease-out 0.3s both;
-        }
-
-        .lesson-progress {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-            color: var(--text-secondary);
-        }
-
-        .lesson-progress-bar {
-            width: 40px;
-            height: 4px;
-            background: var(--border-color);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .lesson-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-            border-radius: 2px;
-            animation: slideInLeft 0.8s ease-out;
-        }
-
-        .lesson-duration {
-            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-            color: var(--text-secondary);
-            animation: fadeInRight 0.6s ease-out 0.3s both;
-        }
-
-        /* Lesson View */
-        .lesson-view {
-            padding: clamp(20px, 4vw, 40px) 0;
-        }
-
-        .lesson-view-header {
-            display: flex;
-            align-items: center;
-            gap: clamp(12px, 3vw, 16px);
-            margin-bottom: clamp(24px, 5vw, 40px);
-            animation: slideInDown 0.6s ease-out;
-        }
-
-        .lesson-view-back {
-            width: clamp(36px, 8vw, 40px);
-            height: clamp(36px, 8vw, 40px);
-            border-radius: 50%;
-            border: 1.5px solid var(--border-color);
-            background: var(--bg-primary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            transition: all var(--transition-fast);
-            color: var(--text-primary);
-            flex-shrink: 0;
-        }
-
-        .lesson-view-back:hover {
-            background: var(--bg-secondary);
-            border-color: var(--primary);
-            transform: translateX(-4px);
-        }
-
-        .lesson-view-title {
-            flex: 1;
-        }
-
-        .lesson-view-title h2 {
-            margin-bottom: 8px;
-        }
-
-        .lesson-view-meta {
-            display: flex;
-            gap: clamp(12px, 3vw, 16px);
-            font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-            color: var(--text-secondary);
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        .lesson-content {
-            margin-bottom: clamp(24px, 5vw, 40px);
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .lesson-images-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: clamp(12px, 3vw, 16px);
-        }
-
-        .lesson-img-item {
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            aspect-ratio: 16 / 9;
-            position: relative;
-        }
-
-        .lesson-img-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform var(--transition-base);
-        }
-
-        .lesson-img-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .img-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-        }
-
-        .lesson-actions {
-            display: flex;
-            gap: clamp(12px, 3vw, 16px);
-            flex-wrap: wrap;
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        .lesson-actions button {
-            flex: 1;
-            min-width: 120px;
-        }
-
-        /* Completion Modal */
-        .completion-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 2000;
-            padding: 20px;
-            backdrop-filter: blur(5px);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
-        .completion-modal.active {
-            display: flex;
-            animation: fadeInUp 0.3s ease-out;
-        }
-
-        .completion-content {
-            background: var(--bg-primary);
-            border-radius: 24px;
-            padding: clamp(24px, 5vw, 40px);
-            max-width: 500px;
-            width: 100%;
+        .status-card {
+            background: #1c1c1e;
+            padding: 32px 24px;
+            border-radius: 28px;
+            border: 1px solid var(--border);
             text-align: center;
-            box-shadow: var(--shadow-xl);
-            animation: scaleIn 0.3s ease-out;
+            width: 80%;
+            max-width: 300px;
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .completion-icon {
-            font-size: clamp(3rem, 8vw, 4rem);
-            margin-bottom: 16px;
-            animation: bounce 0.6s ease-out;
-        }
-
-        .completion-content h2 {
-            margin-bottom: 16px;
-            animation: slideInDown 0.6s ease-out;
-        }
-
-        .completion-content p {
-            margin-bottom: clamp(16px, 3vw, 24px);
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        .completion-actions {
+        .status-overlay.active {
             display: flex;
-            gap: clamp(12px, 3vw, 16px);
-            flex-wrap: wrap;
-            animation: slideInUp 0.6s ease-out;
+            opacity: 1;
         }
 
-        .completion-actions button {
-            flex: 1;
-            min-width: 100px;
+        .status-overlay.active .status-card {
+            transform: scale(1);
         }
 
-        /* Lightbox com Zoom */
-        .lightbox-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-        }
-
-        .lightbox-overlay.active { 
-            display: flex;
-            animation: fadeInUp 0.3s ease-out;
-        }
-
-        .lightbox-content {
-            position: relative;
-            max-width: 95vw;
-            max-height: 85vh;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-
-        .lightbox-img {
-            max-width: 100%;
-            max-height: 100%;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: grab;
-        }
-
-        .lightbox-img:active {
-            cursor: grabbing;
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            z-index: 10001;
-            background: rgba(0, 0, 0, 0.3);
-            width: 40px;
-            height: 40px;
+        .loader {
+            width: 44px;
+            height: 44px;
+            border: 3px solid var(--glass);
+            border-top: 3px solid var(--accent);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition-fast);
-            border: none;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
         }
 
-        .lightbox-close:hover {
-            background: rgba(0, 0, 0, 0.6);
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .zoom-controls {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-            z-index: 10001;
-            animation: slideInUp 0.3s ease-out;
-        }
-
-        .zoom-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all var(--transition-fast);
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-        }
-
-        .zoom-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Footer */
         .footer {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-            padding: clamp(24px, 4vw, 40px);
-            margin-top: clamp(40px, 8vw, 80px);
-            text-align: center;
-            color: var(--text-secondary);
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        /* Notifications */
-        .notification {
-            position: fixed;
-            bottom: clamp(16px, 3vw, 24px);
-            right: clamp(16px, 3vw, 24px);
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 24px);
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            z-index: 3000;
-            animation: slideInUp 0.3s ease-out;
-            max-width: clamp(300px, 90vw, 400px);
-            font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-        }
-
-        .notification.success { 
-            background: linear-gradient(135deg, #34c759 0%, #00d084 100%); 
-        }
-
-        .notification.error { 
-            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%); 
-        }
-
-        /* Offline Indicator */
-        .offline-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #ff6b6b;
-            color: white;
-            padding: clamp(10px, 2vw, 12px);
-            text-align: center;
-            z-index: 999;
-            display: none;
-            font-weight: 600;
-            font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-            animation: slideInDown 0.3s ease-out;
-        }
-
-        .offline-indicator.active { 
-            display: block; 
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .lesson-images-gallery { 
-                grid-template-columns: 1fr; 
-            }
-            
-            .nav-center-actions { 
-                display: none !important; 
-            }
-            
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .dashboard-user {
-                width: 100%;
-            }
-        }
-
-        /* Prefers reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
+            margin-top: 32px;
+            font-size: 12px;
+            color: var(--text-dim);
         }
     </style>
 </head>
 <body>
-    <!-- Offline Indicator -->
-    <div class="offline-indicator" id="offlineIndicator" role="status" aria-live="polite">
-        📡 Você está offline - Seus dados estão sendo salvos localmente
-    </div>
 
-    <!-- Navbar -->
-    <nav class="navbar" id="navbar" role="navigation" aria-label="Navegação principal">
-        <div class="navbar-container">
-            <div class="navbar-logo">
-                <div class="logo-circle" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-                    </svg>
-                </div>
-                <span>WNET.BLOG</span>
-            </div>
+    <div class="bg-glow"></div>
 
-            <!-- Botões de alternância no cabeçalho -->
-            <div class="nav-center-actions" id="navCenterActions" role="tablist">
-                <button class="nav-action-btn active" data-target="aulas" role="tab" aria-selected="true" aria-controls="aulasContent">Aulas</button>
-                <button class="nav-action-btn" data-target="progresso" role="tab" aria-selected="false" aria-controls="progressoContent">Progresso</button>
-            </div>
-            
-            <div class="navbar-actions">
-                <button class="btn-theme" id="themeToggle" title="Alternar tema" aria-label="Alternar entre tema claro e escuro">
-                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                    </svg>
-                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                    </svg>
-                </button>
-                <button class="btn btn-secondary" id="logoutBtn" style="display: none;" aria-label="Sair da conta">Sair</button>
+    <div class="container">
+        <div class="logo-wrapper">
+            <div class="logo-glow"></div>
+            <div class="logo-container">
+                <img src="https://ok-moccasin-fxxuilq23t.edgeone.app/bbc30160-49ba-11f1-9adb-11432caa6012.png" alt="wnet Logo">
             </div>
         </div>
-    </nav>
+        
+        <h1>wnet</h1>
+        <p>Conectividade de elite. Seguro, rápido e privado.</p>
 
-    <!-- Auth Screen -->
-    <div class="screen auth-screen active" id="authScreen">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1>WNET.BLOG</h1>
-                <p>Plataforma de Estudos para Músicos</p>
+        <button id="downloadBtn" class="download-btn">
+            <span class="btn-shine"></span>
+            <i class="fa-solid fa-cloud-arrow-down"></i>
+            Baixar Agora
+        </button>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <i class="fa-solid fa-code-branch"></i>
+                <span class="info-label">Versão</span>
+                <span class="info-value">2.0 Pro</span>
             </div>
-
-            <div class="auth-tabs" role="tablist">
-                <button class="auth-tab active" data-tab="login" role="tab" aria-selected="true" aria-controls="loginForm">Entrar</button>
-                <button class="auth-tab" data-tab="register" role="tab" aria-selected="false" aria-controls="registerForm">Criar Conta</button>
+            <div class="info-item">
+                <i class="fa-solid fa-weight-hanging"></i>
+                <span class="info-label">Tamanho</span>
+                <span class="info-value">60 MB</span>
             </div>
-
-            <!-- Login Form -->
-            <form class="auth-form active" id="loginForm" data-form="login" aria-label="Formulário de login">
-                <div class="form-group">
-                    <label for="loginUsername">Usuário</label>
-                    <input type="text" id="loginUsername" placeholder="Digite seu usuário" required aria-required="true">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Senha</label>
-                    <input type="password" id="loginPassword" placeholder="Digite sua senha" required aria-required="true">
-                </div>
-                <button type="submit" class="btn btn-primary btn-large btn-block">Entrar</button>
-            </form>
-
-            <!-- Register Form -->
-            <form class="auth-form" id="registerForm" data-form="register" aria-label="Formulário de registro">
-                <div class="form-group">
-                    <label for="registerUsername">Usuário</label>
-                    <input type="text" id="registerUsername" placeholder="Escolha um usuário" required aria-required="true">
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Senha</label>
-                    <input type="password" id="registerPassword" placeholder="Crie uma senha forte" required aria-required="true">
-                </div>
-                <div class="form-group">
-                    <label for="registerPasswordConfirm">Confirmar Senha</label>
-                    <input type="password" id="registerPasswordConfirm" placeholder="Confirme sua senha" required aria-required="true">
-                </div>
-                <button type="submit" class="btn btn-primary btn-large btn-block">Criar Conta</button>
-            </form>
-
-            <div class="auth-footer">
-                💡 Seus dados são salvos localmente no seu navegador
+            <div class="info-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span class="info-label">Segurança</span>
+                <span class="info-value">Verificado</span>
             </div>
+            <div class="info-item">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <span class="info-label">Sistema</span>
+                <span class="info-value">Android 6.0+</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            &copy; 2024 wnet. Engineered for privacy.
         </div>
     </div>
 
-    <!-- Dashboard Screen -->
-    <div class="screen" id="dashboardScreen">
-        <div class="container">
-            
-            <!-- Banner Home -->
-            <div class="home-banner">
-                <h1 id="welcomeTitle">Olá, Aluno! 👋</h1>
-                <p>Pronto para sua próxima aula de música?</p>
-            </div>
-
-            <div class="dashboard-header">
-                <div class="dashboard-title">
-                    <h1 id="sectionTitle">Suas Aulas</h1>
-                    <p id="sectionSubtitle">Clique em uma aula para começar a estudar</p>
-                </div>
-                <div class="dashboard-user">
-                    <div class="user-avatar" id="userAvatar" aria-label="Avatar do usuário">A</div>
-                    <div class="user-info">
-                        <div class="user-name" id="userName">Aluno</div>
-                        <div class="user-status" id="userStatus">Estudando agora</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Conteúdo: Progresso (Oculto por padrão) -->
-            <div id="progressoContent" style="display: none;" role="tabpanel" aria-labelledby="progresso">
-                <div class="progress-stats">
-                    <div class="stat-card">
-                        <div class="stat-icon" aria-hidden="true">📚</div>
-                        <div class="stat-value" id="completedLessons">0</div>
-                        <div class="stat-label">Aulas Concluídas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" aria-hidden="true">🔥</div>
-                        <div class="stat-value" id="studyStreak">0</div>
-                        <div class="stat-label">Dias de Sequência</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" aria-hidden="true">⭐</div>
-                        <div class="stat-value" id="totalProgress">0%</div>
-                        <div class="stat-label">Progresso Total</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" aria-hidden="true">🏆</div>
-                        <div class="stat-value" id="points">0</div>
-                        <div class="stat-label">Pontos Conquistados</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Conteúdo: Aulas -->
-            <div id="aulasContent" role="tabpanel" aria-labelledby="aulas">
-                <div class="lessons-container">
-                    <div class="lessons-grid" id="lessonsGrid">
-                        <!-- Lessons will be generated here -->
-                    </div>
-                </div>
-            </div>
+    <div id="statusOverlay" class="status-overlay">
+        <div class="status-card">
+            <div id="loader" class="loader"></div>
+            <h2 id="statusTitle" style="font-size: 20px; margin-bottom: 8px;">Iniciando...</h2>
+            <p id="statusDesc" style="font-size: 14px; color: var(--text-dim);">Preparando seu download seguro.</p>
         </div>
     </div>
-
-    <!-- Lesson View Screen -->
-    <div class="screen" id="lessonScreen">
-        <div class="container">
-            <div class="lesson-view">
-                <div class="lesson-view-header">
-                    <button class="lesson-view-back" id="backBtn" aria-label="Voltar para o dashboard">←</button>
-                    <div class="lesson-view-title">
-                        <h2 id="lessonViewTitle">Aula 1</h2>
-                        <div class="lesson-view-meta">
-                            <span id="lessonViewNumber">Aula 1 de 10</span>
-                            <span id="lessonViewDuration">Duração: 30 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lesson-content" id="lessonContent">
-                    <!-- Imagens da aula serão carregadas aqui -->
-                </div>
-
-                <div class="lesson-actions">
-                    <button class="btn btn-secondary" id="pauseBtn" aria-label="Pausar aula">⏸ Pausar</button>
-                    <button class="btn btn-primary" id="completeBtn" aria-label="Marcar aula como concluída">✓ Marcar como Concluído</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Completion Modal -->
-    <div class="completion-modal" id="completionModal" role="dialog" aria-labelledby="completionTitle" aria-modal="true">
-        <div class="completion-content">
-            <div class="completion-icon" aria-hidden="true">🎉</div>
-            <h2 id="completionTitle">Parabéns!</h2>
-            <p id="completionMessage">Você concluiu a aula com sucesso!</p>
-            <div class="completion-actions">
-                <button class="btn btn-secondary" id="reviewBtn" aria-label="Revisar aula">Revisar</button>
-                <button class="btn btn-primary" id="nextBtn" aria-label="Ir para próxima aula">Próxima Aula →</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Lightbox com Zoom -->
-    <div class="lightbox-overlay" id="lightbox" role="dialog" aria-labelledby="lightboxTitle" aria-modal="true">
-        <button class="lightbox-close" id="closeLightbox" aria-label="Fechar visualizador de imagem">✕</button>
-        <div class="lightbox-content">
-            <img src="" class="lightbox-img" id="lightboxImg" alt="Imagem ampliada">
-        </div>
-        <div class="zoom-controls" aria-label="Controles de zoom">
-            <button class="zoom-btn" id="zoomOut" aria-label="Diminuir zoom">➖</button>
-            <span id="zoomLevel" style="color:white; font-weight:700;" aria-live="polite">100%</span>
-            <button class="zoom-btn" id="zoomIn" aria-label="Aumentar zoom">➕</button>
-            <button class="zoom-btn" id="resetZoom" aria-label="Resetar zoom">🔄</button>
-        </div>
-    </div>
-
-    <div id="notificationsContainer" role="region" aria-live="polite" aria-label="Notificações"></div>
 
     <script>
-        /* ============================================================================
-           WNET.BLOG - PLATAFORMA DE ESTUDOS ULTRA PREMIUM
-           JavaScript otimizado com melhorias de performance e acessibilidade
-           ============================================================================ */
+        const downloadBtn = document.getElementById('downloadBtn');
+        const overlay = document.getElementById('statusOverlay');
+        const statusTitle = document.getElementById('statusTitle');
+        const statusDesc = document.getElementById('statusDesc');
+        const loader = document.getElementById('loader');
+        
+        // LINK DO APK INFALÍVEL
+        const APK_URL = "https://apk.dtunnel.com.br/build/6de24fd96f/4.6.2_base_pro.apk";
 
-        // Configuração de aulas (2 imagens por aula)
-        const LESSONS = [
-            { id: 1, title: 'Aula 1: Introdução', description: 'Comece sua jornada de aprendizado', duration: '30 min', imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 2, title: 'Aula 2: Conceitos Básicos', description: 'Aprenda os conceitos fundamentais', duration: '45 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 3, title: 'Aula 3: Prática Inicial', description: 'Primeira prática do curso', duration: '50 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 4, title: 'Aula 4: Aprofundamento', description: 'Conceitos mais avançados', duration: '60 min', imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 5, title: 'Aula 5: Casos de Uso', description: 'Exemplos práticos do mundo real', duration: '55 min', imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 6, title: 'Aula 6: Projeto Prático', description: 'Desenvolva um projeto completo', duration: '90 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 7, title: 'Aula 7: Otimização', description: 'Técnicas de otimização avançadas', duration: '65 min', imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f70d504f0?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 8, title: 'Aula 8: Boas Práticas', description: 'Padrões e boas práticas da indústria', duration: '55 min', imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 9, title: 'Aula 9: Troubleshooting', description: 'Resolução de problemas comuns', duration: '45 min', imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] },
-            { id: 10, title: 'Aula 10: Conclusão e Certificado', description: 'Finalize o curso e ganhe seu certificado', duration: '30 min', imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop', images: [{url: '', caption: 'Parte 1'}, {url: '', caption: 'Parte 2'}] }
-        ];
+        downloadBtn.addEventListener('click', function() {
+            // 1. Feedback Visual Imediato
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('active'), 10);
 
-        let currentUser = null;
-        let userProgress = {};
-        let currentLessonId = null;
-        let currentZoom = 1;
+            // 2. Lógica de Download Automático Infalível
+            const triggerDownload = () => {
+                const link = document.createElement('a');
+                link.href = APK_URL;
+                link.download = "wnet_pro.apk";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
 
-        // Storage Manager
-        class StorageManager {
-            static saveUser(username, password) {
-                const users = JSON.parse(localStorage.getItem('wnetblog_users') || '{}');
-                users[username] = { password, createdAt: new Date().toISOString() };
-                localStorage.setItem('wnetblog_users', JSON.stringify(users));
-            }
-            static getUser(username) {
-                const users = JSON.parse(localStorage.getItem('wnetblog_users') || '{}');
-                return users[username];
-            }
-            static userExists(username) { 
-                return this.getUser(username) !== undefined; 
-            }
-            static saveProgress(username, lessonId, completed) {
-                const key = `wnetblog_progress_${username}`;
-                const progress = JSON.parse(localStorage.getItem(key) || '{}');
-                progress[lessonId] = { completed, completedAt: completed ? new Date().toISOString() : null, lastAccessed: new Date().toISOString() };
-                localStorage.setItem(key, JSON.stringify(progress));
-            }
-            static getProgress(username) { 
-                return JSON.parse(localStorage.getItem(`wnetblog_progress_${username}`) || '{}'); 
-            }
-            static getCurrentUser() { 
-                return localStorage.getItem('wnetblog_currentUser'); 
-            }
-            static setCurrentUser(username) { 
-                localStorage.setItem('wnetblog_currentUser', username); 
-            }
-            static clearCurrentUser() { 
-                localStorage.removeItem('wnetblog_currentUser'); 
-            }
-        }
+            // Executa o download imediatamente
+            triggerDownload();
 
-        // Theme Manager
-        class ThemeManager {
-            constructor() {
-                this.theme = localStorage.getItem('wnetblog_theme') || 'light';
-                this.init();
-            }
-            init() {
-                this.applyTheme();
-                document.getElementById('themeToggle').addEventListener('click', () => this.toggle());
-            }
-            toggle() {
-                this.theme = this.theme === 'light' ? 'dark' : 'light';
-                this.applyTheme();
-                localStorage.setItem('wnetblog_theme', this.theme);
-            }
-            applyTheme() { 
-                document.documentElement.setAttribute('data-theme', this.theme); 
-            }
-        }
+            // 3. Sequência de Status para Experiência do Usuário
+            setTimeout(() => {
+                statusTitle.textContent = "Download Iniciado";
+                statusDesc.textContent = "O arquivo está sendo transferido.";
+                loader.style.borderColor = "transparent";
+                loader.style.borderTopColor = "#34c759";
+                loader.innerHTML = '<i class="fa-solid fa-check" style="color: #34c759; font-size: 20px; margin-top: 10px;"></i>';
+                loader.style.animation = "none";
+            }, 1500);
 
-        // Auth Manager
-        class AuthManager {
-            constructor() {
-                this.setupAuthTabs();
-                this.setupForms();
-                this.setupNavActions();
-                this.checkExistingUser();
-            }
-            setupAuthTabs() {
-                document.querySelectorAll('.auth-tab').forEach(tab => {
-                    tab.addEventListener('click', (e) => {
-                        const tabName = e.target.dataset.tab;
-                        document.querySelectorAll('.auth-tab').forEach(t => {
-                            t.classList.remove('active');
-                            t.setAttribute('aria-selected', 'false');
-                        });
-                        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                        e.target.classList.add('active');
-                        e.target.setAttribute('aria-selected', 'true');
-                        document.querySelector(`[data-form="${tabName}"]`).classList.add('active');
-                    });
-                });
-            }
-            setupForms() {
-                document.getElementById('loginForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const u = document.getElementById('loginUsername').value;
-                    const p = document.getElementById('loginPassword').value;
-                    const user = StorageManager.getUser(u);
-                    if (!user || user.password !== p) { 
-                        this.showNotification('Credenciais inválidas!', 'error'); 
-                        return; 
-                    }
-                    this.loginUser(u);
-                });
-                document.getElementById('registerForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const u = document.getElementById('registerUsername').value;
-                    const p = document.getElementById('registerPassword').value;
-                    const pc = document.getElementById('registerPasswordConfirm').value;
-                    if (p !== pc) {
-                        this.showNotification('As senhas não coincidem!', 'error');
-                        return;
-                    }
-                    if (StorageManager.userExists(u)) { 
-                        this.showNotification('Usuário já existe!', 'error'); 
-                        return; 
-                    }
-                    StorageManager.saveUser(u, p);
-                    this.loginUser(u);
-                });
-                document.getElementById('logoutBtn').addEventListener('click', () => {
-                    currentUser = null; 
-                    StorageManager.clearCurrentUser();
-                    location.reload();
-                });
-            }
-            setupNavActions() {
-                document.querySelectorAll('.nav-action-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.nav-action-btn').forEach(b => {
-                            b.classList.remove('active');
-                            b.setAttribute('aria-selected', 'false');
-                        });
-                        btn.classList.add('active');
-                        btn.setAttribute('aria-selected', 'true');
-                        const target = btn.dataset.target;
-                        if (target === 'aulas') {
-                            document.getElementById('aulasContent').style.display = 'block';
-                            document.getElementById('progressoContent').style.display = 'none';
-                            document.getElementById('sectionTitle').textContent = 'Suas Aulas';
-                        } else {
-                            document.getElementById('aulasContent').style.display = 'none';
-                            document.getElementById('progressoContent').style.display = 'block';
-                            document.getElementById('sectionTitle').textContent = 'Seu Progresso';
-                        }
-                    });
-                });
-            }
-            loginUser(username) {
-                currentUser = username;
-                StorageManager.setCurrentUser(username);
-                userProgress = StorageManager.getProgress(username);
-                this.showDashboard();
-            }
-            checkExistingUser() {
-                const savedUser = StorageManager.getCurrentUser();
-                if (savedUser) { 
-                    currentUser = savedUser; 
-                    userProgress = StorageManager.getProgress(savedUser); 
-                    this.showDashboard(); 
-                }
-            }
-            showDashboard() {
-                document.getElementById('authScreen').classList.remove('active');
-                document.getElementById('dashboardScreen').classList.add('active');
-                document.getElementById('logoutBtn').style.display = 'block';
-                document.getElementById('navCenterActions').style.display = 'flex';
-                this.updateDashboard();
-            }
-            updateDashboard() {
-                document.getElementById('userAvatar').textContent = currentUser.charAt(0).toUpperCase();
-                document.getElementById('userName').textContent = currentUser;
-                document.getElementById('welcomeTitle').textContent = `Olá, ${currentUser}! 👋`;
-                this.updateStats();
-                this.renderLessons();
-            }
-            updateStats() {
-                const completed = Object.values(userProgress).filter(p => p.completed).length;
-                document.getElementById('completedLessons').textContent = completed;
-                document.getElementById('totalProgress').textContent = `${Math.round((completed / 10) * 100)}%`;
-                document.getElementById('points').textContent = completed * 100;
-                document.getElementById('studyStreak').textContent = '3';
-            }
-            renderLessons() {
-                const grid = document.getElementById('lessonsGrid');
-                grid.innerHTML = '';
-                LESSONS.forEach((lesson, index) => {
-                    const isCompleted = userProgress[lesson.id]?.completed || false;
-                    const isLocked = index > 0 && !userProgress[LESSONS[index - 1].id]?.completed;
-                    const card = document.createElement('div');
-                    card.className = `lesson-card ${isLocked ? 'locked' : ''}`;
-                    card.innerHTML = `
-                        <div class="lesson-image">
-                            <img src="${lesson.imageUrl}" alt="${lesson.title}">
-                            ${isLocked ? '<div class="lesson-lock">🔒</div>' : ''}
-                            ${isCompleted ? '<div class="lesson-lock" style="background: rgba(52, 199, 89, 0.7);">✓</div>' : ''}
-                        </div>
-                        <div class="lesson-body">
-                            <span class="lesson-number">Aula ${lesson.id}</span>
-                            <h3 class="lesson-title">${lesson.title}</h3>
-                            <p class="lesson-description">${lesson.description}</p>
-                            <div class="lesson-footer">
-                                <div class="lesson-duration">${lesson.duration}</div>
-                            </div>
-                        </div>
-                    `;
-                    if (!isLocked) card.addEventListener('click', () => this.openLesson(lesson.id));
-                    grid.appendChild(card);
-                });
-            }
-            openLesson(lessonId) {
-                currentLessonId = lessonId;
-                const lesson = LESSONS.find(l => l.id === lessonId);
-                document.getElementById('lessonViewTitle').textContent = lesson.title;
-                document.getElementById('lessonViewNumber').textContent = `Aula ${lesson.id} de 10`;
-                
-                const content = document.getElementById('lessonContent');
-                content.innerHTML = `
-                    <div class="lesson-images-gallery">
-                        ${lesson.images.map((img, i) => `
-                            <div class="lesson-img-item" onclick="openLightbox('${img.url}')" role="button" tabindex="0" aria-label="Abrir imagem ${i+1}">
-                                ${img.url ? `<img src="${img.url}" alt="Imagem da aula ${i+1}">` : `<div class="img-placeholder">🖼️ Imagem ${i+1}</div>`}
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-
-                document.getElementById('dashboardScreen').classList.remove('active');
-                document.getElementById('lessonScreen').classList.add('active');
-                document.getElementById('navCenterActions').style.display = 'none';
-                this.setupLessonActions();
-            }
-            setupLessonActions() {
-                document.getElementById('backBtn').onclick = () => {
-                    document.getElementById('lessonScreen').classList.remove('active');
-                    this.showDashboard();
-                };
-                document.getElementById('completeBtn').onclick = () => {
-                    StorageManager.saveProgress(currentUser, currentLessonId, true);
-                    userProgress = StorageManager.getProgress(currentUser);
-                    document.getElementById('completionModal').classList.add('active');
-                };
-                document.getElementById('nextBtn').onclick = () => {
-                    document.getElementById('completionModal').classList.remove('active');
-                    if (currentLessonId < 10) this.openLesson(currentLessonId + 1);
-                    else this.showDashboard();
-                };
-            }
-            showNotification(m, t) { 
-                alert(m); 
-            }
-        }
-
-        // Lightbox e Zoom
-        window.openLightbox = (url) => {
-            if (!url) return;
-            const lb = document.getElementById('lightbox');
-            const img = document.getElementById('lightboxImg');
-            img.src = url;
-            lb.classList.add('active');
-            currentZoom = 1;
-            updateZoom();
-        };
-
-        function updateZoom() {
-            const img = document.getElementById('lightboxImg');
-            img.style.transform = `scale(${currentZoom})`;
-            document.getElementById('zoomLevel').textContent = `${Math.round(currentZoom * 100)}%`;
-        }
-
-        document.getElementById('closeLightbox').onclick = () => document.getElementById('lightbox').classList.remove('active');
-        document.getElementById('zoomIn').onclick = () => { if(currentZoom < 3) currentZoom += 0.2; updateZoom(); };
-        document.getElementById('zoomOut').onclick = () => { if(currentZoom > 0.5) currentZoom -= 0.2; updateZoom(); };
-        document.getElementById('resetZoom').onclick = () => { currentZoom = 1; updateZoom(); };
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            new ThemeManager();
-            window.authManager = new AuthManager();
+            // Fecha o overlay automaticamente
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    // Reset para próxima vez
+                    statusTitle.textContent = "Iniciando...";
+                    statusDesc.textContent = "Preparando seu download seguro.";
+                    loader.innerHTML = "";
+                    loader.style.animation = "spin 0.8s linear infinite";
+                    loader.style.borderColor = "var(--glass)";
+                    loader.style.borderTopColor = "var(--accent)";
+                }, 4000);
+            }, 4000);
         });
-    </script>
+    </script> 
 </body>
 </html>
