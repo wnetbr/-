@@ -552,23 +552,814 @@
 }
             },
             {
-                nome: "Marcos Silva",
-                senha: "456",
+                nome: "JERFESON",
+                senha: "19451020",
                 config: {
-                    "remarks": "Marcos-Premium",
-                    "outbounds": [{
-                        "tag": "proxy", "protocol": "vless",
-                        "settings": { "vnext": [{ "address": "outrohost.com", "port": 443, "users": [{ "id": "99999999-ffff-0000-0000-000000000000" }] }] }
-                    }]
-                }
+  "remarks": "JERFESON",
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "routeOnly": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "ofertas.tim.com.br",
+            "port": 443,
+            "users": [
+              {
+                "id": "449cacd8-cff1-4bad-931e-33a8a03fb73f",
+                "level": 8,
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "xhttpSettings": {
+          "path": "/",
+          "host": "julios22.azion.app",
+          "mode": "auto"
+        },
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "www.tim.com.br",
+          "show": false
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      "1.1.1.1"
+    ],
+    "hosts": {
+      "domain:googleapis.cn": "googleapis.com",
+      "dns.alidns.com": [
+        "223.5.5.5",
+        "223.6.6.6",
+        "2400:3200::1",
+        "2400:3200:baba::1"
+      ],
+      "one.one.one.one": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "dot.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "dns.google": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "2001:4860:4860::8888",
+        "2001:4860:4860::8844"
+      ],
+      "dns.quad9.net": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "2620:fe::fe",
+        "2620:fe::9"
+      ],
+      "common.dot.dns.yandex.net": [
+        "77.88.8.8",
+        "77.88.8.1",
+        "2a02:6b8::feed:0ff",
+        "2a02:6b8:0:1::feed:0ff"
+      ]
+    }
+  },
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "1.1.1.1"
+        ],
+        "outboundTag": "proxy",
+        "port": "53"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "223.5.5.5"
+        ],
+        "outboundTag": "direct",
+        "port": "53"
+      }
+    ]
+  }
+}
+
+{
+                nome: "MIGUEL",
+                senha: "MIGUELCCB",
+                config: {
+  "remarks": "MIGUEL",
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "routeOnly": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "ofertas.tim.com.br",
+            "port": 443,
+            "users": [
+              {
+                "id": "449cacd8-cff1-4bad-931e-33a8a03fb73f",
+                "level": 8,
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "xhttpSettings": {
+          "path": "/",
+          "host": "julios22.azion.app",
+          "mode": "auto"
+        },
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "www.tim.com.br",
+          "show": false
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      "1.1.1.1"
+    ],
+    "hosts": {
+      "domain:googleapis.cn": "googleapis.com",
+      "dns.alidns.com": [
+        "223.5.5.5",
+        "223.6.6.6",
+        "2400:3200::1",
+        "2400:3200:baba::1"
+      ],
+      "one.one.one.one": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "dot.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "dns.google": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "2001:4860:4860::8888",
+        "2001:4860:4860::8844"
+      ],
+      "dns.quad9.net": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "2620:fe::fe",
+        "2620:fe::9"
+      ],
+      "common.dot.dns.yandex.net": [
+        "77.88.8.8",
+        "77.88.8.1",
+        "2a02:6b8::feed:0ff",
+        "2a02:6b8:0:1::feed:0ff"
+      ]
+    }
+  },
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "1.1.1.1"
+        ],
+        "outboundTag": "proxy",
+        "port": "53"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "223.5.5.5"
+        ],
+        "outboundTag": "direct",
+        "port": "53"
+      }
+    ]
+  }
+}
+
+{
+                nome: "WEVERTON",
+                senha: "EV1745",
+                config: {
+  "remarks": "WEVERTON",
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "routeOnly": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "ofertas.tim.com.br",
+            "port": 443,
+            "users": [
+              {
+                "id": "3eadf9ca-db4f-4c27-a8b3-521c854c06b3",
+                "level": 8,
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "xhttpSettings": {
+          "path": "/",
+          "host": "julios22.azion.app",
+          "mode": "auto"
+        },
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "www.tim.com.br",
+          "show": false
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      "1.1.1.1"
+    ],
+    "hosts": {
+      "domain:googleapis.cn": "googleapis.com",
+      "dns.alidns.com": [
+        "223.5.5.5",
+        "223.6.6.6",
+        "2400:3200::1",
+        "2400:3200:baba::1"
+      ],
+      "one.one.one.one": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "dot.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "dns.google": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "2001:4860:4860::8888",
+        "2001:4860:4860::8844"
+      ],
+      "dns.quad9.net": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "2620:fe::fe",
+        "2620:fe::9"
+      ],
+      "common.dot.dns.yandex.net": [
+        "77.88.8.8",
+        "77.88.8.1",
+        "2a02:6b8::feed:0ff",
+        "2a02:6b8:0:1::feed:0ff"
+      ]
+    }
+  },
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "1.1.1.1"
+        ],
+        "outboundTag": "proxy",
+        "port": "53"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "223.5.5.5"
+        ],
+        "outboundTag": "direct",
+        "port": "53"
+      }
+    ]
+  }
+}
+
+{
+                nome: "JHEONG",
+                senha: "JH1945",
+                config: {
+  "remarks": "JHEONG",
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "routeOnly": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "ofertas.tim.com.br",
+            "port": 443,
+            "users": [
+              {
+                "id": "8fe2c85f-c137-4472-a031-b41f246026c7",
+                "level": 8,
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "xhttpSettings": {
+          "path": "/",
+          "host": "julios22.azion.app",
+          "mode": "auto"
+        },
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "www.tim.com.br",
+          "show": false
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      "1.1.1.1"
+    ],
+    "hosts": {
+      "domain:googleapis.cn": "googleapis.com",
+      "dns.alidns.com": [
+        "223.5.5.5",
+        "223.6.6.6",
+        "2400:3200::1",
+        "2400:3200:baba::1"
+      ],
+      "one.one.one.one": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "dot.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "dns.google": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "2001:4860:4860::8888",
+        "2001:4860:4860::8844"
+      ],
+      "dns.quad9.net": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "2620:fe::fe",
+        "2620:fe::9"
+      ],
+      "common.dot.dns.yandex.net": [
+        "77.88.8.8",
+        "77.88.8.1",
+        "2a02:6b8::feed:0ff",
+        "2a02:6b8:0:1::feed:0ff"
+      ]
+    }
+  },
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "1.1.1.1"
+        ],
+        "outboundTag": "proxy",
+        "port": "53"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "223.5.5.5"
+        ],
+        "outboundTag": "direct",
+        "port": "53"
+      }
+    ]
+  }
+}
             },
             {
-                nome: "Ana Costa",
-                senha: "789",
+                nome: "RAILANE",
+                senha: "RL1745",
                 config: {
-                    "remarks": "Ana-Ultra-Speed",
-                    "outbounds": [{ "protocol": "vmess", "settings": { "vnext": [{ "address": "custom.server.net", "port": 80 }] } }]
-                }
+  "remarks": "RAILANE",
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "routeOnly": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "ofertas.tim.com.br",
+            "port": 443,
+            "users": [
+              {
+                "id": "9eb78890-d6a9-4fee-80d6-bd1be0d9b4e9",
+                "level": 8,
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "xhttpSettings": {
+          "path": "/",
+          "host": "julios22.azion.app",
+          "mode": "auto"
+        },
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "www.tim.com.br",
+          "show": false
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      "1.1.1.1"
+    ],
+    "hosts": {
+      "domain:googleapis.cn": "googleapis.com",
+      "dns.alidns.com": [
+        "223.5.5.5",
+        "223.6.6.6",
+        "2400:3200::1",
+        "2400:3200:baba::1"
+      ],
+      "one.one.one.one": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "dot.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "dns.google": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "2001:4860:4860::8888",
+        "2001:4860:4860::8844"
+      ],
+      "dns.quad9.net": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "2620:fe::fe",
+        "2620:fe::9"
+      ],
+      "common.dot.dns.yandex.net": [
+        "77.88.8.8",
+        "77.88.8.1",
+        "2a02:6b8::feed:0ff",
+        "2a02:6b8:0:1::feed:0ff"
+      ]
+    }
+  },
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "1.1.1.1"
+        ],
+        "outboundTag": "proxy",
+        "port": "53"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "223.5.5.5"
+        ],
+        "outboundTag": "direct",
+        "port": "53"
+      }
+    ]
+  }
+}
             }
         ];
 
