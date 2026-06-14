@@ -1,404 +1,630 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>wnet</title>
-    <!-- Importando fontes premium -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>WNET</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* ==========================================
+           DEFINIÇÃO DOS TEMAS (VARIÁVEIS DE COR)
+           ========================================== */
+        /* 1. Tema Cinza (Padrão) */
         :root {
-            --bg: #000000;
-            --card-bg: rgba(28, 28, 30, 0.8);
-            --accent: #0071e3;
-            --text: #f5f5f7;
-            --text-dim: #86868b;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+            --body-bg: radial-gradient(circle at top right, #334155, #000000);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --apple-blue: #0071e3;
+            --apple-red: #ff3b30;
+            --input-bg: rgba(0, 0, 0, 0.5);
+            --input-text: #fff;
+            --terminal-text: #00ffcc;
+            --shadow-color: rgba(0, 0, 0, 0.7);
+            --btn-text: white;
+            --btn-grad-start: #1d8ffb;
+            --btn-grad-end: #005bb5;
+            --toggle-bg: rgba(255, 255, 255, 0.08);
+            --toggle-active: rgba(255, 255, 255, 0.15);
         }
 
+        /* 2. Tema Preto Absoluto */
+        [data-theme="dark-oled"] {
+            --body-bg: #000000;
+            --card-bg: #0a0a0c;
+            --card-border: #1c1c1e;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --apple-blue: #0a84ff;
+            --input-bg: #121214;
+            --input-text: #fff;
+            --terminal-text: #00ff99;
+            --shadow-color: rgba(0, 0, 0, 0.9);
+            --btn-grad-start: #2f96ff;
+            --btn-grad-end: #0066cc;
+            --toggle-bg: #1c1c1e;
+            --toggle-active: #3a3a3c;
+        }
+
+        /* 3. Tema Branco com Letras Azuis */
+        [data-theme="light-blue"] {
+            --body-bg: linear-gradient(135deg, #f5f5f7 0%, #e5e5ea 100%);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(0, 113, 227, 0.2);
+            --text-primary: #0071e3; /* Letras Azuis */
+            --text-secondary: #005bb5; /* Letras Secundárias em Azul Escuro */
+            --apple-blue: #0071e3;
+            --input-bg: #ffffff;
+            --input-text: #005bb5;
+            --terminal-text: #004499;
+            --shadow-color: rgba(0, 71, 227, 0.15);
+            --btn-text: white;
+            --btn-grad-start: #0088ff;
+            --btn-grad-end: #0055cc;
+            --toggle-bg: rgba(0, 113, 227, 0.08);
+            --toggle-active: #0071e3;
+        }
+
+        /* Base do Site */
         * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -webkit-tap-highlight-color: transparent;
+            transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--body-bg);
+            color: var(--text-primary);
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            min-height: -webkit-fill-available;
+            padding: 20px;
             overflow-x: hidden;
-            background: radial-gradient(circle at 50% 50%, #1c1c1e 0%, #000000 100%);
         }
 
-        html {
-            height: -webkit-fill-available;
-        }
-
-        .bg-glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% -10%, rgba(0, 113, 227, 0.2), transparent 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            position: relative;
-            width: 92%;
-            max-width: 400px;
-            padding: 40px 24px;
+        /* Container Principal 3D */
+        .apple-card-3d {
             background: var(--card-bg);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border-radius: 36px;
-            border: 1px solid var(--border);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--card-border);
+            border-radius: 35px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 30px 60px var(--shadow-color), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.1);
             text-align: center;
-            animation: containerAppear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 1;
-        }
-
-        @keyframes containerAppear {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .logo-wrapper {
             position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 24px;
-            animation: logoFloat 6s ease-in-out infinite;
         }
 
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        /* Seletor de Temas no Estilo Apple Controls */
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--toggle-bg);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--card-border);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
-        .logo-container {
-            width: 100%;
-            height: 100%;
-            border-radius: 24px;
-            overflow: hidden;
-            background: #fff;
-            padding: 2px;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-            position: relative;
-            z-index: 2;
+        .theme-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 9px;
+            cursor: pointer;
         }
 
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 22px;
+        .theme-btn.active {
+            background: var(--toggle-active);
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .logo-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 130%;
-            height: 130%;
-            background: radial-gradient(circle, rgba(0, 113, 227, 0.3), transparent 70%);
-            z-index: 1;
-            animation: pulseGlow 4s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+        /* Correção específica para o texto do botão ativo no tema claro */
+        [data-theme="light-blue"] .theme-btn.active {
+            color: #ffffff !important;
         }
 
         h1 {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.03em;
+            font-weight: 600;
+            font-size: 30px;
+            letter-spacing: -0.8px;
             margin-bottom: 8px;
-            background: linear-gradient(180deg, #fff 0%, #a1a1a6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
-        p {
-            font-size: 16px;
-            color: var(--text-dim);
-            line-height: 1.4;
-            margin-bottom: 32px;
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 35px;
             font-weight: 400;
         }
 
-        .download-btn {
-            position: relative;
+        /* Telas */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeInView 0.4s ease;
+        }
+
+        @keyframes fadeInView {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Lista de Clientes */
+        .client-list {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: var(--accent);
-            color: #fff;
-            text-decoration: none;
-            padding: 18px 24px;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .client-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            padding: 18px 25px;
             border-radius: 18px;
             font-size: 17px;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
+            font-weight: 500;
             cursor: pointer;
-            width: 100%;
-            overflow: hidden;
-            box-shadow: 0 8px 16px rgba(0, 113, 227, 0.3);
-        }
-
-        .download-btn:active {
-            transform: scale(0.96);
-            background: #0062c4;
-        }
-
-        .btn-shine {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 100%; }
-            100% { left: 100%; }
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .info-item {
-            background: var(--glass);
-            padding: 12px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-        }
-
-        .info-item i {
-            font-size: 16px;
-            color: var(--accent);
-            margin-bottom: 6px;
-            display: block;
-            animation: iconBounce 2.5s infinite;
-        }
-
-        @keyframes iconBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-
-        .info-label {
-            display: block;
-            font-size: 10px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            margin-bottom: 2px;
-        }
-
-        .info-value {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .status-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .status-card {
-            background: #1c1c1e;
-            padding: 32px 24px;
-            border-radius: 28px;
-            border: 1px solid var(--border);
-            text-align: center;
-            width: 80%;
-            max-width: 300px;
-            transform: scale(0.9);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .status-overlay.active {
             display: flex;
-            opacity: 1;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
 
-        .status-overlay.active .status-card {
-            transform: scale(1);
+        .client-item:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
         }
 
-        .loader {
-            width: 44px;
-            height: 44px;
-            border: 3px solid var(--glass);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            animation: spin 0.8s linear infinite;
+        .client-item:active {
+            transform: translateY(1px) scale(0.99);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .client-item::after {
+            content: '﹥';
+            font-size: 14px;
+            color: var(--apple-blue);
+            font-weight: 600;
         }
 
-        .footer {
-            margin-top: 32px;
+        /* Inputs e Configurações 3D */
+        .input-group {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        label {
             font-size: 12px;
-            color: var(--text-dim);
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-left: 15px;
+            margin-bottom: 10px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
         }
+
+        input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 18px;
+            color: var(--input-text);
+            font-size: 18px;
+            text-align: center;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.3), 0 0 0 4px rgba(0, 113, 227, 0.15);
+        }
+
+        textarea {
+            width: 100%;
+            height: 240px;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            color: var(--terminal-text);
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 11px;
+            line-height: 1.6;
+            resize: none;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
+        }
+
+        /* Botões */
+        .btn {
+            border: none;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-blue-3d {
+            color: var(--btn-text, white);
+            background: linear-gradient(180deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%);
+            box-shadow: 0 5px 15px rgba(0, 113, 227, 0.3), 
+                        inset 0 -3px 0 rgba(0,0,0,0.2),
+                        inset 0 1px 1px rgba(255,255,255,0.2);
+        }
+
+        .btn-blue-3d:active {
+            transform: scale(0.97) translateY(2px);
+        }
+
+        .btn-back-3d {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--card-border);
+            margin-top: 20px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Customização do botão de voltar para o tema claro */
+        [data-theme="light-blue"] .btn-back-3d {
+            background: #ffffff;
+            color: #0071e3;
+        }
+
+        .btn-back-3d:active {
+            transform: scale(0.98);
+        }
+
+        .error-msg {
+            color: var(--apple-red);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
+        }
+
+        #toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2000;
+        }
+        #toast.show { top: 30px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
+    <div id="toast">✅ Copiado com Sucesso!</div>
 
-    <div class="container">
-        <div class="logo-wrapper">
-            <div class="logo-glow"></div>
-            <div class="logo-container">
-                <img src="https://ok-moccasin-fxxuilq23t.edgeone.app/bbc30160-49ba-11f1-9adb-11432caa6012.png" alt="wnet Logo">
-            </div>
-        </div>
+    <div class="apple-card-3d">
         
-        <h1>wnet</h1>
-        <p>Conectividade de elite. Seguro, rápido e privado.</p>
-
-        <button id="downloadBtn" class="download-btn">
-            <span class="btn-shine"></span>
-            <i class="fa-solid fa-cloud-arrow-down"></i>
-            Baixar Agora
-        </button>
-        
-        <div class="info-grid">
-            <div class="info-item">
-                <i class="fa-solid fa-code-branch"></i>
-                <span class="info-label">Versão</span>
-                <span class="info-value">2.0 Pro</span>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-weight-hanging"></i>
-                <span class="info-label">Tamanho</span>
-                <span class="info-value">60 MB</span>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span class="info-label">Segurança</span>
-                <span class="info-value">Verificado</span>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-mobile-screen-button"></i>
-                <span class="info-label">Sistema</span>
-                <span class="info-value">Android 6.0+</span>
-            </div>
+        <div class="theme-selector">
+            <button class="theme-btn active" id="btnThemeGray" onclick="mudarTemaLayout('gray')">Cinza</button>
+            <button class="theme-btn" id="btnThemeBlack" onclick="mudarTemaLayout('black')">Preto</button>
+            <button class="theme-btn" id="btnThemeWhite" onclick="mudarTemaLayout('white')">Branco</button>
         </div>
 
-        <div class="footer">
-             2026 wnet  |  Direitos Reservados
-        </div>
-    </div>
+        <h1>WNET</h1>
+        <p class="subtitle" id="portalSubtitle">Selecione seu perfil de acesso</p>
 
-    <div id="statusOverlay" class="status-overlay">
-        <div class="status-card">
-            <div id="loader" class="loader"></div>
-            <h2 id="statusTitle" style="font-size: 20px; margin-bottom: 8px;">Iniciando...</h2>
-            <p id="statusDesc" style="font-size: 14px; color: var(--text-dim);">Preparando seu download seguro.</p>
+        <div id="viewList" class="view active">
+            <div class="client-list" id="domClientList"></div>
+        </div>
+
+        <div id="viewLogin" class="view">
+            <div class="input-group">
+                <label id="loginLabel">Senha de Acesso</label>
+                <input type="password" id="passwordInput" placeholder="••••••••">
+                <div class="error-msg" id="loginError">⚠️ Senha incorreta. Tente novamente.</div>
+            </div>
+            <button class="btn btn-blue-3d" onclick="verificarSenha()">🔑 Acessar Configuração</button>
+            <button class="btn btn-back-3d" onclick="mudarTela('viewList', 'Selecione seu perfil de acesso')">Voltar</button>
+        </div>
+
+        <div id="viewDashboard" class="view">
+            <div class="input-group">
+                <label>Sua Configuração</label>
+                <textarea id="outputJson" readonly></textarea>
+            </div>
+            <button class="btn btn-blue-3d" onclick="copiarConfig()"> Copiar Configuração</button>
+            <button class="btn btn-back-3d" onclick="mudarTela('viewList', 'Selecione seu perfil de acesso')"> Sair do Perfil</button>
         </div>
     </div>
 
     <script>
-        const downloadBtn = document.getElementById('downloadBtn');
-        const overlay = document.getElementById('statusOverlay');
-        const statusTitle = document.getElementById('statusTitle');
-        const statusDesc = document.getElementById('statusDesc');
-        const loader = document.getElementById('loader');
-        
-        // LINK DO APK INFALÍVEL
-        const APK_URL = "https://apk.dtunnel.com.br/build/6de24fd96f/4.6.2_base_pro.apk";
+        // Função do Controle dos Temas
+        function mudarTemaLayout(tema) {
+            // Remove estados ativos dos botões
+            document.getElementById('btnThemeGray').classList.remove('active');
+            document.getElementById('btnThemeBlack').classList.remove('active');
+            document.getElementById('btnThemeWhite').classList.remove('active');
 
-        downloadBtn.addEventListener('click', function() {
-            // 1. Feedback Visual Imediato
-            overlay.style.display = 'flex';
-            setTimeout(() => overlay.classList.add('active'), 10);
+            if (tema === 'gray') {
+                document.documentElement.removeAttribute('data-theme');
+                document.getElementById('btnThemeGray').classList.add('active');
+            } else if (tema === 'black') {
+                document.documentElement.setAttribute('data-theme', 'dark-oled');
+                document.getElementById('btnThemeBlack').classList.add('active');
+            } else if (tema === 'white') {
+                document.documentElement.setAttribute('data-theme', 'light-blue');
+                document.getElementById('btnThemeWhite').classList.add('active');
+            }
+        }
 
-            // 2. Lógica de Download Automático Infalível
-            const triggerDownload = () => {
-                const link = document.createElement('a');
-                link.href = APK_URL;
-                link.download = "wnet_pro.apk";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
+        // 🗄️ BANCO DE DADOS INTERNO DE CONFIGURAÇÕES (EDITE AQUI)
+        const BANCO_DE_DADOS_CLIENTES = [
+            {
+                nome: "wnet",
+                senha: "17451020",
+                config: {
+  "remarks": "wnet",
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "routeOnly": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "ofertas.tim.com.br",
+            "port": 443,
+            "users": [
+              {
+                "id": "e6ba18d4-8969-43b6-a3bc-d9090d3866ed",
+                "level": 8,
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "xhttpSettings": {
+          "path": "/",
+          "host": "julios22.azion.app",
+          "mode": "auto"
+        },
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "www.tim.com.br",
+          "show": false
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": 8,
+        "xudpConcurrency": 8,
+        "xudpProxyUDP443": ""
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      "1.1.1.1"
+    ],
+    "hosts": {
+      "domain:googleapis.cn": "googleapis.com",
+      "dns.alidns.com": [
+        "223.5.5.5",
+        "223.6.6.6",
+        "2400:3200::1",
+        "2400:3200:baba::1"
+      ],
+      "one.one.one.one": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "dot.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "dns.google": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "2001:4860:4860::8888",
+        "2001:4860:4860::8844"
+      ],
+      "dns.quad9.net": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "2620:fe::fe",
+        "2620:fe::9"
+      ],
+      "common.dot.dns.yandex.net": [
+        "77.88.8.8",
+        "77.88.8.1",
+        "2a02:6b8::feed:0ff",
+        "2a02:6b8:0:1::feed:0ff"
+      ]
+    }
+  },
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "1.1.1.1"
+        ],
+        "outboundTag": "proxy",
+        "port": "53"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "223.5.5.5"
+        ],
+        "outboundTag": "direct",
+        "port": "53"
+      }
+    ]
+  }
+}
+            },
+            {
+                nome: "Marcos Silva",
+                senha: "456",
+                config: {
+                    "remarks": "Marcos-Premium",
+                    "outbounds": [{
+                        "tag": "proxy", "protocol": "vless",
+                        "settings": { "vnext": [{ "address": "outrohost.com", "port": 443, "users": [{ "id": "99999999-ffff-0000-0000-000000000000" }] }] }
+                    }]
+                }
+            },
+            {
+                nome: "Ana Costa",
+                senha: "789",
+                config: {
+                    "remarks": "Ana-Ultra-Speed",
+                    "outbounds": [{ "protocol": "vmess", "settings": { "vnext": [{ "address": "custom.server.net", "port": 80 }] } }]
+                }
+            }
+        ];
 
-            // Executa o download imediatamente
-            triggerDownload();
+        let clienteSelecionado = null;
 
-            // 3. Sequência de Status para Experiência do Usuário
-            setTimeout(() => {
-                statusTitle.textContent = "Download Iniciado";
-                statusDesc.textContent = "O arquivo está sendo transferido.";
-                loader.style.borderColor = "transparent";
-                loader.style.borderTopColor = "#34c759";
-                loader.innerHTML = '<i class="fa-solid fa-check" style="color: #34c759; font-size: 20px; margin-top: 10px;"></i>';
-                loader.style.animation = "none";
-            }, 1500);
+        function renderizarClientes() {
+            const listContainer = document.getElementById('domClientList');
+            listContainer.innerHTML = '';
+            
+            BANCO_DE_DADOS_CLIENTES.forEach((cliente, index) => {
+                const item = document.createElement('div');
+                item.className = 'client-item';
+                item.innerText = cliente.nome;
+                item.onclick = () => iniciarLogin(index);
+                listContainer.appendChild(item);
+            });
+        }
 
-            // Fecha o overlay automaticamente
-            setTimeout(() => {
-                overlay.classList.remove('active');
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                    // Reset para próxima vez
-                    statusTitle.textContent = "Iniciando...";
-                    statusDesc.textContent = "Preparando seu download seguro.";
-                    loader.innerHTML = "";
-                    loader.style.animation = "spin 0.8s linear infinite";
-                    loader.style.borderColor = "var(--glass)";
-                    loader.style.borderTopColor = "var(--accent)";
-                }, 4000);
-            }, 4000);
-        });
+        function mudarTela(viewId, subtitulo) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.getElementById('portalSubtitle').innerText = subtitulo;
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function iniciarLogin(index) {
+            clienteSelecionado = BANCO_DE_DADOS_CLIENTES[index];
+            document.getElementById('passwordInput').value = '';
+            mudarTela('viewLogin', `Autenticação: ${clienteSelecionado.nome}`);
+        }
+
+        function verificarSenha() {
+            const senhaDigitada = document.getElementById('passwordInput').value;
+            if (senhaDigitada === clienteSelecionado.senha) {
+                carregarDashboard(clienteSelecionado);
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function carregarDashboard(cliente) {
+            document.getElementById('outputJson').value = JSON.stringify(cliente.config, null, 2);
+            mudarTela('viewDashboard', `Olá, ${cliente.nome}`);
+        }
+
+        function copiarConfig() {
+            const copyText = document.getElementById("outputJson");
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                const toast = document.getElementById("toast");
+                toast.classList.add("show");
+                setTimeout(() => { toast.classList.remove("show"); }, 2500);
+            });
+        }
+
+        window.onload = renderizarClientes;
     </script>
 </body>
 </html>
