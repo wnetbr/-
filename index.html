@@ -1,1426 +1,395 @@
-<!doctype html>
-<!--
-  WNET — Site em arquivo único
-  Direção visual: “Pulso de Fibra” | Futurismo otimista com escultura digital cinética.
-  Filosofia aplicada: profundidade ativa, clareza em meio à energia, fluxo contínuo e tecnologia humana.
-  Para publicar: renomeie este arquivo para index.html e envie-o para o seu repositório GitHub.
--->
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#050A17" />
-  <meta name="description" content="WNET — Internet ilimitada para viver, criar e jogar sem pausa." />
-  <title>WNET — Internet sem limites</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    /* Direção visual: WNET em estética tecnológica limpa — hierarquia ampla, poucos elementos e núcleo 3D como protagonista. */
-    /*
-      WNET / PULSO DE FIBRA
-      O CSS usa azul-noite, Azul Pulso (#25D9FF) e profundidade translúcida.
-      Pergunta-guia: esta escolha reforça ou dilui a sensação de conexão viva?
-    */
-    :root {
-      --night: #050A17;
-      --midnight: #08132B;
-      --ink: #0B1730;
-      --pulse: #25D9FF;
-      --pulse-soft: #92EEFF;
-      --mint: #83FFCF;
-      --coral: #FF6E7A;
-      --white: #F4FBFF;
-      --mist: #C7D9E8;
-      --muted: #8DA5B8;
-      --line: rgba(178, 234, 255, .16);
-      --glass: rgba(10, 25, 53, .56);
-      --ease-out: cubic-bezier(.23, 1, .32, 1);
-      --ease-morph: cubic-bezier(.77, 0, .175, 1);
-      --content: min(1180px, calc(100vw - 48px));
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WNET — Programação, Apps & Sites 3D</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      overflow-x: hidden;
-      color: var(--white);
-      background: var(--night);
-      font-family: "Manrope", Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-    body::before { content: ""; position: fixed; z-index: 0; inset: -35vmax; pointer-events: none; opacity: .15; background: conic-gradient(from 205deg at 53% 50%, transparent 0deg, rgba(37,217,255,.12) 37deg, transparent 92deg, rgba(131,255,207,.07) 151deg, transparent 230deg, rgba(37,217,255,.1) 294deg, transparent 360deg); filter: blur(22px); animation: aurora-drift 20s linear infinite; }
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; }
-    ::selection { color: var(--night); background: var(--pulse); }
+    <!-- Three.js (Motor 3D) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    #world-bg {
-      position: fixed;
-      z-index: 0;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-    .noise {
-      position: fixed;
-      z-index: 1;
-      inset: 0;
-      pointer-events: none;
-      opacity: .06;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
-      mix-blend-mode: soft-light;
-    }
-    .page { position: relative; z-index: 2; overflow: hidden; }
-    .section-shell { width: var(--content); margin-inline: auto; }
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
 
-    .top-progress {
-      position: fixed;
-      z-index: 30;
-      top: 0;
-      left: 0;
-      height: 2px;
-      width: var(--read-progress, 0%);
-      background: linear-gradient(90deg, var(--mint), var(--pulse), var(--coral));
-      box-shadow: 0 0 18px var(--pulse);
-      transition: width .08s linear;
-    }
+        /* Glassmorphism Estilo Apple iOS */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
 
-    .nav-wrap {
-      position: fixed;
-      z-index: 20;
-      top: 18px;
-      left: 50%;
-      width: min(1180px, calc(100vw - 32px));
-      transform: translateX(-50%);
-      transition: transform .25s var(--ease-out), background .25s var(--ease-out), border-color .25s var(--ease-out);
-    }
-    .nav-wrap.scrolled { transform: translateX(-50%) translateY(-4px); }
-    .nav {
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 28px;
-      padding: 10px 12px 10px 18px;
-      border: 1px solid rgba(171, 231, 255, .12);
-      border-radius: 18px;
-      background: rgba(5, 10, 23, .62);
-      box-shadow: 0 16px 50px rgba(0, 0, 0, .2);
-      backdrop-filter: blur(22px) saturate(135%);
-    }
-    .nav-wrap.scrolled .nav { border-color: rgba(37, 217, 255, .26); background: rgba(5, 10, 23, .82); }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.28rem;
-      font-weight: 700;
-      letter-spacing: -.075em;
-    }
-    .brand-mark {
-      position: relative;
-      display: block;
-      width: 36px;
-      height: 31px;
-      flex: 0 0 auto;
-      background: linear-gradient(135deg, #F2FEFF 0%, #81F1FF 27%, var(--pulse) 58%, #078FC0 100%);
-      clip-path: polygon(0 0, 18% 0, 31% 61%, 43% 17%, 57% 17%, 69% 61%, 82% 0, 100% 0, 78% 100%, 62% 100%, 50% 52%, 38% 100%, 22% 100%);
-      filter: drop-shadow(0 0 10px rgba(37,217,255,.84)) drop-shadow(0 0 22px rgba(37,217,255,.34));
-      animation: mark-pulse 4.8s ease-in-out infinite;
-    }
-    .brand-mark i { display: none; }
-    .brand-mark::after { content: ""; position: absolute; inset: 2px 11px 12px 3px; background: linear-gradient(135deg, rgba(255,255,255,.95), transparent 48%); opacity: .76; clip-path: polygon(0 0, 100% 0, 62% 100%, 27% 100%); }
-    .brand-name span { color: var(--pulse); }
-    .brand-name { display: inline-block; font-weight: 700; text-shadow: 6px 0 20px rgba(37,217,255,.16); transform: skewX(-7deg); }
-    .nav-links { display: flex; align-items: center; gap: clamp(15px, 2.2vw, 30px); }
-    .nav-links a {
-      position: relative;
-      color: #B8C8D6;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .015em;
-      transition: color .16s var(--ease-out);
-    }
-    .nav-links a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -7px;
-      width: 100%;
-      height: 1px;
-      background: var(--pulse);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform .22s var(--ease-out);
-    }
-    .nav-links a:hover, .nav-links a.active { color: var(--white); }
-    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
-    .nav-cta { display: inline-flex; }
-    .nav-toggle {
-      display: none;
-      width: 42px;
-      height: 42px;
-      border: 0;
-      border-radius: 12px;
-      color: var(--white);
-      background: rgba(255,255,255,.06);
-      cursor: pointer;
-    }
-    .nav-toggle span { display: block; width: 19px; height: 1px; margin: 4px auto; background: currentColor; transition: transform .2s var(--ease-out), opacity .2s var(--ease-out); }
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-    .button {
-      --button-bg: var(--pulse);
-      --button-fg: var(--night);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 48px;
-      padding: 0 20px;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      color: var(--button-fg);
-      background: var(--button-bg);
-      box-shadow: 0 9px 25px rgba(37, 217, 255, .18);
-      font-size: .8rem;
-      font-weight: 800;
-      letter-spacing: .01em;
-      cursor: pointer;
-      transition: transform .16s var(--ease-out), box-shadow .2s var(--ease-out), background .2s var(--ease-out), border-color .2s var(--ease-out);
-    }
-    .button:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(37, 217, 255, .32); }
-    .button:active { transform: scale(.97); }
-    .button--small { min-height: 42px; padding-inline: 16px; font-size: .74rem; }
-    .button--ghost { --button-bg: rgba(255,255,255,.035); --button-fg: var(--white); border-color: rgba(173,234,255,.18); box-shadow: none; }
-    .button--ghost:hover { border-color: rgba(37,217,255,.55); background: rgba(37,217,255,.09); }
-    .button .arrow { font-size: 1.05em; transition: transform .2s var(--ease-out); }
-    .button:hover .arrow { transform: translateX(3px); }
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
 
-    .hero {
-      position: relative;
-      min-height: max(760px, 100svh);
-      display: flex;
-      align-items: center;
-      padding: 150px 0 94px;
-      isolation: isolate;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      inset: 0;
-      background:
-        radial-gradient(circle at 78% 46%, rgba(37,217,255,.16), transparent 26%),
-        radial-gradient(circle at 10% 85%, rgba(131,255,207,.08), transparent 25%),
-        linear-gradient(110deg, #050A17 25%, rgba(5,10,23,.54) 63%, rgba(5,10,23,.94) 100%);
-    }
-    .hero-grid {
-      width: var(--content);
-      margin-inline: auto;
-      display: grid;
-      grid-template-columns: minmax(0, .96fr) minmax(330px, .96fr);
-      gap: 34px;
-      align-items: center;
-    }
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      margin: 0 0 24px;
-      color: var(--pulse-soft);
-      font-size: .69rem;
-      font-weight: 800;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 16px var(--mint); }
-    h1, h2, h3, p { margin-top: 0; }
-    .hero h1 {
-      max-width: 700px;
-      margin-bottom: 22px;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(3.25rem, 6.35vw, 6.5rem);
-      font-weight: 600;
-      letter-spacing: -.083em;
-      line-height: .9;
-    }
-    .hero h1 em { color: var(--pulse); font-style: normal; text-shadow: 0 0 32px rgba(37,217,255,.22); }
-    .hero-copy {
-      max-width: 510px;
-      margin-bottom: 32px;
-      color: #AFC1D2;
-      font-size: clamp(.96rem, 1.45vw, 1.08rem);
-      line-height: 1.75;
-    }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .trust-line {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px 20px;
-      margin-top: 33px;
-      color: #90A7B7;
-      font-size: .72rem;
-      font-weight: 700;
-    }
-    .trust-line span { display: inline-flex; align-items: center; gap: 7px; }
-    .trust-line svg { width: 15px; height: 15px; fill: none; stroke: var(--mint); stroke-width: 2.2; }
+        .glass-whatsapp {
+            background: rgba(34, 197, 94, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-    .hero-stage {
-      position: relative;
-      min-height: 530px;
-      perspective: 1000px;
-      isolation: isolate;
-    }
-    .hero-render {
-      position: absolute;
-      z-index: -1;
-      inset: -14% -18% -16% -8%;
-      width: 126%;
-      height: 128%;
-      object-fit: cover;
-      object-position: center;
-      opacity: .48;
-      mix-blend-mode: screen;
-      filter: saturate(1.15) contrast(1.08);
-      mask-image: radial-gradient(ellipse at 55% 51%, #000 17%, rgba(0,0,0,.82) 46%, transparent 76%);
-      -webkit-mask-image: radial-gradient(ellipse at 55% 51%, #000 17%, rgba(0,0,0,.82) 46%, transparent 76%);
-      transform: translateZ(-100px) scale(1.02);
-      pointer-events: none;
-    }
-    .stage-halo {
-      position: absolute;
-      top: 54%;
-      left: 53%;
-      width: clamp(390px, 40vw, 590px);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(37,217,255,.13) 0, rgba(37,217,255,.055) 24%, transparent 67%);
-      filter: blur(4px);
-      transform: translate(-50%, -50%);
-      animation: breathe 7s ease-in-out infinite;
-    }
-    .orbit {
-      position: absolute;
-      z-index: 2;
-      border: 1px solid rgba(146,238,255,.2);
-      border-radius: 50%;
-      transform-style: preserve-3d;
-      animation: orbit 16s linear infinite;
-    }
-    .orbit::before, .orbit::after { content: ""; position: absolute; border-radius: 50%; background: var(--pulse); box-shadow: 0 0 14px var(--pulse); }
-    .orbit--one { top: 15%; left: 13%; width: 70%; aspect-ratio: 1.65 / 1; transform: rotateX(60deg) rotateZ(-22deg); }
-    .orbit--one::before { width: 7px; height: 7px; top: 7%; left: 16%; }
-    .orbit--two { top: 28%; left: 12%; width: 74%; aspect-ratio: 1.55 / 1; border-color: rgba(131,255,207,.16); transform: rotateX(70deg) rotateZ(38deg); animation-duration: 22s; animation-direction: reverse; }
-    .orbit--two::after { width: 6px; height: 6px; bottom: 5%; left: 28%; background: var(--mint); box-shadow: 0 0 13px var(--mint); }
-    .hero-orb {
-      position: absolute;
-      z-index: 3;
-      top: 50%;
-      left: 52%;
-      width: min(47vw, 475px);
-      aspect-ratio: 1;
-      overflow: hidden;
-      border: 1px solid rgba(155,236,255,.28);
-      border-radius: 37% 63% 52% 48% / 48% 41% 59% 52%;
-      background:
-        radial-gradient(circle at 36% 28%, rgba(255,255,255,.88) 0 1.15%, rgba(177,250,255,.48) 1.8%, transparent 3.2%),
-        linear-gradient(128deg, rgba(255,255,255,.23), transparent 27%),
-        radial-gradient(circle at 43% 34%, rgba(61,231,255,.91), rgba(7,32,73,.63) 30%, rgba(3,8,24,.62) 68%);
-      box-shadow: inset 16px 20px 55px rgba(202,252,255,.27), inset -32px -36px 80px rgba(0,0,0,.63), 0 50px 100px rgba(0,0,0,.46), 0 0 85px rgba(37,217,255,.24), 0 0 0 1px rgba(229,255,255,.09);
-      transform: translate(-50%, -50%) rotate(-14deg) rotateX(7deg);
-      transition: transform .5s var(--ease-out);
-      animation: spin-shape 13s var(--ease-morph) infinite alternate;
-    }
-    .hero-orb::before {
-      content: "";
-      position: absolute;
-      inset: 12%;
-      border: 1px solid rgba(140,241,255,.32);
-      border-radius: inherit;
-      box-shadow: inset 0 0 28px rgba(37,217,255,.17);
-      transform: rotate(31deg) scale(.89, 1.04);
-    }
-    .hero-orb::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: radial-gradient(circle at 52% 49%, rgba(255,255,255,.2), transparent 22%);
-      mix-blend-mode: screen;
-    }
-    .hero-w3d { position: absolute; z-index: 3; inset: 20% 16%; display: block; isolation: isolate; background: linear-gradient(130deg, #F7FFFF 0%, #B7F8FF 15%, #39DEFF 44%, #0799C6 76%, #04698E 100%); clip-path: polygon(0 0, 17% 0, 31% 61%, 43% 17%, 57% 17%, 69% 61%, 83% 0, 100% 0, 78% 100%, 63% 100%, 50% 56%, 37% 100%, 22% 100%); filter: drop-shadow(0 0 9px rgba(230,255,255,.9)) drop-shadow(0 0 23px rgba(37,217,255,.86)) drop-shadow(11px 14px 10px rgba(0,27,61,.64)); transform: perspective(560px) rotateX(11deg) rotateY(-9deg) rotateZ(-2deg); animation: hero-w-float 6.8s ease-in-out infinite; }
-    .hero-w3d::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(135deg, #0B6D91, #013550); clip-path: inherit; transform: translate(14px, 17px); opacity: .82; filter: blur(.2px); }
-    .hero-w3d::after { content: ""; position: absolute; inset: 4% 14% 19% 5%; background: linear-gradient(120deg, rgba(255,255,255,.94), rgba(255,255,255,.05) 44%, transparent 68%); clip-path: inherit; mix-blend-mode: screen; opacity: .82; }
-    .hero-orb:hover { transform: translate(-50%, -50%) rotate(-5deg) rotateX(13deg) scale(1.04); }
-    .orbital-card {
-      position: absolute;
-      z-index: 5;
-      padding: 13px 15px;
-      border: 1px solid rgba(175,236,255,.19);
-      border-radius: 13px;
-      background: rgba(6, 20, 44, .58);
-      box-shadow: 0 14px 35px rgba(0,0,0,.2);
-      backdrop-filter: blur(15px);
-      font-size: .7rem;
-      line-height: 1.25;
-      transition: transform .3s var(--ease-out), border-color .3s var(--ease-out);
-    }
-    .orbital-card:hover { border-color: rgba(37,217,255,.55); transform: translateY(-4px) rotateX(3deg); }
-    .orbital-card small { display: block; margin-bottom: 4px; color: #83A0B5; font-size: .6rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-    .orbital-card strong { font-family: "Space Grotesk", sans-serif; font-size: 1.18rem; letter-spacing: -.04em; }
-    .orbital-card strong .unit { color: var(--pulse); font-size: .61rem; letter-spacing: .04em; }
-    .orbit-card-one { top: 11%; right: 2%; }
-    .orbit-card-two { bottom: 12%; left: 0; }
-    .dot-pulse { display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 11px var(--mint); animation: blink 1.8s ease-in-out infinite; }
+        .glass-whatsapp:hover {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: rgba(34, 197, 94, 0.6);
+            transform: scale(1.03);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+        }
 
-    .ticker {
-      position: relative;
-      z-index: 4;
-      overflow: hidden;
-      border-block: 1px solid var(--line);
-      background: rgba(3, 11, 26, .57);
-      backdrop-filter: blur(12px);
-    }
-    .ticker-track { display: flex; width: max-content; animation: ticker 25s linear infinite; }
-    .ticker-item {
-      display: flex;
-      align-items: center;
-      gap: 17px;
-      padding: 17px 31px;
-      color: #B8D1DF;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: .76rem;
-      font-weight: 600;
-      letter-spacing: .13em;
-      text-transform: uppercase;
-    }
-    .ticker-item i { width: 7px; height: 7px; border-radius: 50%; background: var(--pulse); box-shadow: 0 0 10px var(--pulse); }
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-    main { position: relative; isolation: isolate; }
-    main::before { content: ""; position: absolute; z-index: -1; top: 17%; bottom: 4%; left: 54%; width: 2px; opacity: .72; background: linear-gradient(180deg, transparent, rgba(37,217,255,.08) 5%, var(--pulse) 16%, transparent 25%, rgba(131,255,207,.58) 38%, transparent 49%, var(--pulse) 67%, transparent 80%); box-shadow: 0 0 18px rgba(37,217,255,.62), 9px 0 44px rgba(37,217,255,.14); transform: rotate(-5.5deg); }
-    main::after { content: ""; position: absolute; z-index: -1; inset: 22% 0 0; opacity: .36; pointer-events: none; background: radial-gradient(circle at 50% 2%, var(--mint) 0 2px, transparent 3px), radial-gradient(circle at 52% 26%, var(--coral) 0 2px, transparent 3px), radial-gradient(circle at 54% 54%, var(--mint) 0 2px, transparent 3px), radial-gradient(circle at 56% 81%, var(--pulse) 0 2px, transparent 3px); }
-    .section { position: relative; padding: 135px 0; }
-    .section::before { content: ""; position: absolute; z-index: -1; left: -8vw; right: -8vw; top: -1px; height: 25px; opacity: .88; background: linear-gradient(90deg, transparent 2%, rgba(37,217,255,.08) 18%, rgba(37,217,255,.7) 49%, rgba(131,255,207,.28) 64%, transparent 94%), repeating-linear-gradient(100deg, transparent 0 78px, rgba(37,217,255,.23) 79px 80px, transparent 81px 157px); background-position: center, center; background-repeat: no-repeat; transform: rotate(-2deg); box-shadow: 0 0 19px rgba(37,217,255,.31); }
-    .section::after { content: "W"; position: absolute; z-index: -1; top: 0; left: 50%; color: var(--mint); font-family: "Space Grotesk", sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -.18em; text-shadow: 0 0 14px var(--mint), 0 0 28px rgba(37,217,255,.44); transform: translate(-50%, -50%) scaleX(1.18); animation: section-w-pulse 5.2s ease-in-out infinite; }
-    .section:nth-of-type(even)::before { transform: rotate(2deg) scaleX(-1); }
-    .section-heading { max-width: 660px; }
-    .kicker { margin: 0 0 17px; color: var(--pulse); font-size: .69rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
-    h2 {
-      margin-bottom: 19px;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(2.35rem, 4.4vw, 4.65rem);
-      font-weight: 600;
-      letter-spacing: -.075em;
-      line-height: .97;
-    }
-    .section-heading > p:last-child { max-width: 550px; color: var(--muted); line-height: 1.75; }
-
-    .signal-section { padding-top: 148px; }
-    .signal-layout { display: grid; grid-template-columns: .92fr 1.08fr; gap: clamp(34px, 7vw, 100px); align-items: center; }
-    .signal-sculpture { position: relative; min-height: 550px; perspective: 1100px; }
-    .signal-sculpture::before {
-      content: "";
-      position: absolute;
-      inset: 9% 5% 8%;
-      background: radial-gradient(ellipse at 55% 52%, rgba(37,217,255,.23), transparent 60%);
-      filter: blur(24px);
-    }
-    .signal-sculpture::after { content: ""; position: absolute; z-index: -1; inset: 1% -16% -1% -18%; background: url('/manus-storage/wnet-glass-pillar-realistic_d33ac3d0.jpg') center / cover no-repeat; opacity: .6; mix-blend-mode: screen; mask-image: radial-gradient(ellipse at center, #000 20%, rgba(0,0,0,.78) 52%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, rgba(0,0,0,.78) 52%, transparent 75%); filter: contrast(1.08) saturate(1.1); }
-    .data-pillar {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 180px;
-      height: 405px;
-      transform: translate(-50%, -50%) rotateX(61deg) rotateZ(-31deg);
-      transform-style: preserve-3d;
-      animation: pillar-float 8s ease-in-out infinite;
-    }
-    .data-pillar > span {
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(147,239,255,.45);
-      border-radius: 22px;
-      background: linear-gradient(135deg, rgba(190,253,255,.32), rgba(37,217,255,.04) 34%, rgba(5,10,23,.05) 70%);
-      box-shadow: inset 0 0 30px rgba(37,217,255,.14), 0 0 28px rgba(37,217,255,.1);
-      backdrop-filter: blur(4px);
-    }
-    .data-pillar > span:nth-child(1) { transform: translateZ(0); }
-    .data-pillar > span:nth-child(2) { transform: translate3d(38px, -26px, 75px); opacity: .68; }
-    .data-pillar > span:nth-child(3) { transform: translate3d(-24px, 25px, 143px); opacity: .45; }
-    .data-pillar::after {
-      content: "";
-      position: absolute;
-      top: 7%;
-      right: 14%;
-      width: 3px;
-      height: 87%;
-      background: linear-gradient(180deg, transparent, var(--mint), var(--pulse), transparent);
-      box-shadow: 0 0 17px var(--pulse);
-      transform: translateZ(160px);
-    }
-    .signal-content .section-heading { margin-bottom: 30px; }
-    .feature-list { display: grid; gap: 11px; }
-    .feature-row {
-      display: grid;
-      grid-template-columns: 41px 1fr auto;
-      align-items: center;
-      gap: 14px;
-      padding: 18px 2px;
-      border-bottom: 1px solid var(--line);
-      transition: padding .25s var(--ease-out), border-color .25s var(--ease-out);
-    }
-    .feature-row:hover { padding-inline: 11px; border-color: rgba(37,217,255,.52); }
-    .feature-icon { display: grid; place-items: center; width: 36px; height: 36px; color: var(--pulse); border: 1px solid rgba(37,217,255,.28); border-radius: 10px; background: rgba(37,217,255,.07); }
-    .feature-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
-    .feature-row h3 { margin: 0 0 3px; font-size: .88rem; font-weight: 800; }
-    .feature-row p { margin: 0; color: var(--muted); font-size: .76rem; line-height: 1.45; }
-    .feature-arrow { color: #638193; font-size: 1.15rem; transition: color .18s var(--ease-out), transform .18s var(--ease-out); }
-    .feature-row:hover .feature-arrow { color: var(--pulse); transform: translateX(3px); }
-
-    .experience-section { padding-block: 118px 142px; }
-    .experience-top { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 42px; }
-    .experience-top .section-heading { max-width: 570px; }
-    .experience-note { max-width: 250px; margin: 0 0 6px; color: #88A1B4; font-size: .77rem; line-height: 1.6; }
-    .experience-grid { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; padding-top: 22px; }
-    .experience-grid::before { content: ""; position: absolute; top: 0; left: -6%; width: 112%; height: 1px; background: linear-gradient(90deg, transparent, var(--pulse), transparent); box-shadow: 0 0 20px rgba(37,217,255,.4); transform: rotate(.55deg); }
-    .experience-grid::after { content: "◆     ◦              ◆"; position: absolute; top: -8px; left: 14%; width: 68%; display: flex; justify-content: space-between; color: var(--coral); font-size: .55rem; letter-spacing: 5.8rem; opacity: .86; }
-    .experience-card {
-      position: relative;
-      overflow: hidden;
-      min-height: 314px;
-      padding: 26px;
-      border: 1px solid rgba(174,232,255,.14);
-      background: linear-gradient(145deg, rgba(12,33,68,.76), rgba(5,12,30,.66)), repeating-linear-gradient(110deg, transparent 0 17px, rgba(37,217,255,.028) 18px 19px);
-      box-shadow: inset 0 1px 0 rgba(240,253,255,.14), inset 14px 0 33px rgba(37,217,255,.035), 0 24px 45px rgba(0,0,0,.15);
-      transition: transform .35s var(--ease-out), border-color .35s var(--ease-out), background .35s var(--ease-out);
-      isolation: isolate;
-    }
-    .experience-card:hover { border-color: rgba(37,217,255,.48); background: linear-gradient(145deg, rgba(15,46,88,.76), rgba(4,11,27,.6)); transform: translateY(-8px); }
-    .experience-card::before { content: ""; position: absolute; z-index: 0; inset: auto -30% -50% auto; width: 210px; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(37,217,255,.22), transparent 67%); transition: transform .45s var(--ease-out); }
-    .experience-card::after { content: ""; position: absolute; z-index: 0; inset: 0; background: center / cover no-repeat; opacity: .34; mix-blend-mode: screen; filter: contrast(1.12) saturate(1.1); transition: opacity .4s var(--ease-out), transform .6s var(--ease-out); }
-    .experience-card:hover::after { opacity: .54; transform: scale(1.06); }
-    .card-game::after { background-image: url('/manus-storage/wnet-cinematic-gaming_ebd18bf0.jpg'); background-position: 75% 65%; }
-    .card-stream::after { background-image: url('/manus-storage/wnet-cinematic-stream_e5e36523.jpg'); background-position: 72% 62%; }
-    .card-work::after { background-image: url('/manus-storage/wnet-cinematic-work_8fe1aaf5.jpg'); background-position: 71% 66%; }
-    .experience-card:hover::before { transform: scale(1.32) translate(-15px, -9px); }
-    .card-game { grid-column: span 5; clip-path: polygon(0 0, 100% 0, 100% 91%, 94% 100%, 0 100%); }
-    .card-stream { grid-column: span 4; margin-top: 42px; clip-path: polygon(0 0, 94% 0, 100% 9%, 100% 100%, 0 100%); }
-    .card-work { grid-column: span 3; clip-path: polygon(0 0, 100% 0, 100% 100%, 7% 100%, 0 91%); }
-    .card-index { display: block; margin-bottom: auto; color: var(--pulse); font-family: "Space Grotesk", sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-shadow: 0 0 13px rgba(37,217,255,.35); }
-    .experience-card h3 { margin: 0 0 8px; font-family: "Space Grotesk", sans-serif; font-size: clamp(1.35rem, 2.1vw, 2rem); letter-spacing: -.05em; }
-    .experience-card p { max-width: 270px; margin: 0; color: #9FB8C8; font-size: .8rem; line-height: 1.65; }
-    .card-content { position: absolute; z-index: 2; inset: 26px; display: flex; flex-direction: column; align-items: flex-start; }
-    .visual-shape { position: absolute; z-index: 1; pointer-events: none; }
-    .controller-shape { right: -22px; bottom: -37px; width: 220px; height: 136px; border: 1px solid rgba(144,243,255,.46); border-radius: 45px 75px 43px 50px; transform: rotate(-19deg); box-shadow: inset 0 0 40px rgba(37,217,255,.18), 0 0 45px rgba(37,217,255,.12); }
-    .controller-shape::before, .controller-shape::after { content: ""; position: absolute; border: 1px solid rgba(144,243,255,.46); border-radius: 50%; }
-    .controller-shape::before { width: 38px; height: 38px; left: 37px; top: 48px; box-shadow: 0 0 15px rgba(37,217,255,.5); }
-    .controller-shape::after { width: 12px; height: 12px; right: 37px; top: 46px; background: var(--mint); box-shadow: 23px 8px 0 -1px rgba(37,217,255,.9), 6px 22px 0 -1px rgba(37,217,255,.9); }
-    .stream-shape { right: -18px; bottom: -38px; width: 184px; aspect-ratio: 1; border: 1px solid rgba(151,241,255,.32); border-radius: 50%; box-shadow: inset 0 0 42px rgba(37,217,255,.13); transform: rotateX(59deg) rotateZ(33deg); }
-    .stream-shape::before { content: ""; position: absolute; inset: 20%; border: 1px solid rgba(131,255,207,.4); border-radius: inherit; }
-    .stream-shape::after { content: "▶"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--pulse); font-size: 3rem; text-shadow: 0 0 23px var(--pulse); transform: rotateZ(-33deg); }
-    .work-shape { right: -32px; bottom: -30px; width: 175px; height: 215px; border: 1px solid rgba(155,239,255,.32); border-radius: 20px; background: linear-gradient(135deg, rgba(37,217,255,.21), transparent 50%); transform: rotate(21deg) skewY(-5deg); box-shadow: inset 0 0 30px rgba(37,217,255,.1); }
-    .work-shape::before { content: ""; position: absolute; inset: 22px; border: 1px solid rgba(175,250,255,.35); border-radius: 8px; box-shadow: 0 29px 0 -14px rgba(131,255,207,.75), 0 58px 0 -14px rgba(37,217,255,.6), 0 87px 0 -14px rgba(37,217,255,.38); }
-
-    .plans-section { padding-top: 140px; }
-    .plans-backdrop { position: absolute; z-index: -1; top: 8%; left: 50%; width: 1100px; height: 720px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(24,93,145,.15), transparent 63%); }
-    .plans-heading { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 28px; margin-bottom: 45px; }
-    .plans-heading .section-heading { max-width: 660px; }
-    .availability { display: flex; align-items: center; gap: 9px; padding: 10px 13px; border: 1px solid rgba(131,255,207,.2); border-radius: 999px; color: #B1EBCF; background: rgba(131,255,207,.06); font-size: .68rem; font-weight: 800; white-space: nowrap; }
-    .availability::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px var(--mint); }
-    .plans { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-top: 20px; }
-    .plans::before { content: ""; position: absolute; top: 0; left: -5%; width: 110%; height: 1px; background: linear-gradient(90deg, transparent, rgba(131,255,207,.55), var(--pulse), transparent); box-shadow: 0 0 18px rgba(37,217,255,.32); transform: rotate(-.45deg); }
-    .plan {
-      position: relative;
-      min-height: 438px;
-      display: flex;
-      flex-direction: column;
-      padding: 28px;
-      border: 1px solid rgba(178,234,255,.14);
-      border-radius: 17px;
-      background: linear-gradient(145deg, rgba(7,18,42,.63), rgba(7,18,42,.44)), repeating-linear-gradient(125deg, transparent 0 25px, rgba(37,217,255,.025) 26px 27px);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.13), inset 22px 0 42px rgba(37,217,255,.035), 0 25px 45px rgba(0,0,0,.13);
-      backdrop-filter: blur(13px);
-      transition: transform .3s var(--ease-out), border-color .3s var(--ease-out), background .3s var(--ease-out);
-    }
-    .plan:hover { transform: translateY(-9px); border-color: rgba(37,217,255,.48); background: linear-gradient(145deg, rgba(8,38,76,.82), rgba(6,18,44,.69)); }
-    .plan--featured { border-color: rgba(37,217,255,.55); background: linear-gradient(155deg, rgba(18,75,114,.47), rgba(5,16,42,.8)); transform: translateY(-14px); }
-    .plan--featured:hover { transform: translateY(-22px); }
-    .plan:nth-child(1) { clip-path: polygon(0 0, 100% 0, 100% 93%, 95% 100%, 0 100%); }
-    .plan:nth-child(2) { clip-path: polygon(0 0, 96% 0, 100% 6%, 100% 100%, 4% 100%, 0 94%, 0 5%); }
-    .plan:nth-child(3) { clip-path: polygon(4% 0, 100% 0, 100% 100%, 0 100%, 0 7%); }
-    .plan::before { content: ""; position: absolute; top: 0; left: 8%; right: 8%; height: 2px; background: linear-gradient(90deg, transparent, var(--pulse), transparent); box-shadow: 0 0 13px rgba(37,217,255,.7); }
-    .plan::after { content: ""; position: absolute; right: 14px; bottom: 16px; width: 60px; height: 60px; border: 1px solid rgba(37,217,255,.18); border-left: 0; border-bottom: 0; transform: skewY(-18deg); box-shadow: 12px -10px 25px rgba(37,217,255,.05); pointer-events: none; }
-    .plan--featured::after { border-color: rgba(255,110,122,.48); box-shadow: 0 0 12px rgba(255,110,122,.15); }
-    .plan-label { display: inline-flex; width: fit-content; margin-bottom: 25px; padding: 7px 10px; border-radius: 999px; color: var(--pulse-soft); background: rgba(37,217,255,.08); font-size: .63rem; font-weight: 800; letter-spacing: .115em; text-transform: uppercase; }
-    .plan--featured .plan-label { color: var(--night); background: var(--pulse); }
-    .plan h3 { margin-bottom: 8px; font-family: "Space Grotesk", sans-serif; font-size: 2.23rem; font-weight: 600; letter-spacing: -.085em; line-height: .9; }
-    .plan-intro { min-height: 52px; margin-bottom: 24px; color: #9DB7C7; font-size: .78rem; line-height: 1.6; }
-    .plan-divider { height: 1px; margin-bottom: 18px; background: var(--line); }
-    .plan ul { display: grid; gap: 13px; margin: 0 0 28px; padding: 0; list-style: none; color: #BED0DC; font-size: .76rem; line-height: 1.4; }
-    .plan li { display: flex; align-items: start; gap: 9px; }
-    .plan li::before { content: "✓"; color: var(--mint); font-weight: 800; }
-    .plan-trace { display: flex; align-items: center; gap: 7px; margin: -4px 0 20px; }
-    .plan-trace::before { content: "SINAL"; margin-right: 3px; color: #7292A5; font-family: "Space Grotesk", sans-serif; font-size: .54rem; font-weight: 700; letter-spacing: .14em; }
-    .plan-trace i { width: 26px; height: 2px; border-radius: 4px; background: linear-gradient(90deg, rgba(37,217,255,.2), var(--pulse)); box-shadow: 0 0 7px rgba(37,217,255,.3); }
-    .plan-trace i:nth-child(3) { background: linear-gradient(90deg, rgba(131,255,207,.25), var(--mint)); }
-    .plan--featured .plan-trace i:last-child { background: linear-gradient(90deg, rgba(255,110,122,.25), var(--coral)); box-shadow: 0 0 8px rgba(255,110,122,.4); }
-    .plan .button { width: 100%; margin-top: auto; }
-    .plan-footnote { margin: 22px 0 0; color: #6D8798; font-size: .65rem; text-align: center; }
-
-    .cta-section { padding: 142px 0 78px; }
-    .cta-panel {
-      position: relative;
-      overflow: hidden;
-      min-height: 415px;
-      display: grid;
-      grid-template-columns: 1.06fr .94fr;
-      align-items: center;
-      gap: 30px;
-      padding: clamp(35px, 6vw, 76px);
-      border: 1px solid rgba(161,239,255,.24);
-      border-radius: 26px;
-      background: linear-gradient(118deg, rgba(8,37,75,.93), rgba(5,12,33,.89)), url('/manus-storage/wnet-cinematic-hero_4491f2d8.jpg') center right / cover no-repeat;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 35px 100px rgba(0,0,0,.25);
-    }
-    .cta-panel::before { content: ""; position: absolute; inset: -80% -15% -80% auto; width: 68%; background: conic-gradient(from 30deg, transparent, rgba(37,217,255,.17), transparent 29%, rgba(131,255,207,.12), transparent 52%); animation: halo-spin 16s linear infinite; }
-    .cta-panel::after { content: ""; position: absolute; width: 290px; height: 290px; right: 8%; bottom: -100px; border: 1px solid rgba(152,240,255,.3); border-radius: 50%; box-shadow: inset 0 0 65px rgba(37,217,255,.15), 0 0 80px rgba(37,217,255,.1); transform: rotateX(67deg) rotateZ(-23deg); }
-    .cta-copy { position: relative; z-index: 2; }
-    .cta-copy h2 { margin-bottom: 17px; }
-    .cta-copy p { max-width: 480px; margin-bottom: 27px; color: #B6CEDA; line-height: 1.7; }
-    .cta-bits { position: relative; z-index: 2; min-height: 245px; }
-    .floating-bit { position: absolute; display: flex; align-items: center; gap: 10px; padding: 14px; border: 1px solid rgba(173,239,255,.18); border-radius: 13px; background: rgba(6,20,47,.67); box-shadow: 0 18px 34px rgba(0,0,0,.18); backdrop-filter: blur(15px); font-size: .73rem; font-weight: 800; }
-    .floating-bit .bit-icon { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 9px; color: var(--night); background: var(--mint); }
-    .floating-bit strong { display: block; margin-bottom: 2px; color: var(--white); font-family: "Space Grotesk", sans-serif; font-size: .9rem; }
-    .floating-bit small { color: #8BA6B9; font-size: .61rem; font-weight: 700; }
-    .bit-one { top: 8%; right: 8%; animation: bit-float 5.4s ease-in-out infinite; }
-    .bit-two { top: 44%; left: 7%; animation: bit-float 5.4s ease-in-out 1.2s infinite reverse; }
-    .bit-three { right: 0; bottom: 0; animation: bit-float 5.4s ease-in-out .4s infinite; }
-    @keyframes mark-pulse { 0%, 100% { filter: drop-shadow(0 0 8px rgba(37,217,255,.72)) drop-shadow(0 0 17px rgba(37,217,255,.22)); } 50% { filter: drop-shadow(0 0 13px rgba(202,253,255,.92)) drop-shadow(0 0 28px rgba(37,217,255,.48)); } }
-    @keyframes section-w-pulse { 0%, 100% { opacity: .42; transform: translate(-50%, -50%) scaleX(1.18) rotate(-5deg); } 50% { opacity: .9; transform: translate(-50%, -50%) scaleX(1.28) rotate(4deg); } }
-
-    /* Camada minimalista: preservar a infraestrutura, reduzir o ruído. */
-    .nav { position: relative; min-height: 102px; justify-content: center; padding-inline: 18px; }
-    .nav .brand { position: absolute; left: 50%; gap: 0; perspective: 800px; transform: translateX(-50%); transform-style: preserve-3d; }
-    .nav .brand-mark { display: none; }
-    .nav .brand-name { --mark-rx: 0deg; --mark-ry: 0deg; --mark-z: 0px; position: relative; z-index: 1; display: inline-block; color: #E8FDFF; font-size: clamp(2.15rem, 3.5vw, 3.28rem); font-weight: 800; letter-spacing: -.16em; text-shadow: 0 1px 0 #D6FCFF, 0 2px 0 #8DECF7, 0 3px 0 #42BED5, 0 4px 0 #1989AB, 0 5px 0 #0B6688, 0 6px 0 #075470, 0 16px 22px rgba(0,0,0,.68), 0 0 26px rgba(37,217,255,.58); transform: skewX(-9deg) rotateX(calc(12deg + var(--mark-rx))) rotateY(var(--mark-ry)) translateZ(var(--mark-z)); transform-style: preserve-3d; transition: transform .14s cubic-bezier(.23,1,.32,1), filter .25s ease; filter: saturate(1.13); animation: wordmark-glow 3.8s ease-in-out infinite; will-change: transform; }
-    .nav .brand-name span { color: var(--pulse); }
-    .nav .brand-name::before { content: "WNET"; position: absolute; z-index: -1; inset: 0; color: #053C56; letter-spacing: inherit; text-shadow: 3px 7px 0 #02283C, 0 11px 13px rgba(0,0,0,.72); transform: translate(3px, 5px); opacity: .92; }
-    .nav .brand-name::after { content: ""; position: absolute; left: 3%; right: 8%; top: 5%; height: 33%; border-radius: 50%; background: linear-gradient(90deg, rgba(255,255,255,.9), transparent 66%); mix-blend-mode: screen; transform: skewX(9deg) translateZ(9px); pointer-events: none; }
-    .nav .brand:hover .brand-name { filter: brightness(1.12) saturate(1.28); }
-    @keyframes wordmark-glow { 0%,100% { text-shadow: 0 1px 0 #D6FCFF, 0 2px 0 #8DECF7, 0 3px 0 #42BED5, 0 4px 0 #1989AB, 0 5px 0 #0B6688, 0 6px 0 #075470, 0 16px 22px rgba(0,0,0,.68), 0 0 18px rgba(37,217,255,.42); } 50% { text-shadow: 0 1px 0 #E8FFFF, 0 2px 0 #9AF1FA, 0 3px 0 #46CBDF, 0 4px 0 #1989AB, 0 5px 0 #0B6688, 0 6px 0 #075470, 0 18px 24px rgba(0,0,0,.72), 0 0 35px rgba(37,217,255,.86); } }
-    .nav-wrap .nav-links, .nav-wrap .nav-cta, .nav-wrap .nav-toggle { display: none !important; }
-    .hero { min-height: 640px; padding-block: 150px 70px; }
-    .hero-grid { align-items: center; }
-    .hero-copy-block { max-width: 555px; }
-    .hero .eyebrow { margin-bottom: 20px; letter-spacing: .23em; }
-    .hero h1 { max-width: 640px; margin-bottom: 22px; font-size: clamp(3.7rem, 6.6vw, 7.2rem); line-height: .9; }
-    .hero-copy, .trust-line, .hero-actions .button--ghost { display: none; }
-    .hero-actions { margin-top: 3px; }
-    .hero-stage { min-height: 500px; }
-    .hero-render { opacity: .36; }
-    .orbit { opacity: .22; }
-    .orbital-card { display: none; }
-    .ticker { display: none; }
-    main::before { opacity: .16; }
-    main::after { opacity: .1; }
-    .section { padding-block: 116px; }
-    .section::before { opacity: .25; }
-    .section::after { opacity: .38; }
-    .signal-section { padding-top: 120px; }
-    .signal-sculpture { min-height: 480px; }
-    .signal-content .section-heading { margin-bottom: 17px; }
-    .feature-row { display: none; }
-    .feature-row:first-child { display: grid; padding-block: 15px; }
-    .feature-row p, .feature-arrow { display: none; }
-    .feature-row h3 { font-family: "Space Grotesk", sans-serif; font-size: 1rem; letter-spacing: -.03em; }
-    .experience-section { padding-block: 105px; }
-    .experience-note, .experience-card p { display: none; }
-    .experience-top { margin-bottom: 29px; }
-    .experience-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 0; }
-    .experience-grid::before, .experience-grid::after { display: none; }
-    .experience-card { grid-column: auto !important; min-height: 220px; margin-top: 0 !important; clip-path: none !important; border-radius: 22px; background: linear-gradient(145deg, rgba(12,33,68,.62), rgba(5,12,30,.49)); }
-    .experience-card::after { opacity: .43; }
-    .experience-card:hover { transform: translateY(-5px); }
-    .card-content { inset: 23px; }
-    .card-index { margin-bottom: 26px; font-size: .61rem; }
-    .experience-card h3 { max-width: 220px; font-size: clamp(1.25rem, 1.8vw, 1.72rem); line-height: 1.02; }
-    .visual-shape { opacity: .6; }
-    .plans-section { padding-top: 105px; }
-    .plans-heading { margin-bottom: 31px; }
-    .plans-heading .section-heading > p, .availability, .plan-intro, .plan-divider, .plan ul { display: none; }
-    .plans { grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 0; }
-    .plans::before { display: none; }
-    .plan { min-height: 280px; padding: 27px 24px; border-radius: 22px; background: linear-gradient(145deg, rgba(8,26,55,.7), rgba(4,11,28,.6)); }
-    .plan:nth-child(n) { clip-path: none; }
-    .plan--featured { transform: none; background: linear-gradient(145deg, rgba(11,59,88,.72), rgba(4,18,43,.72)); }
-    .plan--featured:hover, .plan:hover { transform: translateY(-5px); }
-    .plan h3 { margin: auto 0 20px; font-size: clamp(2rem, 3vw, 2.7rem); }
-    .plan::before { left: 15%; right: 15%; opacity: .75; }
-    .plan::after { opacity: .38; }
-    .plan-trace { display: flex; margin: 0 0 22px; opacity: .83; }
-    .plan-trace::before { content: "REDE"; color: #92AAB9; }
-    .plan-trace i { width: 22px; }
-    .plan--featured .plan-trace i:last-child { background: linear-gradient(90deg, rgba(255,110,122,.18), var(--coral)); box-shadow: 0 0 9px rgba(255,110,122,.32); }
-    .cta-section { padding-top: 85px; }
-    .cta-panel { min-height: 350px; grid-template-columns: 1fr; align-items: center; padding: 62px clamp(28px, 6vw, 78px); background-position: 85% center; }
-    .cta-copy { max-width: 540px; }
-    .cta-copy .kicker, .cta-copy p, .cta-bits { display: none; }
-    .cta-copy h2 { margin-bottom: 24px; font-size: clamp(2.6rem, 5.2vw, 5rem); line-height: .94; }
-    .footer-content { justify-content: center; }
-    .footer-content > span, .footer-links { display: none; }
-
-    footer { padding: 34px 0 42px; }
-    .footer-line { height: 1px; margin-bottom: 26px; background: var(--line); }
-    .footer-content { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #7893A5; font-size: .68rem; }
-    .footer-content .brand { color: var(--white); font-size: 1.07rem; }
-    .footer-content .brand-mark { transform: scale(.8); transform-origin: left; margin-right: -5px; }
-    .footer-links { display: flex; gap: 17px; }
-    .footer-links a:hover { color: var(--pulse); }
-    footer .footer-content { justify-content: center; text-align: center; }
-    .footer-reserved { margin: 0; color: #7893A5; font-size: .68rem; }
-    .footer-future-links { display: none; }
-
-    .toast {
-      position: fixed;
-      z-index: 50;
-      bottom: 24px;
-      left: 50%;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      max-width: calc(100vw - 32px);
-      padding: 13px 16px;
-      border: 1px solid rgba(131,255,207,.28);
-      border-radius: 13px;
-      color: #D9FFF0;
-      background: rgba(7,25,43,.91);
-      box-shadow: 0 15px 40px rgba(0,0,0,.34);
-      backdrop-filter: blur(16px);
-      font-size: .76rem;
-      font-weight: 700;
-      opacity: 0;
-      transform: translate(-50%, 20px) scale(.97);
-      pointer-events: none;
-      transition: opacity .24s var(--ease-out), transform .24s var(--ease-out);
-    }
-    .toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
-    .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px var(--mint); }
-
-    [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
-    [data-reveal].visible { opacity: 1; transform: translateY(0); }
-    [data-delay="1"] { transition-delay: .08s; }
-    [data-delay="2"] { transition-delay: .16s; }
-
-    @keyframes breathe { 0%, 100% { opacity: .66; transform: translate(-50%, -50%) scale(.92); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.07); } }
-    @keyframes orbit { to { transform: rotateX(60deg) rotateZ(338deg); } }
-    @keyframes spin-shape { 0% { border-radius: 37% 63% 52% 48% / 48% 41% 59% 52%; } 100% { border-radius: 57% 43% 34% 66% / 58% 58% 42% 42%; } }
-    @keyframes hero-w-float { 0%, 100% { transform: perspective(560px) rotateX(11deg) rotateY(-9deg) rotateZ(-2deg) translateY(0); } 50% { transform: perspective(560px) rotateX(16deg) rotateY(5deg) rotateZ(2deg) translateY(-10px); } }
-    @keyframes blink { 0%, 100% { opacity: .52; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.2); } }
-    @keyframes ticker { to { transform: translateX(-50%); } }
-    @keyframes pillar-float { 0%, 100% { transform: translate(-50%, -50%) rotateX(61deg) rotateZ(-31deg) translateY(0); } 50% { transform: translate(-50%, -50%) rotateX(61deg) rotateZ(-31deg) translateY(-17px); } }
-    @keyframes halo-spin { to { transform: rotate(360deg); } }
-    @keyframes bit-float { 0%, 100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,-13px,0); } }
-    @keyframes aurora-drift { from { transform: rotate(0deg) scale(1); } to { transform: rotate(360deg) scale(1.12); } }
-
-    @media (max-width: 930px) {
-      .nav-links { display: none; }
-      .nav-toggle { display: block; }
-      .nav.open { align-items: flex-start; }
-      .nav.open .nav-links { position: absolute; top: 74px; left: 0; right: 0; display: grid; gap: 0; padding: 8px; border: 1px solid rgba(170,233,255,.17); border-radius: 15px; background: rgba(5,10,23,.96); box-shadow: 0 20px 45px rgba(0,0,0,.3); backdrop-filter: blur(18px); }
-      .nav.open .nav-links a { padding: 13px 12px; border-radius: 9px; }
-      .nav.open .nav-links a:hover { background: rgba(37,217,255,.09); }
-      .nav.open .nav-links a::after { display: none; }
-      .nav.open .nav-toggle span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
-      .nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
-      .nav.open .nav-toggle span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
-      .hero-grid, .signal-layout, .cta-panel { grid-template-columns: 1fr; }
-      .nav { min-height: 89px; }
-      .nav .brand-name { font-size: 2.06rem; }
-      .hero { padding-top: 135px; }
-      .hero-grid { gap: 13px; }
-      .hero-stage { min-height: 455px; max-width: 640px; width: 100%; margin-inline: auto; }
-      .hero-orb { width: min(72vw, 410px); }
-      .orbit-card-one { right: 6%; }
-      .signal-sculpture { order: 2; min-height: 410px; }
-      .signal-content { order: 1; }
-      .plans { grid-template-columns: 1fr; max-width: 610px; margin-inline: auto; }
-      .plan, .plan--featured, .plan--featured:hover { min-height: 0; transform: none; }
-      .experience-grid { grid-template-columns: repeat(2, 1fr); }
-      .card-game, .card-stream, .card-work { grid-column: span 1; margin-top: 0; clip-path: none; }
-      .cta-panel { padding: 45px; }
-      .cta-bits { min-height: 215px; }
-    }
-    @media (max-width: 620px) {
-      :root { --content: min(100% - 34px, 1180px); }
-      .nav-wrap { top: 10px; width: calc(100vw - 20px); }
-      .nav { min-height: 60px; padding: 8px 9px 8px 14px; border-radius: 14px; }
-      .nav-cta { display: none; }
-      .hero { min-height: 785px; padding: 122px 0 63px; }
-      .hero h1 { font-size: clamp(3.15rem, 15.5vw, 4.65rem); }
-      .hero-copy { font-size: .91rem; line-height: 1.66; }
-      .hero-stage { min-height: 375px; margin-top: 8px; }
-      .hero-orb { width: min(83vw, 375px); }
-      .orbit--one { left: 2%; width: 90%; }
-      .orbit--two { left: 1%; width: 94%; }
-      .orbit-card-one { top: 6%; right: 0; }
-      .orbit-card-two { left: 1%; bottom: 7%; }
-      .orbital-card { padding: 10px 12px; }
-      .section { padding: 94px 0; }
-      .signal-section { padding-top: 112px; }
-      h2 { font-size: clamp(2.2rem, 12vw, 3.35rem); }
-      .experience-top, .plans-heading, .footer-content { display: block; }
-      .experience-top { margin-bottom: 30px; }
-      .experience-note { margin-top: 17px; }
-      .experience-grid { grid-template-columns: 1fr; }
-      .experience-card { min-height: 255px; }
-      .plans-heading { margin-bottom: 31px; }
-      .availability { width: fit-content; margin-top: 17px; }
-      .plans { gap: 13px; }
-      .plan { padding: 25px; }
-      .cta-section { padding: 88px 0 50px; }
-      .cta-panel { min-height: 510px; padding: 30px 24px; border-radius: 20px; }
-      .cta-bits { min-height: 205px; }
-      .bit-one { right: 0; }
-      .bit-two { left: 0; }
-      .bit-three { right: -5px; }
-      .footer-content { text-align: center; }
-      .footer-content .brand { justify-content: center; margin-bottom: 17px; }
-      .footer-links { justify-content: center; margin-top: 17px; }
-      .ticker-item { padding: 14px 21px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-    }
-
-    /* Camada 3D global: planos de vidro e conteúdos respondem como objetos físicos à posição do cursor. */
-    .noise::after { content: ""; position: fixed; z-index: -1; inset: -25%; pointer-events: none; background: repeating-radial-gradient(ellipse at 50% 50%, rgba(78,223,255,.07) 0 1px, transparent 1px 41px); transform: perspective(900px) rotateX(65deg) rotateZ(-10deg) translateY(15%); opacity: .45; animation: depth-grid-drift 18s linear infinite; }
-    .depth-surface { --surface-rx: 0deg; --surface-ry: 0deg; --surface-z: 0px; transform-style: preserve-3d; will-change: transform; transition: transform .28s cubic-bezier(.23,1,.32,1), box-shadow .28s ease, border-color .28s ease; }
-    .experience-card.depth-surface, .plan.depth-surface, .cta-panel.depth-surface { transform: perspective(1200px) rotateX(var(--surface-rx)) rotateY(var(--surface-ry)) translateZ(var(--surface-z)); }
-    .signal-sculpture.depth-surface { transform: perspective(1300px) rotateX(var(--surface-rx)) rotateY(var(--surface-ry)) translateZ(var(--surface-z)); }
-    .depth-surface:not(.signal-sculpture) > * { transform: translateZ(34px); }
-    .depth-surface:hover { --surface-z: 14px; border-color: rgba(119,238,255,.56); box-shadow: 0 30px 55px rgba(0,0,0,.28), inset 0 1px 0 rgba(230,255,255,.1); }
-    .experience-card.depth-surface::before { transform: translateZ(18px); }
-    .experience-card.depth-surface::after { transform: translateZ(-18px) scale(1.06); }
-    .plan.depth-surface::after { transform: translateZ(12px); }
-    .cta-panel.depth-surface::before { transform: translateZ(-22px) rotateX(13deg); }
-    .signal-sculpture.depth-surface::after { transform: translateZ(-74px) scale(1.07); }
-    .signal-sculpture.depth-surface::before { transform: translateZ(-15px); }
-    @keyframes depth-grid-drift { from { transform: perspective(900px) rotateX(65deg) rotateZ(-10deg) translate3d(0, 15%, 0); } to { transform: perspective(900px) rotateX(65deg) rotateZ(-10deg) translate3d(0, 3%, 0); } }
-    main { position: relative; isolation: isolate; }
-    .transmission-spine { position: absolute; z-index: -1; top: 7%; bottom: 5%; left: 50%; width: 180px; pointer-events: none; transform: translateX(-50%); opacity: .72; }
-    .transmission-spine::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: linear-gradient(180deg, transparent 0%, rgba(37,217,255,.1) 5%, rgba(37,217,255,.56) 16%, rgba(131,255,207,.16) 39%, rgba(37,217,255,.65) 65%, rgba(255,110,122,.16) 84%, transparent 100%); box-shadow: 0 0 16px rgba(37,217,255,.3); transform: perspective(850px) rotateX(14deg) rotateZ(6deg); }
-    .transmission-spine::after { content: ""; position: absolute; top: 3%; bottom: 3%; left: calc(50% - 2px); width: 5px; background: radial-gradient(circle, rgba(255,255,255,.98) 0 1px, var(--pulse) 2px, transparent 5px) 0 0 / 5px 132px repeat-y; filter: drop-shadow(0 0 7px var(--pulse)); animation: spine-travel 7s linear infinite; }
-    .transmission-spine i { position: absolute; left: 50%; width: 145px; height: 48px; border: 1px solid rgba(37,217,255,.16); border-left-color: transparent; border-bottom-color: transparent; border-radius: 50%; transform: translateX(-50%) perspective(700px) rotateX(67deg) rotateZ(-22deg); box-shadow: 0 -7px 24px rgba(37,217,255,.08); }
-    .transmission-spine i:nth-child(1) { top: 18%; }
-    .transmission-spine i:nth-child(2) { top: 48%; transform: translateX(-50%) perspective(700px) rotateX(67deg) rotateZ(23deg) scale(.86); border-color: rgba(131,255,207,.16); border-right-color: transparent; border-top-color: transparent; }
-    .transmission-spine i:nth-child(3) { top: 76%; transform: translateX(-50%) perspective(700px) rotateX(67deg) rotateZ(-22deg) scale(1.12); border-color: rgba(255,110,122,.14); border-left-color: transparent; border-bottom-color: transparent; }
-    .transmission-spine b { position: absolute; left: 50%; color: rgba(124,244,255,.42); font-family: "Space Grotesk", sans-serif; font-size: 2.2rem; letter-spacing: -.32em; text-shadow: 0 0 17px var(--pulse); transform: translateX(-58%) rotateY(24deg); animation: spine-w 5s ease-in-out infinite; }
-    .transmission-spine b:nth-of-type(1) { top: 31%; }
-    .transmission-spine b:nth-of-type(2) { top: 66%; animation-delay: -2s; }
-    @keyframes spine-travel { from { background-position: 0 0; } to { background-position: 0 132px; } }
-    @keyframes spine-w { 0%,100% { opacity: .28; transform: translateX(-58%) rotateY(24deg) scale(.8); } 50% { opacity: .84; transform: translateX(-58%) rotateY(-18deg) scale(1.12); } }
-    .plan-instrument { position: relative; z-index: 2; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; margin: 0 0 17px; padding: 8px 10px; border: 1px solid rgba(130,239,255,.16); border-radius: 11px; background: linear-gradient(115deg, rgba(117,232,255,.09), rgba(9,31,64,.14)); box-shadow: inset 0 1px 0 rgba(240,255,255,.08), 0 9px 17px rgba(0,0,0,.15); transform-style: preserve-3d; }
-    .plan-instrument::before { content: "W"; position: absolute; right: 8px; bottom: -13px; color: rgba(37,217,255,.15); font-family: "Space Grotesk", sans-serif; font-size: 2.4rem; font-weight: 700; transform: translateZ(-2px) skewX(-12deg); }
-    .telemetry-code, .telemetry-state { color: #93B6C8; font-family: "Space Grotesk", sans-serif; font-size: .48rem; font-weight: 800; letter-spacing: .12em; white-space: nowrap; }
-    .telemetry-state { color: var(--mint); text-shadow: 0 0 8px rgba(131,255,207,.52); }
-    .telemetry-meter { display: flex; align-items: center; gap: 3px; height: 7px; }
-    .telemetry-meter i { flex: 1; min-width: 5px; height: 100%; border-radius: 10px; background: linear-gradient(90deg, rgba(37,217,255,.22), var(--pulse)); box-shadow: 0 0 7px rgba(37,217,255,.28); animation: meter-pulse 2.2s ease-in-out infinite; }
-    .telemetry-meter i:nth-child(2) { animation-delay: -.35s; }
-    .telemetry-meter i:nth-child(3) { background: linear-gradient(90deg, rgba(131,255,207,.22), var(--mint)); animation-delay: -.7s; }
-    .plan--featured .telemetry-meter i:last-child { background: linear-gradient(90deg, rgba(255,110,122,.18), var(--coral)); }
-    .experience-card .card-content::before { content: "W"; position: absolute; right: 18px; top: 14px; color: rgba(145,248,255,.22); font-family: "Space Grotesk", sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: -.25em; transform: translateZ(42px) rotateY(-30deg); text-shadow: 0 0 13px rgba(37,217,255,.28); }
-    @keyframes meter-pulse { 0%,100% { opacity: .36; transform: scaleX(.56); transform-origin: left; } 50% { opacity: 1; transform: scaleX(1); transform-origin: left; } }
-    @media (max-width: 720px) { .transmission-spine { left: calc(100% - 18px); width: 42px; opacity: .42; } .transmission-spine i { width: 70px; } .transmission-spine b { font-size: 1.4rem; } .plan-instrument { padding: 7px 8px; } }
-    .hero-stage { transform-style: preserve-3d; }
-    .hero-orb { z-index: 4; }
-    .sculptural-frame { position: absolute; z-index: 2; inset: 5% -8% -4%; pointer-events: none; transform-style: preserve-3d; animation: frame-drift 14s cubic-bezier(.45,.05,.55,.95) infinite alternate; }
-    .sculptural-frame i { position: absolute; display: block; border: 1px solid rgba(164,247,255,.23); background: linear-gradient(135deg, rgba(215,255,255,.17), rgba(37,217,255,.018) 52%, rgba(6,50,87,.07)); box-shadow: inset 0 1px 0 rgba(255,255,255,.19), 0 18px 35px rgba(0,6,19,.28), 0 0 32px rgba(37,217,255,.09); backdrop-filter: blur(2px); transform-style: preserve-3d; }
-    .sculptural-frame i:nth-child(1) { width: 48%; height: 33%; top: 9%; left: 3%; clip-path: polygon(0 0, 100% 22%, 68% 100%, 12% 80%); transform: translateZ(-78px) rotateX(58deg) rotateZ(-19deg); animation: prism-float-one 8.6s ease-in-out infinite; }
-    .sculptural-frame i:nth-child(2) { width: 44%; height: 51%; bottom: 5%; right: 0; clip-path: polygon(24% 0, 100% 29%, 72% 100%, 0 70%); transform: translateZ(-108px) rotateX(60deg) rotateZ(28deg); animation: prism-float-two 10.8s ease-in-out -3s infinite; }
-    .sculptural-frame i:nth-child(3) { width: 29%; height: 23%; right: 20%; top: 25%; border-color: rgba(255,110,122,.22); background: linear-gradient(135deg, rgba(255,170,177,.16), rgba(255,110,122,.01)); clip-path: polygon(0 18%, 100% 0, 72% 100%, 20% 83%); transform: translateZ(30px) rotateX(54deg) rotateZ(-15deg); animation: prism-float-three 9.2s ease-in-out -2s infinite; }
-    .hero-stage::after { content: ""; position: absolute; z-index: 1; width: 74%; aspect-ratio: 1; left: 13%; top: 13%; border-radius: 50%; border: 1px solid rgba(147,244,255,.2); box-shadow: 0 0 0 19px rgba(37,217,255,.018), 0 0 0 58px rgba(37,217,255,.012), 0 0 80px rgba(37,217,255,.15); transform: translateZ(-45px) rotateX(60deg); animation: pulse-platform 6s ease-in-out infinite; }
-    .signal-section::before, .experience-section::before, .plans-section::before, .cta-section::before { background: linear-gradient(90deg, transparent, rgba(37,217,255,.4), transparent); box-shadow: 0 0 20px rgba(37,217,255,.22); }
-    .signal-sculpture, .experience-card, .plan, .cta-panel { overflow: visible; }
-    .signal-sculpture::after, .experience-card::after, .plan::after, .cta-panel::before { filter: contrast(1.16) saturate(1.22); }
-    @keyframes frame-drift { from { transform: perspective(920px) rotateY(-4deg) rotateX(2deg); } to { transform: perspective(920px) rotateY(7deg) rotateX(-3deg) translateY(-8px); } }
-    @keyframes prism-float-one { 0%,100% { transform: translateZ(-78px) rotateX(58deg) rotateZ(-19deg) translateY(0); } 50% { transform: translateZ(-44px) rotateX(48deg) rotateZ(-8deg) translateY(-13px); } }
-    @keyframes prism-float-two { 0%,100% { transform: translateZ(-108px) rotateX(60deg) rotateZ(28deg) translateY(0); } 50% { transform: translateZ(-58px) rotateX(52deg) rotateZ(16deg) translateY(11px); } }
-    @keyframes prism-float-three { 0%,100% { opacity: .35; transform: translateZ(30px) rotateX(54deg) rotateZ(-15deg); } 50% { opacity: .95; transform: translateZ(66px) rotateX(43deg) rotateZ(-2deg) translateY(-8px); } }
-    @keyframes pulse-platform { 0%,100% { opacity: .42; transform: translateZ(-45px) rotateX(60deg) scale(.91); } 50% { opacity: .95; transform: translateZ(-22px) rotateX(60deg) scale(1.06); } }
-    @media (max-width: 720px) { .sculptural-frame { inset: 2% -8% -4%; opacity: .68; } .hero-stage::after { opacity: .6; } }
-    .button { --button-x: 0px; --button-y: 0px; position: relative; overflow: hidden; transform: perspective(720px) translate3d(var(--button-x), var(--button-y), 0) rotateX(0deg); box-shadow: 0 9px 0 rgba(1,57,84,.48), 0 19px 28px rgba(0,0,0,.3), 0 0 20px rgba(37,217,255,.12); transition: transform .18s cubic-bezier(.23,1,.32,1), box-shadow .2s ease, filter .2s ease; }
-    .button::before { content: ""; position: absolute; inset: 1px 4px auto; height: 42%; border-radius: inherit; background: linear-gradient(90deg, rgba(255,255,255,.34), transparent 58%); opacity: .72; pointer-events: none; }
-    .button::after { content: ""; position: absolute; top: -80%; bottom: -80%; width: 30%; left: -42%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.56), transparent); transform: skewX(-22deg); transition: left .58s cubic-bezier(.23,1,.32,1); pointer-events: none; }
-    .button:hover { transform: perspective(720px) translate3d(var(--button-x), calc(var(--button-y) - 4px), 11px) rotateX(7deg); box-shadow: 0 11px 0 rgba(1,57,84,.4), 0 27px 38px rgba(0,0,0,.37), 0 0 34px rgba(37,217,255,.36); filter: saturate(1.15) brightness(1.06); }
-    .button:hover::after { left: 115%; }
-    .button:active { transform: perspective(720px) translate3d(var(--button-x), calc(var(--button-y) + 1px), 1px) rotateX(2deg) scale(.98); box-shadow: 0 4px 0 rgba(1,57,84,.5), 0 10px 16px rgba(0,0,0,.26); }
-    .button--ghost { box-shadow: 0 8px 0 rgba(18,71,96,.23), 0 16px 26px rgba(0,0,0,.21), inset 0 1px 0 rgba(231,255,255,.18); }
-    .plan, .experience-card, .cta-panel { background-image: linear-gradient(117deg, rgba(255,255,255,.065) 0 1px, transparent 1px 38%), linear-gradient(145deg, rgba(12,33,68,.79), rgba(3,10,27,.69)); }
-    .plan::selection, .experience-card::selection, .cta-panel::selection { background: rgba(37,217,255,.3); }
-    .plan .plan-label, .experience-card .card-index { position: relative; display: inline-flex; align-items: center; gap: 7px; }
-    .plan .plan-label::before, .experience-card .card-index::before { content: ""; width: 16px; height: 12px; flex: 0 0 auto; background: linear-gradient(135deg, #D9FEFF, var(--pulse) 48%, #078CB7); clip-path: polygon(0 0, 18% 0, 31% 61%, 43% 17%, 57% 17%, 69% 61%, 82% 0, 100% 0, 78% 100%, 63% 100%, 50% 56%, 37% 100%, 22% 100%); filter: drop-shadow(0 0 6px rgba(37,217,255,.65)); }
-    .plan-instrument { overflow: hidden; border-radius: 14px; }
-    .plan-instrument::before { right: 11px; bottom: -24px; font-size: 4.8rem; color: rgba(37,217,255,.19); text-shadow: 0 0 22px rgba(37,217,255,.18); transform: translateZ(-2px) skewX(-12deg) rotateY(-18deg); }
-    .plan-instrument::after { content: "PERFIL • AO VIVO"; position: absolute; top: 6px; right: 9px; color: rgba(191,253,255,.48); font-family: "Space Grotesk", sans-serif; font-size: .38rem; font-weight: 700; letter-spacing: .13em; }
-    .plan--featured .plan-instrument { border-color: rgba(37,217,255,.32); box-shadow: inset 0 1px 0 rgba(240,255,255,.12), 0 13px 24px rgba(0,0,0,.24), 0 0 27px rgba(37,217,255,.11); }
-    .cta-copy { position: relative; z-index: 2; isolation: isolate; }
-    .cta-copy::after { content: "W"; position: absolute; z-index: -1; right: -42%; top: -87%; color: rgba(117,239,255,.19); font-family: "Space Grotesk", sans-serif; font-size: clamp(14rem, 27vw, 28rem); font-weight: 800; letter-spacing: -.34em; line-height: .75; text-shadow: -15px 19px 0 rgba(3,65,98,.5), 0 0 42px rgba(37,217,255,.26); transform: perspective(860px) rotateY(-34deg) rotateX(9deg); animation: cta-w-pulse 7s ease-in-out infinite; pointer-events: none; }
-    .cta-panel { border-color: rgba(81,226,255,.28); box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 30px 70px rgba(0,0,0,.32), 0 0 54px rgba(37,217,255,.1); }
-    .cta-panel::after { content: ""; position: absolute; z-index: 0; right: 8%; bottom: 11%; width: 23%; aspect-ratio: 1; border: 1px solid rgba(131,255,207,.28); border-radius: 50%; box-shadow: 0 0 0 18px rgba(131,255,207,.035), 0 0 48px rgba(37,217,255,.2); transform: perspective(800px) rotateX(65deg); animation: cta-orbit 5s ease-in-out infinite; }
-    @keyframes cta-w-pulse { 0%,100% { opacity: .1; transform: perspective(860px) rotateY(-34deg) rotateX(9deg) translateZ(0); } 50% { opacity: .26; transform: perspective(860px) rotateY(-23deg) rotateX(2deg) translate3d(-10px,-7px,38px); } }
-    @keyframes cta-orbit { 0%,100% { opacity: .34; transform: perspective(800px) rotateX(65deg) scale(.88); } 50% { opacity: .92; transform: perspective(800px) rotateX(65deg) scale(1.08); } }
-    @media (max-width: 720px) { .cta-copy::after { right: -28%; top: -45%; font-size: 15rem; } .cta-panel::after { right: 7%; width: 30%; } }
-  </style>
+        /* Modal Overlay */
+        .modal-blur {
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
 </head>
-<body>
-  <canvas id="world-bg" aria-hidden="true"></canvas>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="top-progress" aria-hidden="true"></div>
+<body class="relative min-h-screen selection:bg-emerald-500 selection:text-white">
 
-  <div class="page">
-    <header class="nav-wrap" id="top">
-      <nav class="nav" aria-label="Navegação principal">
-        <a href="#top" class="brand" aria-label="WNET, início">
-          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <span class="brand-name">W<span>NET</span></span>
-        </a>
-        <div class="nav-links" id="navLinks" aria-hidden="true">
-          <a href="#conexao">Conexão</a>
-          <a href="#experiencias">Experiências</a>
-          <a href="#planos">Planos</a>
-        </div>
-        <a href="#planos" class="button button--small nav-cta">Quero WNET <span class="arrow">→</span></a>
-        <button class="nav-toggle" id="menuButton" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
-          <span></span><span></span><span></span>
-        </button>
-      </nav>
+    <!-- Canvas 3D de Fundo -->
+    <div id="canvas-container"></div>
+
+    <!-- Navegação Estilo iOS -->
+    <header class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-5xl">
+        <nav class="glass-panel rounded-full px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400">
+                    WNET
+                </span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#hero" class="hover:text-white transition-colors">Início</a>
+                <a href="#servicos" class="hover:text-white transition-colors">Serviços</a>
+                <a href="#whatsapp-section" class="hover:text-white transition-colors">Contato</a>
+            </div>
+            <a href="https://wa.me/5500000000000?text=Olá!%20Gostaria%20de%20um%20orçamento%20com%20a%20WNET." target="_blank" class="glass-whatsapp px-5 py-2.5 rounded-full text-sm font-semibold text-emerald-400 flex items-center gap-2">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+            </a>
+        </nav>
     </header>
 
-    <main>
-      <div class="transmission-spine" aria-hidden="true"><i></i><i></i><i></i><b>W</b><b>W</b></div>
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-grid">
-          <div class="hero-copy-block" data-reveal>
-            <p class="eyebrow">WNET / Internet ilimitada</p>
-            <h1 id="hero-title">O seu mundo em <em>movimento.</em></h1>
-            <p class="hero-copy">A WNET coloca a sua rotina no pulso da conexão: mais liberdade para criar, jogar, maratonar e compartilhar sem ficar contando dados.</p>
-            <div class="hero-actions">
-              <a href="#" data-destino="planos" class="button">Encontrar meu plano <span class="arrow">→</span></a>
-              <a href="#conexao" class="button button--ghost">Explorar a rede</a>
+    <!-- Conteúdo Principal -->
+    <main class="relative z-10">
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center justify-center px-4 pt-24 pb-12">
+            <div class="glass-panel p-8 md:p-16 rounded-3xl max-w-3xl w-full text-center relative overflow-hidden">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-6">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i> Desenvolvimento 3D & Apps
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+                    Sua visão transformada em <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-emerald-400 to-teal-300">tecnologia de alto nível</span>.
+                </h1>
+                
+                <p class="text-slate-300 text-base md:text-lg mb-8 max-w-xl mx-auto font-light">
+                    Especialistas em desenvolvimento de aplicativos, sistemas sob medida e sites imersivos.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="https://wa.me/5500000000000?text=Olá!%20Quero%20iniciar%20um%20projeto%20com%20a%20WNET." target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition-all shadow-lg hover:scale-105 flex items-center justify-center gap-2">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i> Falar no WhatsApp
+                    </a>
+                    <button onclick="toggleModalServicos()" class="w-full sm:w-auto glass-btn px-8 py-4 rounded-full font-semibold text-white">
+                        Ver Serviços
+                    </button>
+                </div>
             </div>
-            <div class="trust-line" aria-label="Destaques WNET">
-              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l5 5L21 4"/></svg> Internet sem franquia</span>
-              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l5 5L21 4"/></svg> Feita para o seu ritmo</span>
+        </section>
+
+        <!-- Seção de Serviços -->
+        <section id="servicos" class="py-20 px-4 max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">Nossas Soluções</h2>
+                <p class="text-slate-400 max-w-lg mx-auto">Engenharia de software moderna com foco em performance e design.</p>
             </div>
-          </div>
 
-          <div class="hero-stage" data-reveal data-delay="1" aria-label="Núcleo visual 3D interativo da WNET">
-            <img class="hero-render" src="/manus-storage/wnet-cinematic-hero_4491f2d8.jpg" alt="" aria-hidden="true" />
-            <div class="stage-halo" aria-hidden="true"></div>
-            <div class="orbit orbit--one" aria-hidden="true"></div>
-            <div class="orbit orbit--two" aria-hidden="true"></div>
-            <div class="sculptural-frame" aria-hidden="true"><i></i><i></i><i></i></div>
-            <div class="hero-orb" id="heroOrb" aria-hidden="true"><span class="hero-w3d"></span></div>
-            <div class="orbital-card orbit-card-one"><small>Estado da rede</small><span class="dot-pulse"></span><strong>Ao vivo</strong></div>
-            <div class="orbital-card orbit-card-two"><small>Seu próximo nível</small><strong>Sem <span class="unit">limites</span></strong></div>
-          </div>
-        </div>
-      </section>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-panel p-8 rounded-3xl hover:border-blue-500/40 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center mb-6 text-blue-400">
+                        <i data-lucide="code-2" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Programação & Sistemas</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Softwares sob medida, automações empresariais e arquitetura de sistemas preparados para alta demanda.
+                    </p>
+                </div>
 
-      <section class="ticker" aria-label="Valores da WNET">
-        <div class="ticker-track">
-          <div class="ticker-item"><i></i> internet sem limites</div><div class="ticker-item"><i></i> viva no seu ritmo</div><div class="ticker-item"><i></i> mais conexão</div><div class="ticker-item"><i></i> sinal que acompanha</div>
-          <div class="ticker-item"><i></i> internet sem limites</div><div class="ticker-item"><i></i> viva no seu ritmo</div><div class="ticker-item"><i></i> mais conexão</div><div class="ticker-item"><i></i> sinal que acompanha</div>
-        </div>
-      </section>
+                <!-- Card 2 -->
+                <div class="glass-panel p-8 rounded-3xl hover:border-emerald-500/40 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-6 text-emerald-400">
+                        <i data-lucide="smartphone" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Desenvolvimento de Apps</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Aplicativos iOS e Android de alta performance, projetados com a fluidez do ecossistema Apple.
+                    </p>
+                </div>
 
-      <section class="section signal-section" id="conexao">
-        <div class="section-shell signal-layout">
-          <div class="signal-sculpture" data-reveal>
-            <div class="data-pillar" aria-hidden="true"><span></span><span></span><span></span></div>
-          </div>
-          <div class="signal-content" data-reveal data-delay="1">
-            <div class="section-heading">
-              <p class="kicker">O sinal que acompanha você</p>
-              <h2>Conexão que não pede licença para acontecer.</h2>
-              <p>Quando tudo se conecta, a internet deixa de ser uma preocupação e vira parte da sua melhor rotina. A WNET nasceu para isso.</p>
+                <!-- Card 3 -->
+                <div class="glass-panel p-8 rounded-3xl hover:border-teal-500/40 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center mb-6 text-teal-400">
+                        <i data-lucide="layout" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Websites 3D Imersivos</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Plataformas web que se destacam usando animações 3D interativas, WebGL e estilo estético refinado.
+                    </p>
+                </div>
             </div>
-            <div class="feature-list">
-              <article class="feature-row">
-                <span class="feature-icon"><svg viewBox="0 0 24 24"><path d="M4 17a12 12 0 0 1 16 0"/><path d="M7 20a7.5 7.5 0 0 1 10 0"/><path d="M10 23a3 3 0 0 1 4 0"/></svg></span>
-                <div><h3>Mais liberdade de uso</h3><p>Continue conectado sem transformar sua rotina em uma conta de megas.</p></div><span class="feature-arrow">↗</span>
-              </article>
-              <article class="feature-row">
-                <span class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M2 12h20"/><path d="M4.9 4.9l14.2 14.2"/><path d="M19.1 4.9L4.9 19.1"/></svg></span>
-                <div><h3>Uma rede para o agora</h3><p>Projetada para acompanhar uma casa, um jogo, uma chamada e uma ideia.</p></div><span class="feature-arrow">↗</span>
-              </article>
-              <article class="feature-row">
-                <span class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M7 8l5-5 5 5"/><path d="M17 16l-5 5-5-5"/></svg></span>
-                <div><h3>Seu ritmo é o padrão</h3><p>Escolha o plano que conversa com a sua forma de estar online.</p></div><span class="feature-arrow">↗</span>
-              </article>
+        </section>
+
+        <!-- Seção de Atendimento WhatsApp -->
+        <section id="whatsapp-section" class="py-20 px-4 max-w-3xl mx-auto">
+            <div class="glass-panel p-8 md:p-12 rounded-3xl text-center">
+                <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6 text-emerald-400">
+                    <i data-lucide="phone-call" class="w-8 h-8"></i>
+                </div>
+
+                <h2 class="text-3xl font-bold mb-3">Iniciar Conversa no WhatsApp</h2>
+                <p class="text-slate-400 text-sm mb-8 max-w-md mx-auto">
+                    Digite os detalhes abaixo e clique no botão para ser redirecionado diretamente para nosso atendimento oficial no WhatsApp.
+                </p>
+
+                <form onsubmit="enviarWhatsApp(event)" class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Seu Nome</label>
+                        <input type="text" id="nome" placeholder="Digite seu nome" required class="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Serviço Desejado</label>
+                        <select id="servico" required class="w-full px-4 py-3.5 rounded-2xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-emerald-500 transition-colors">
+                            <option value="Desenvolvimento de App">Desenvolvimento de Aplicativo</option>
+                            <option value="Criação de Website 3D">Criação de Website 3D</option>
+                            <option value="Programação Sob Medida">Programação / Sistema Web</option>
+                            <option value="Outro assunto">Outro Projeto</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Detalhes do Projeto</label>
+                        <textarea id="mensagem" rows="3" placeholder="Descreva brevemente o que precisa..." required class="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition-all flex items-center justify-center gap-2 text-base shadow-lg hover:scale-[1.02]">
+                        <i data-lucide="send" class="w-5 h-5"></i> Abrir WhatsApp da WNET
+                    </button>
+                </form>
             </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="section experience-section" id="experiencias">
-        <div class="section-shell">
-          <div class="experience-top" data-reveal>
-            <div class="section-heading"><p class="kicker">Sem desacelerar o que importa</p><h2>Um pulso para cada paixão.</h2></div>
-            <p class="experience-note">Deixe a conexão trabalhar em silêncio enquanto você vive o que quer viver.</p>
-          </div>
-          <div class="experience-grid">
-            <article class="experience-card card-game" data-reveal>
-              <div class="card-content"><span class="card-index">01 / JOGUE</span><h3>Na partida, só entra o seu foco.</h3><p>Uma experiência de conexão pensada para quem não quer parar na metade.</p></div><div class="visual-shape controller-shape" aria-hidden="true"></div>
-            </article>
-            <article class="experience-card card-stream" data-reveal data-delay="1">
-              <div class="card-content"><span class="card-index">02 / ASSISTA</span><h3>Seu tempo é para a história.</h3><p>Maratone os momentos que prendem sua atenção, não a sua internet.</p></div><div class="visual-shape stream-shape" aria-hidden="true"></div>
-            </article>
-            <article class="experience-card card-work" data-reveal data-delay="2">
-              <div class="card-content"><span class="card-index">03 / CRIE</span><h3>Ideias em fluxo.</h3><p>Para projetos que pedem presença de verdade.</p></div><div class="visual-shape work-shape" aria-hidden="true"></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section plans-section" id="planos">
-        <div class="plans-backdrop" aria-hidden="true"></div>
-        <div class="section-shell">
-          <div class="plans-heading" data-reveal>
-            <div class="section-heading"><p class="kicker">Escolha seu pulso</p><h2>Um plano do tamanho da sua vida online.</h2><p>Comece por uma experiência que combina com você. Os detalhes do plano e a disponibilidade podem ser consultados com a equipe WNET.</p></div>
-            <span class="availability">Consulte disponibilidade</span>
-          </div>
-          <div class="plans">
-            <article class="plan" data-reveal>
-              <span class="plan-label">Para começar</span><h3>Essencial</h3><p class="plan-intro">Para quem quer viver o dia com uma conexão leve e presente.</p><div class="plan-divider"></div>
-              <ul><li>Navegação para a rotina</li><li>Internet sem contagem de franquia</li><li>Atendimento para você</li></ul><div class="plan-instrument" aria-label="Instrumento de sinal Essencial"><span class="telemetry-code">NET // 01</span><span class="telemetry-meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="telemetry-state">ATIVO</span></div><div class="plan-trace" aria-hidden="true"><i></i><i></i><i></i></div>
-              <a class="button button--ghost plan-button" href="#" data-destino="planos" data-plan="Essencial">Tenho interesse <span class="arrow">→</span></a>
-            </article>
-            <article class="plan plan--featured" data-reveal data-delay="1">
-              <span class="plan-label">Mais escolhido</span><h3>Fluxo</h3><p class="plan-intro">Para uma casa onde a conexão acompanha muita coisa ao mesmo tempo.</p><div class="plan-divider"></div>
-              <ul><li>Mais espaço para o seu ritmo</li><li>Internet sem contagem de franquia</li><li>Ideal para múltiplos momentos</li></ul><div class="plan-instrument" aria-label="Instrumento de sinal Fluxo"><span class="telemetry-code">NET // 02</span><span class="telemetry-meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="telemetry-state">ATIVO</span></div><div class="plan-trace" aria-hidden="true"><i></i><i></i><i></i></div>
-              <a class="button plan-button" href="#" data-destino="planos" data-plan="Fluxo">Quero este plano <span class="arrow">→</span></a>
-            </article>
-            <article class="plan" data-reveal data-delay="2">
-              <span class="plan-label">Máxima presença</span><h3>Turbo</h3><p class="plan-intro">Para quem quer uma conexão preparada para ir além todos os dias.</p><div class="plan-divider"></div>
-              <ul><li>Para uma rotina intensa</li><li>Internet sem contagem de franquia</li><li>Feito para expandir possibilidades</li></ul><div class="plan-instrument" aria-label="Instrumento de sinal Turbo"><span class="telemetry-code">NET // 03</span><span class="telemetry-meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="telemetry-state">ATIVO</span></div><div class="plan-trace" aria-hidden="true"><i></i><i></i><i></i></div>
-              <a class="button button--ghost plan-button" href="#" data-destino="planos" data-plan="Turbo">Quero saber mais <span class="arrow">→</span></a>
-            </article>
-          </div>
-          <p class="plan-footnote">Os nomes e as características acima são uma apresentação visual. Personalize-os com os preços, velocidades, cobertura e condições reais da WNET antes de publicar.</p>
-        </div>
-      </section>
-
-      <section class="cta-section">
-        <div class="section-shell">
-          <div class="cta-panel" data-reveal>
-            <div class="cta-copy"><p class="kicker">Seu próximo clique começa aqui</p><h2>Entre no pulso da WNET.</h2><p>Converse com a equipe, encontre a opção ideal e traga a internet ilimitada para sua rotina.</p><a href="#" data-destino="whatsapp" class="button" id="contactButton">Quero falar com a WNET <span class="arrow">→</span></a></div>
-            <div class="cta-bits" aria-hidden="true">
-              <div class="floating-bit bit-one"><span class="bit-icon">↗</span><span><strong>Sem pausa</strong><small>feito para acompanhar</small></span></div>
-              <div class="floating-bit bit-two"><span class="bit-icon">∞</span><span><strong>Sem franquia</strong><small>mais liberdade online</small></span></div>
-              <div class="floating-bit bit-three"><span class="bit-icon">✦</span><span><strong>Seu ritmo</strong><small>seu mundo conectado</small></span></div>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
 
-    <footer>
-      <div class="section-shell"><div class="footer-line"></div><div class="footer-content"><p class="footer-reserved">© <span id="year"></span> WNET. Todos os direitos reservados.</p><nav class="footer-future-links" aria-label="Links oficiais"><a href="#" data-destino="whatsapp">WhatsApp</a><a href="#" data-destino="planos">Planos</a></nav></div></div>
+    <!-- Card Modal com Lista de Serviços de Programação -->
+    <div id="modal-servicos" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-blur hidden">
+        <div class="glass-panel p-6 md:p-8 rounded-3xl max-w-md w-full relative border border-white/20 shadow-2xl">
+            <!-- Botão Fechar -->
+            <button onclick="toggleModalServicos()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Cabeçalho do Card -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                    <i data-lucide="terminal" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Serviços de Programação</h3>
+                    <p class="text-xs text-slate-400">Desenvolvimento especializado WNET</p>
+                </div>
+            </div>
+
+            <!-- Lista de Serviços -->
+            <ul class="space-y-3">
+                <li class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                    <span class="text-sm font-medium text-slate-200">Sistemas Web & SaaS Sob Medida</span>
+                </li>
+                <li class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                    <span class="text-sm font-medium text-slate-200">Desenvolvimento de APIs & Integrações</span>
+                </li>
+                <li class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                    <span class="text-sm font-medium text-slate-200">Aplicativos iOS (Swift) e Android</span>
+                </li>
+                <li class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                    <span class="text-sm font-medium text-slate-200">Websites e Landing Pages em 3D</span>
+                </li>
+                <li class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                    <span class="text-sm font-medium text-slate-200">Automação de Processos & Bot Workflow</span>
+                </li>
+            </ul>
+
+            <!-- Botão de Ação -->
+            <a href="https://wa.me/5500000000000?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20serviços%20de%20programação." target="_blank" class="mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 text-slate-950 font-bold transition-all flex items-center justify-center gap-2 text-sm shadow-lg hover:scale-[1.02]">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Cotar no WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante do WhatsApp -->
+    <a href="https://wa.me/5597984475124?text=Olá!%20Vim%20pelo%20site%20da%20WNET%20e%20gostaria%20de%20informações." target="_blank" class="fixed bottom-6 right-6 z-50 glass-whatsapp p-4 rounded-full text-emerald-400 flex items-center justify-center shadow-2xl hover:scale-110">
+        <i data-lucide="message-circle" class="w-7 h-7"></i>
+    </a>
+
+    <!-- Rodapé -->
+    <footer class="relative z-10 border-t border-white/10 py-8 text-center text-slate-500 text-xs">
+        <p>© WNET — Engenharia de Software e Desenvolvimento 3D.</p>
     </footer>
-  </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-dot"></span><span id="toastMessage">Mensagem enviada.</span></div>
+    <!-- Scripts JavaScript -->
+    <script>
+        // Inicializar os ícones Lucide
+        lucide.createIcons();
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
-  <script>
-    /*
-      WNET / PULSO DE FIBRA — camada de comportamento.
-      Canvas WebGL cria a profundidade real da experiência; interações devem parecer físicas e discretas.
-    */
-    (() => {
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const body = document.body;
-      const navWrap = document.querySelector('.nav-wrap');
-      const nav = document.querySelector('.nav');
-      const menuButton = document.getElementById('menuButton');
-      /* CONFIGURAÇÃO ÚNICA DE LINKS WNET
-         1) Página dos Planos: cole a URL onde o cliente vê ou contrata os planos.
-         2) WhatsApp de Atendimento: cole o link completo, por exemplo https://wa.me/5511999999999
-      */
-      const LINKS_WNET = {
-        paginaDosPlanos: "",
-        whatsappDeAtendimento: "https://wa.me/message/X5HXMVBJCXDKD1"
-      };
-      const navLinks = document.querySelectorAll('.nav-links a');
-      const heroOrb = document.getElementById('heroOrb');
-      const wordmark = document.querySelector('.nav .brand-name');
-      const toast = document.getElementById('toast');
-      const toastMessage = document.getElementById('toastMessage');
-      let toastTimer;
+        // Alternar visualização do Card de Serviços
+        function toggleModalServicos() {
+            const modal = document.getElementById('modal-servicos');
+            modal.classList.toggle('hidden');
+        }
 
-      if (wordmark && !reducedMotion) {
-        wordmark.addEventListener('pointermove', (event) => {
-          const rect = wordmark.getBoundingClientRect();
-          const x = (event.clientX - rect.left) / rect.width - .5;
-          const y = (event.clientY - rect.top) / rect.height - .5;
-          wordmark.style.setProperty('--mark-ry', `${x * 20}deg`);
-          wordmark.style.setProperty('--mark-rx', `${-y * 15}deg`);
-          wordmark.style.setProperty('--mark-z', '12px');
-        });
-        wordmark.addEventListener('pointerleave', () => {
-          wordmark.style.setProperty('--mark-ry', '0deg');
-          wordmark.style.setProperty('--mark-rx', '0deg');
-          wordmark.style.setProperty('--mark-z', '0px');
-        });
-      }
-
-      if (!reducedMotion) {
-        document.querySelectorAll('.experience-card, .plan, .cta-panel, .signal-sculpture').forEach((surface) => {
-          surface.classList.add('depth-surface');
-          surface.addEventListener('pointermove', (event) => {
-            const rect = surface.getBoundingClientRect();
-            const x = (event.clientX - rect.left) / rect.width - .5;
-            const y = (event.clientY - rect.top) / rect.height - .5;
-            surface.style.setProperty('--surface-ry', `${x * 7.5}deg`);
-            surface.style.setProperty('--surface-rx', `${-y * 6.5}deg`);
-          });
-          surface.addEventListener('pointerleave', () => {
-            surface.style.setProperty('--surface-ry', '0deg');
-            surface.style.setProperty('--surface-rx', '0deg');
-          });
-        });
-        document.querySelectorAll('.button').forEach((button) => {
-          button.addEventListener('pointermove', (event) => {
-            const rect = button.getBoundingClientRect();
-            button.style.setProperty('--button-x', `${((event.clientX - rect.left) / rect.width - .5) * 4}px`);
-            button.style.setProperty('--button-y', `${((event.clientY - rect.top) / rect.height - .5) * 3}px`);
-          });
-          button.addEventListener('pointerleave', () => {
-            button.style.setProperty('--button-x', '0px');
-            button.style.setProperty('--button-y', '0px');
-          });
-        });
-      }
-
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      const showToast = (message) => {
-        toastMessage.textContent = message;
-        toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 4400);
-      };
-
-      menuButton.addEventListener('click', () => {
-        const open = nav.classList.toggle('open');
-        menuButton.setAttribute('aria-expanded', String(open));
-        menuButton.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
-      });
-      navLinks.forEach((link) => link.addEventListener('click', () => { nav.classList.remove('open'); menuButton.setAttribute('aria-expanded', 'false'); }));
-
-      const destinos = {
-        planos: { url: LINKS_WNET.paginaDosPlanos, nome: 'Página dos Planos' },
-        whatsapp: { url: LINKS_WNET.whatsappDeAtendimento, nome: 'WhatsApp de Atendimento' }
-      };
-      document.querySelectorAll('[data-destino]').forEach((link) => {
-        const destino = destinos[link.dataset.destino];
-        if (destino?.url) link.href = destino.url;
-        link.addEventListener('click', (event) => {
-          if (!destino?.url) {
+        // Função de envio direto para o WhatsApp
+        function enviarWhatsApp(event) {
             event.preventDefault();
-            showToast(`Adicione o link da ${destino.nome} em LINKS_WNET antes de publicar.`);
-          }
-        });
-      });
+            const numeroTelefone = "5597984475124";
 
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); } });
-      }, { threshold: .12 });
-      document.querySelectorAll('[data-reveal]').forEach((el) => revealObserver.observe(el));
+            const nome = document.getElementById('nome').value;
+            const servico = document.getElementById('servico').value;
+            const mensagem = document.getElementById('mensagem').value;
 
-      const sections = [...document.querySelectorAll('main section[id]')];
-      const updateScroll = () => {
-        const scrollMax = document.documentElement.scrollHeight - innerHeight;
-        body.style.setProperty('--read-progress', `${Math.min(100, (scrollY / Math.max(scrollMax, 1)) * 100)}%`);
-        navWrap.classList.toggle('scrolled', scrollY > 40);
-        let currentId = '';
-        sections.forEach((section) => { if (scrollY >= section.offsetTop - innerHeight * .4) currentId = section.id; });
-        navLinks.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`));
-      };
-      addEventListener('scroll', updateScroll, { passive: true });
-      updateScroll();
+            const textoFormatado = `Olá! Meu nome é *${nome}*.\nTenho interesse em: *${servico}*.\n\n*Detalhes do projeto:* ${mensagem}`;
+            const url = `https://wa.me/${numeroTelefone}?text=${encodeURIComponent(textoFormatado)}`;
 
-      let tiltX = 0, tiltY = 0;
-      addEventListener('pointermove', (event) => {
-        tiltX = ((event.clientX / innerWidth) - .5) * 2;
-        tiltY = ((event.clientY / innerHeight) - .5) * 2;
-        if (heroOrb && innerWidth > 700) {
-          heroOrb.style.transform = `translate(calc(-50% + ${tiltX * 10}px), calc(-50% + ${tiltY * 8}px)) rotate(${-14 + tiltX * 4}deg) rotateX(${7 - tiltY * 5}deg)`;
+            window.open(url, '_blank');
         }
-      }, { passive: true });
 
-      if (!window.THREE || reducedMotion) return;
+        // ==========================================
+        // CENA 3D INTERATIVA (Three.js)
+        // ==========================================
+        const container = document.getElementById('canvas-container');
 
-      const canvas = document.getElementById('world-bg');
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
-      renderer.setSize(innerWidth, innerHeight);
-      renderer.setClearColor(0x000000, 0);
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.18;
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.shadowMap.enabled = true;
-      const scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x050a17, .034);
-      const camera = new THREE.PerspectiveCamera(48, innerWidth / innerHeight, .1, 100);
-      camera.position.set(0, .1, 11.5);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 8;
 
-      const root = new THREE.Group();
-      root.position.set(innerWidth > 900 ? 2.6 : 0, .25, -1.7);
-      scene.add(root);
-      const core = new THREE.Group();
-      root.add(core);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
 
-      const ambient = new THREE.AmbientLight(0x7ddfff, .65);
-      scene.add(ambient);
-      const cyanLight = new THREE.PointLight(0x25d9ff, 24, 20, 2);
-      cyanLight.position.set(2, 2, 5);
-      scene.add(cyanLight);
-      const mintLight = new THREE.PointLight(0x83ffcf, 11, 16, 2);
-      mintLight.position.set(-4, -2, 3);
-      scene.add(mintLight);
-      const coralLight = new THREE.PointLight(0xff6e7a, 3.5, 8, 2);
-      coralLight.position.set(-1.2, 3.4, 1.5);
-      scene.add(coralLight);
+        // Objeto Central
+        const geometry = new THREE.TorusKnotGeometry(2.2, 0.6, 120, 16);
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x10b981,
+            wireframe: true,
+            roughness: 0.2,
+            metalness: 0.8
+        });
+        const mainMesh = new THREE.Mesh(geometry, material);
+        scene.add(mainMesh);
 
-      const curve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(-2.8, 1.45, 0), new THREE.Vector3(-1.85, -1.55, .15), new THREE.Vector3(-.6, .45, .15), new THREE.Vector3(.5, -1.55, .1), new THREE.Vector3(1.8, 1.42, 0)
-      ], false, 'catmullrom', .15);
-      const tube = new THREE.TubeGeometry(curve, 90, .105, 10, false);
-      const tubeMaterial = new THREE.MeshPhysicalMaterial({ color: 0x9af5ff, emissive: 0x087b9e, emissiveIntensity: 1.32, metalness: .16, roughness: .13, transmission: .28, thickness: .85, ior: 1.45, clearcoat: 1, clearcoatRoughness: .08, transparent: true, opacity: .92 });
-      const wTube = new THREE.Mesh(tube, tubeMaterial);
-      wTube.castShadow = true;
-      wTube.receiveShadow = true;
-      core.add(wTube);
+        // Campo de Partículas
+        const particlesCount = 1200;
+        const positions = new Float32Array(particlesCount * 3);
 
-      const wWire = new THREE.Mesh(new THREE.TubeGeometry(curve, 45, .128, 6, false), new THREE.MeshBasicMaterial({ color: 0x9ff5ff, wireframe: true, transparent: true, opacity: .18 }));
-      core.add(wWire);
-      const lens = new THREE.Mesh(new THREE.SphereGeometry(3.15, 48, 48), new THREE.MeshPhysicalMaterial({ color: 0x31dfff, metalness: .04, roughness: .05, transmission: .34, thickness: 1.1, ior: 1.42, clearcoat: 1, clearcoatRoughness: .03, transparent: true, opacity: .19, side: THREE.DoubleSide }));
-      lens.scale.set(1.16, 1.05, .61);
-      lens.rotation.y = -.28;
-      core.add(lens);
-      const shell = new THREE.Mesh(new THREE.IcosahedronGeometry(2.75, 2), new THREE.MeshBasicMaterial({ color: 0x25d9ff, wireframe: true, transparent: true, opacity: .075 }));
-      shell.scale.set(1.25, 1.1, .88);
-      core.add(shell);
-      const floor = new THREE.Mesh(new THREE.CircleGeometry(17, 96), new THREE.MeshPhysicalMaterial({ color: 0x06152c, metalness: .55, roughness: .28, clearcoat: .35, transparent: true, opacity: .48 }));
-      floor.rotation.x = -Math.PI / 2;
-      floor.position.set(0, -3.6, -1.8);
-      scene.add(floor);
-
-      const rings = new THREE.Group();
-      [[3.2, .028, 0x25d9ff, .38, .45], [3.75, .018, 0x83ffcf, .22, -.7], [4.35, .012, 0x92eeff, .16, .21]].forEach(([radius, thickness, color, opacity, rotation], index) => {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, thickness, 8, 100), new THREE.MeshBasicMaterial({ color, transparent: true, opacity }));
-        ring.rotation.x = 1.14 + index * .18;
-        ring.rotation.z = rotation;
-        rings.add(ring);
-      });
-      core.add(rings);
-
-      const crown = new THREE.Group();
-      const prismMaterial = new THREE.MeshPhysicalMaterial({ color: 0x7cefff, metalness: .22, roughness: .08, transmission: .32, thickness: .7, clearcoat: 1, clearcoatRoughness: .08, transparent: true, opacity: .56 });
-      for (let i = 0; i < 9; i++) {
-        const facet = new THREE.Mesh(new THREE.OctahedronGeometry(i % 3 === 0 ? .19 : .12, 1), prismMaterial.clone());
-        const angle = (i / 9) * Math.PI * 2;
-        const radius = 3.15 + (i % 3) * .38;
-        facet.position.set(Math.cos(angle) * radius, Math.sin(angle) * radius * .7, Math.sin(angle * 2.2) * .8);
-        facet.rotation.set(angle, angle * 1.4, -angle);
-        facet.userData = { angle, radius, phase: i * .7, lift: i % 2 ? .35 : -.22 };
-        crown.add(facet);
-      }
-      core.add(crown);
-
-      const auroraRings = new THREE.Group();
-      [[4.8, 0x25d9ff, .09], [5.55, 0x83ffcf, .055], [6.25, 0xff6e7a, .04]].forEach(([radius, color, opacity], index) => {
-        const arc = new THREE.Mesh(new THREE.TorusGeometry(radius, .035, 6, 96, Math.PI * 1.2), new THREE.MeshBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false }));
-        arc.rotation.set(1.08 + index * .13, index * .4, index * .72);
-        auroraRings.add(arc);
-      });
-      core.add(auroraRings);
-
-      const sparks = new THREE.Group();
-      const sparkMat = new THREE.MeshBasicMaterial({ color: 0x83ffcf, transparent: true, opacity: .9 });
-      for (let i = 0; i < 18; i++) {
-        const spark = new THREE.Mesh(new THREE.SphereGeometry(i % 4 === 0 ? .07 : .04, 8, 8), sparkMat);
-        const angle = (i / 18) * Math.PI * 2;
-        const r = 2.9 + (i % 3) * .52;
-        spark.position.set(Math.cos(angle) * r, Math.sin(angle) * r * .62, (Math.random() - .5) * 1.1);
-        spark.userData = { phase: Math.random() * Math.PI * 2, radius: r, angle };
-        sparks.add(spark);
-      }
-      core.add(sparks);
-
-      const pointCount = innerWidth < 700 ? 340 : 780;
-      const positions = new Float32Array(pointCount * 3);
-      const colors = new Float32Array(pointCount * 3);
-      const palette = [new THREE.Color(0x25d9ff), new THREE.Color(0x83ffcf), new THREE.Color(0x6aa5ff)];
-      for (let i = 0; i < pointCount; i++) {
-        const depth = Math.random() * 18 - 7;
-        positions[i * 3] = (Math.random() - .5) * 22;
-        positions[i * 3 + 1] = (Math.random() - .5) * 14;
-        positions[i * 3 + 2] = depth;
-        const c = palette[i % palette.length];
-        colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
-      }
-      const particlesGeo = new THREE.BufferGeometry();
-      particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      particlesGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ size: .031, vertexColors: true, transparent: true, opacity: .72, depthWrite: false }));
-      scene.add(particles);
-
-      const networkPositions = [];
-      for (let i = 0; i < 54; i++) {
-        const x = (Math.random() - .5) * 18, y = (Math.random() - .5) * 11, z = -5 - Math.random() * 7;
-        networkPositions.push(x, y, z, x + (Math.random() - .5) * 1.3, y + (Math.random() - .5) * 1.3, z + (Math.random() - .5) * .4);
-      }
-      const networkGeo = new THREE.BufferGeometry();
-      networkGeo.setAttribute('position', new THREE.Float32BufferAttribute(networkPositions, 3));
-      const network = new THREE.LineSegments(networkGeo, new THREE.LineBasicMaterial({ color: 0x25d9ff, transparent: true, opacity: .12 }));
-      scene.add(network);
-
-      /* Campo de transmissão: fibras, pulsos e Ws de profundidade tornam a rede viva durante toda a rolagem. */
-      const flowField = new THREE.Group();
-      flowField.position.set(0, 0, -4.8);
-      scene.add(flowField);
-      const flowPulses = [];
-      const fiberColors = [0x25d9ff, 0x83ffcf, 0xff6e7a];
-      const fiberCount = innerWidth < 700 ? 2 : 4;
-      for (let i = 0; i < fiberCount; i++) {
-        const y = -3.8 + i * 2.45;
-        const flowCurve = new THREE.CatmullRomCurve3([
-          new THREE.Vector3(-12, y + .5, 0),
-          new THREE.Vector3(-5.2, y - .7, .5),
-          new THREE.Vector3(-.8, y + .85, -.3),
-          new THREE.Vector3(4.7, y - .4, .25),
-          new THREE.Vector3(12, y + .45, 0)
-        ], false, 'catmullrom', .25);
-        const fiber = new THREE.Mesh(
-          new THREE.TubeGeometry(flowCurve, 120, i % 2 ? .013 : .019, 5, false),
-          new THREE.MeshBasicMaterial({ color: fiberColors[i % fiberColors.length], transparent: true, opacity: i === 2 ? .23 : .34, blending: THREE.AdditiveBlending, depthWrite: false })
-        );
-        flowField.add(fiber);
-        for (let p = 0; p < 2; p++) {
-          const pulse = new THREE.Mesh(new THREE.SphereGeometry(p ? .052 : .075, 9, 9), new THREE.MeshBasicMaterial({ color: fiberColors[i % fiberColors.length], transparent: true, opacity: .95, blending: THREE.AdditiveBlending, depthWrite: false }));
-          pulse.userData = { curve: flowCurve, offset: (p / 2) + i * .19, speed: .045 + i * .009 };
-          flowPulses.push(pulse);
-          flowField.add(pulse);
+        for(let i = 0; i < particlesCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 25;
         }
-      }
 
-      const deepWs = new THREE.Group();
-      const wGhostMaterial = new THREE.MeshBasicMaterial({ color: 0x3de4ff, transparent: true, opacity: .12, blending: THREE.AdditiveBlending, depthWrite: false });
-      [-1, 1].forEach((side, index) => {
-        const wGhost = new THREE.Mesh(tube, wGhostMaterial.clone());
-        wGhost.scale.setScalar(index ? .58 : .74);
-        wGhost.position.set(side * 7.6, index ? -2.8 : 2.5, -3.6);
-        wGhost.rotation.z = side * .2;
-        wGhost.userData = { direction: side, phase: index * 1.7 };
-        deepWs.add(wGhost);
-      });
-      scene.add(deepWs);
+        const particlesGeometry = new THREE.BufferGeometry();
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-      const glassField = new THREE.Group();
-      for (let i = 0; i < (innerWidth < 700 ? 3 : 7); i++) {
-        const shard = new THREE.Mesh(
-          new THREE.PlaneGeometry(1.2 + (i % 3) * .44, 2.4 + (i % 2) * .9),
-          new THREE.MeshPhysicalMaterial({ color: i % 3 === 2 ? 0x83ffcf : 0x28dfff, transparent: true, opacity: .045 + (i % 3) * .012, metalness: .15, roughness: .12, transmission: .35, side: THREE.DoubleSide, depthWrite: false })
-        );
-        shard.position.set((Math.random() - .5) * 18, (Math.random() - .5) * 12, -5.5 - Math.random() * 4);
-        shard.rotation.set((Math.random() - .5) * .6, (Math.random() - .5) * .75, Math.random() * Math.PI);
-        shard.userData = { phase: Math.random() * Math.PI * 2, speed: .06 + Math.random() * .08 };
-        glassField.add(shard);
-      }
-      scene.add(glassField);
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.035,
+            color: 0x60a5fa,
+            transparent: true,
+            opacity: 0.6
+        });
 
-      const clock = new THREE.Clock();
-      const render = () => {
-        const t = clock.getElapsedTime();
-        core.rotation.y += ((tiltX * .23) - core.rotation.y) * .025;
-        core.rotation.x += ((-tiltY * .13) - core.rotation.x) * .025;
-        core.rotation.z = Math.sin(t * .37) * .075;
-        core.position.y = Math.sin(t * .72) * .14;
-        rings.rotation.z = t * .13;
-        rings.rotation.y = t * .075;
-        crown.rotation.z = -t * .085;
-        crown.rotation.y = t * .11;
-        crown.children.forEach((facet) => {
-          const d = facet.userData;
-          facet.position.z = Math.sin(t * .78 + d.phase) * .75;
-          facet.position.y = Math.sin(d.angle) * d.radius * .7 + Math.sin(t * 1.05 + d.phase) * d.lift;
-          facet.rotation.x += .008;
-          facet.rotation.y += .011;
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Iluminação
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const light1 = new THREE.PointLight(0x3b82f6, 3);
+        light1.position.set(10, 10, 10);
+        scene.add(light1);
+
+        const light2 = new THREE.PointLight(0x10b981, 2);
+        light2.position.set(-10, -10, -10);
+        scene.add(light2);
+
+        // Interação via Mouse
+        let mouseX = 0;
+        let mouseY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.0008;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.0008;
         });
-        auroraRings.rotation.z = -t * .045;
-        auroraRings.rotation.y = Math.sin(t * .12) * .19;
-        shell.rotation.y = -t * .047;
-        shell.rotation.x = t * .025;
-        sparks.children.forEach((spark) => {
-          const d = spark.userData;
-          const angle = d.angle + t * (.18 + (d.radius - 2.8) * .045);
-          spark.position.x = Math.cos(angle) * d.radius;
-          spark.position.y = Math.sin(angle) * d.radius * .62;
-          spark.position.z = Math.sin(t + d.phase) * .7;
-          const s = .68 + Math.sin(t * 2 + d.phase) * .32;
-          spark.scale.setScalar(s);
+
+        // Animação Contínua
+        function animate() {
+            requestAnimationFrame(animate);
+
+            mainMesh.rotation.x += 0.003;
+            mainMesh.rotation.y += 0.005;
+
+            particlesMesh.rotation.y -= 0.0008;
+
+            mainMesh.rotation.y += (mouseX - mainMesh.rotation.y) * 0.05;
+            mainMesh.rotation.x += (mouseY - mainMesh.rotation.x) * 0.05;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Redimensionamento
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
-        particles.rotation.y = t * .008;
-        particles.position.x = tiltX * .3;
-        particles.position.y = -tiltY * .2;
-        network.rotation.y = -t * .009;
-        network.rotation.z = Math.sin(t * .07) * .045;
-        flowField.rotation.z = Math.sin(t * .12) * .05;
-        flowField.position.y = Math.sin(t * .18) * .28;
-        flowPulses.forEach((pulse) => {
-          const data = pulse.userData;
-          pulse.position.copy(data.curve.getPointAt((t * data.speed + data.offset) % 1));
-          const scale = .72 + Math.sin(t * 4 + data.offset * 9) * .28;
-          pulse.scale.setScalar(scale);
-        });
-        deepWs.children.forEach((glyph) => {
-          glyph.rotation.y = Math.sin(t * .18 + glyph.userData.phase) * .28;
-          glyph.position.y += Math.sin(t * .45 + glyph.userData.phase) * .003;
-          glyph.material.opacity = .075 + (Math.sin(t * .7 + glyph.userData.phase) + 1) * .035;
-        });
-        glassField.children.forEach((shard) => {
-          shard.rotation.z += shard.userData.speed * .01;
-          shard.rotation.y = Math.sin(t * shard.userData.speed + shard.userData.phase) * .42;
-        });
-        cyanLight.position.x = 2 + tiltX * 1.2;
-        cyanLight.position.y = 2 - tiltY * 1.2;
-        camera.position.x += ((tiltX * .38) - camera.position.x) * .025;
-        camera.position.y += ((.1 - tiltY * .24) - camera.position.y) * .025;
-        root.position.y = .25 - Math.min(scrollY / 3900, 1) * 1.55;
-        root.rotation.z = Math.min(scrollY / 8500, .14);
-        renderer.render(scene, camera);
-        requestAnimationFrame(render);
-      };
-      const resize = () => {
-        camera.aspect = innerWidth / innerHeight;
-        camera.position.z = innerWidth < 700 ? 13.4 : 11.5;
-        camera.updateProjectionMatrix();
-        renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
-        renderer.setSize(innerWidth, innerHeight);
-        root.position.x = innerWidth > 900 ? 2.6 : 0;
-      };
-      addEventListener('resize', resize, { passive: true });
-      render();
-    })();
-  </script>
+    </script>
 </body>
 </html>
