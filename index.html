@@ -2,7 +2,7 @@
 <html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>wnet</title>
     
     <!-- Tailwind CSS -->
@@ -22,17 +22,22 @@
     <style>
         * {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
         }
 
         body {
             background-color: #030712;
             color: #f8fafc;
-            overflow-x: hidden;
         }
 
         /* Glassmorphism de Alto Padrão */
         .glass-header {
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(25px) saturate(200%);
             -webkit-backdrop-filter: blur(25px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -98,18 +103,18 @@
             pointer-events: none;
         }
 
-        /* Modal Blur */
+        /* Modal Blur com Scroll Adaptável */
         .modal-blur {
-            background: rgba(3, 7, 18, 0.7);
+            background: rgba(3, 7, 18, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
 
-        /* LOGO WNET 3D VIBRANTE E DESTACADO NO CABEÇALHO */
+        /* LOGO WNET 3D ADAPTÁVEL */
         .logo-3d-container {
             perspective: 800px;
             display: inline-block;
-            padding: 4px 8px;
+            padding: 2px 4px;
         }
         
         .logo-3d {
@@ -118,8 +123,8 @@
             transition: transform 0.15s ease-out;
             cursor: pointer;
             font-weight: 900;
-            font-size: 1.75rem;
-            letter-spacing: 0.12em;
+            font-size: clamp(1.25rem, 4vw, 1.75rem);
+            letter-spacing: 0.1em;
             color: #ffffff;
             text-shadow: 
                 0 1px 0 #34d399,
@@ -127,7 +132,6 @@
                 0 3px 0 #059669,
                 0 4px 0 #047857,
                 0 5px 0 #064e3b,
-                0 6px 0 #022c22,
                 0 10px 20px rgba(0, 0, 0, 0.9),
                 0 0 15px rgba(52, 211, 153, 0.9),
                 0 0 30px rgba(56, 189, 248, 0.7);
@@ -138,24 +142,24 @@
         .glow-orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(130px);
+            filter: blur(120px);
             pointer-events: none;
-            opacity: 0.4;
+            opacity: 0.35;
         }
     </style>
 </head>
-<body class="relative min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
+<body class="relative min-h-screen antialiased selection:bg-emerald-500 selection:text-white overflow-x-hidden">
 
     <!-- Canvas 3D de Fundo Interativo -->
     <div id="canvas-container"></div>
 
-    <!-- Luzes de Ambiente Suaves -->
-    <div class="glow-orb w-[500px] h-[500px] bg-blue-600 top-[-100px] left-[-100px] z-0"></div>
-    <div class="glow-orb w-[600px] h-[600px] bg-emerald-600 top-[30%] right-[-150px] z-0"></div>
+    <!-- Luzes de Ambiente Suaves Adaptadas para Mobile -->
+    <div class="glow-orb w-[280px] h-[280px] sm:w-[500px] sm:h-[500px] bg-blue-600 top-[-50px] left-[-50px] z-0"></div>
+    <div class="glow-orb w-[320px] h-[320px] sm:w-[600px] sm:h-[600px] bg-emerald-600 top-[30%] right-[-100px] z-0"></div>
 
     <!-- Cabeçalho / Navegação Estilo Apple iOS -->
-    <header class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-5xl">
-        <nav class="glass-header rounded-full px-6 py-3.5 flex items-center justify-between">
+    <header class="fixed top-3 sm:top-5 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-5xl">
+        <nav class="glass-header rounded-full px-4 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3 logo-3d-container" id="logo-container">
                 <span id="logo-3d-text" class="logo-3d">
                     WNET
@@ -168,58 +172,58 @@
                 <a href="#whatsapp-section" class="hover:text-emerald-400 transition-colors">Contato</a>
             </div>
 
-            <a href="https://wa.me/5597984475124?text=Olá!%20Gostaria%20de%20um%20orçamento%20com%20a%20WNET." target="_blank" class="glass-btn px-5 py-2.5 rounded-full text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-2 tracking-wide">
-                <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+            <a href="https://wa.me/5597984475124?text=Olá!%20Gostaria%20de%20um%20orçamento%20com%20a%20WNET." target="_blank" class="glass-btn px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5 sm:gap-2 tracking-wide shrink-0">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> WhatsApp
             </a>
         </nav>
     </header>
 
     <!-- Conteúdo Principal -->
-    <main class="relative z-10">
+    <main class="relative z-10 w-full">
 
-        <!-- Hero Section (SEM INTERAÇÃO TILT NO PAINEL) -->
-        <section id="hero" class="min-h-screen flex items-center justify-center px-4 pt-44 md:pt-52 pb-16">
-            <div class="glass-card-static p-8 md:p-16 rounded-[2.5rem] max-w-4xl w-full text-center relative overflow-hidden">
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center justify-center px-4 pt-28 sm:pt-36 md:pt-48 pb-12 sm:pb-16">
+            <div class="glass-card-static p-6 sm:p-10 md:p-16 rounded-[2rem] sm:rounded-[2.5rem] max-w-4xl w-full text-center relative overflow-hidden">
                 
                 <!-- Tag de Status -->
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-8">
+                <div class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-6 sm:mb-8">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     Desenvolvimento 3D & Apps
                 </div>
                 
                 <!-- Título Principal -->
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.15] text-white">
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-[1.15] text-white">
                     Sua visão transformada em <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-emerald-300 to-teal-400">tecnologia de alto nível</span>.
                 </h1>
                 
                 <!-- Subtítulo -->
-                <p class="text-slate-300 text-base md:text-lg mb-10 max-w-2xl mx-auto font-normal leading-relaxed">
+                <p class="text-slate-300 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto font-normal leading-relaxed">
                     Especialistas em desenvolvimento de aplicativos nativos, sistemas web sob medida e plataformas 3D imersivas de alta performance.
                 </p>
 
                 <!-- Botões de Ação -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                    <a href="https://wa.me/5597984475124?text=Olá!%20Quero%20iniciar%20um%20projeto%20com%20a%20WNET." target="_blank" class="w-full sm:w-auto btn-primary px-8 py-4 rounded-full text-slate-950 font-extrabold text-sm tracking-wide flex items-center justify-center gap-2">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-10 sm:mb-12 w-full">
+                    <a href="https://wa.me/5597984475124?text=Olá!%20Quero%20iniciar%20um%20projeto%20com%20a%20WNET." target="_blank" class="w-full sm:w-auto btn-primary px-8 py-3.5 sm:py-4 rounded-full text-slate-950 font-extrabold text-sm tracking-wide flex items-center justify-center gap-2">
                         <i data-lucide="message-circle" class="w-5 h-5"></i> Falar no WhatsApp
                     </a>
-                    <button onclick="toggleModalServicos()" class="w-full sm:w-auto glass-btn px-8 py-4 rounded-full text-sm font-semibold text-white">
+                    <button onclick="toggleModalServicos()" class="w-full sm:w-auto glass-btn px-8 py-3.5 sm:py-4 rounded-full text-sm font-semibold text-white">
                         Ver Serviços
                     </button>
                 </div>
 
                 <!-- Barra de Métricas / Credibilidade -->
-                <div class="grid grid-cols-3 gap-4 pt-8 border-t border-white/10 text-left md:text-center">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 pt-6 sm:pt-8 border-t border-white/10 text-center">
                     <div>
-                        <div class="text-2xl md:text-3xl font-extrabold text-white">100%</div>
-                        <div class="text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">Sob Medida</div>
+                        <div class="text-2xl sm:text-2xl md:text-3xl font-extrabold text-white">100%</div>
+                        <div class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">Sob Medida</div>
                     </div>
                     <div>
-                        <div class="text-2xl md:text-3xl font-extrabold text-emerald-400">3D REALISTA</div>
-                        <div class="text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">Sistemas Imersivos</div>
+                        <div class="text-2xl sm:text-2xl md:text-3xl font-extrabold text-emerald-400">3D REALISTA</div>
+                        <div class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">Sistemas Imersivos</div>
                     </div>
                     <div>
-                        <div class="text-2xl md:text-3xl font-extrabold text-blue-400">ANDROID</div>
-                        <div class="text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">Apps de Alta Performance</div>
+                        <div class="text-2xl sm:text-2xl md:text-3xl font-extrabold text-blue-400">ANDROID</div>
+                        <div class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-medium mt-1">Apps de Alta Performance</div>
                     </div>
                 </div>
 
@@ -227,18 +231,18 @@
         </section>
 
         <!-- Seção de Serviços -->
-        <section id="servicos" class="py-24 px-4 max-w-6xl mx-auto">
-            <div class="text-center mb-16">
+        <section id="servicos" class="py-16 sm:py-24 px-4 max-w-6xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16">
                 <div class="text-emerald-400 text-xs font-extrabold uppercase tracking-widest mb-2">Engenharia Digital</div>
                 <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">Nossas Soluções</h2>
                 <p class="text-slate-400 max-w-xl mx-auto text-sm md:text-base">Desenvolvimento moderno focado na melhor experiência do usuário, velocidade e escala.</p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-3 gap-6 sm:gap-8">
                 <!-- Card 1 -->
-                <div class="glass-card-interactive p-8 rounded-3xl relative">
-                    <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 text-blue-400">
-                        <i data-lucide="code-2" class="w-7 h-7"></i>
+                <div class="glass-card-interactive p-6 sm:p-8 rounded-3xl relative">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 text-blue-400">
+                        <i data-lucide="code-2" class="w-6 h-6 sm:w-7 sm:h-7"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-white">Programação & Sistemas</h3>
                     <p class="text-slate-400 text-sm leading-relaxed">
@@ -247,9 +251,9 @@
                 </div>
 
                 <!-- Card 2 -->
-                <div class="glass-card-interactive p-8 rounded-3xl relative">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400">
-                        <i data-lucide="smartphone" class="w-7 h-7"></i>
+                <div class="glass-card-interactive p-6 sm:p-8 rounded-3xl relative">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400">
+                        <i data-lucide="smartphone" class="w-6 h-6 sm:w-7 sm:h-7"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-white">Desenvolvimento de Apps</h3>
                     <p class="text-slate-400 text-sm leading-relaxed">
@@ -258,9 +262,9 @@
                 </div>
 
                 <!-- Card 3 -->
-                <div class="glass-card-interactive p-8 rounded-3xl relative">
-                    <div class="w-14 h-14 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center mb-6 text-teal-400">
-                        <i data-lucide="layout" class="w-7 h-7"></i>
+                <div class="glass-card-interactive p-6 sm:p-8 rounded-3xl relative">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center mb-6 text-teal-400">
+                        <i data-lucide="layout" class="w-6 h-6 sm:w-7 sm:h-7"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-white">Websites 3D Imersivos</h3>
                     <p class="text-slate-400 text-sm leading-relaxed">
@@ -271,25 +275,25 @@
         </section>
 
         <!-- Seção de Formulário de Atendimento no WhatsApp -->
-        <section id="whatsapp-section" class="py-24 px-4 max-w-3xl mx-auto">
-            <div class="glass-card-static p-8 md:p-12 rounded-[2.5rem] text-center relative">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6 text-emerald-400">
-                    <i data-lucide="phone-call" class="w-8 h-8"></i>
+        <section id="whatsapp-section" class="py-16 sm:py-24 px-4 max-w-3xl mx-auto">
+            <div class="glass-card-static p-6 sm:p-10 md:p-12 rounded-[2rem] sm:rounded-[2.5rem] text-center relative">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6 text-emerald-400">
+                    <i data-lucide="phone-call" class="w-7 h-7 sm:w-8 sm:h-8"></i>
                 </div>
 
-                <h2 class="text-3xl font-bold mb-3 text-white">Iniciar Conversa no WhatsApp</h2>
-                <p class="text-slate-400 text-sm mb-8 max-w-md mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-bold mb-3 text-white">Iniciar Conversa no WhatsApp</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mb-8 max-w-md mx-auto">
                     Preencha os dados e fale diretamente com a nossa equipe de desenvolvimento.
                 </p>
 
                 <form onsubmit="enviarWhatsApp(event)" class="space-y-4 text-left">
                     <div>
                         <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Seu Nome</label>
-                        <input type="text" id="nome" placeholder="Digite seu nome completo" required class="w-full px-5 py-4 rounded-2xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors">
+                        <input type="text" id="nome" placeholder="Digite seu nome completo" required class="w-full px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Serviço Desejado</label>
-                        <select id="servico" required class="w-full px-5 py-4 rounded-2xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-emerald-500 transition-colors">
+                        <select id="servico" required class="w-full px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl bg-slate-900 border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             <option value="Desenvolvimento de App">Desenvolvimento de Aplicativo</option>
                             <option value="Criação de Website 3D">Criação de Website 3D</option>
                             <option value="Programação Sob Medida">Programação / Sistema Web</option>
@@ -298,9 +302,9 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Detalhes do Projeto</label>
-                        <textarea id="mensagem" rows="3" placeholder="Descreva o que deseja construir..." required class="w-full px-5 py-4 rounded-2xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"></textarea>
+                        <textarea id="mensagem" rows="3" placeholder="Descreva o que deseja construir..." required class="w-full px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 transition-colors"></textarea>
                     </div>
-                    <button type="submit" class="w-full py-4 rounded-2xl btn-primary text-slate-950 font-extrabold transition-all flex items-center justify-center gap-2 text-base shadow-lg">
+                    <button type="submit" class="w-full py-4 rounded-2xl btn-primary text-slate-950 font-extrabold transition-all flex items-center justify-center gap-2 text-sm sm:text-base shadow-lg">
                         <i data-lucide="send" class="w-5 h-5"></i> Abrir WhatsApp da WNET
                     </button>
                 </form>
@@ -311,57 +315,57 @@
 
     <!-- Modal com Lista de Serviços -->
     <div id="modal-servicos" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-blur hidden">
-        <div class="glass-card-static p-8 rounded-[2rem] max-w-md w-full relative border border-white/20 shadow-2xl">
+        <div class="glass-card-static p-6 sm:p-8 rounded-[2rem] max-w-md w-full relative border border-white/20 shadow-2xl max-h-[90vh] overflow-y-auto">
             <!-- Botão Fechar -->
-            <button onclick="toggleModalServicos()" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10">
+            <button onclick="toggleModalServicos()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
 
             <!-- Cabeçalho do Card -->
             <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                    <i data-lucide="terminal" class="w-6 h-6"></i>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
+                    <i data-lucide="terminal" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-white">Serviços WNET</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-white">Serviços WNET</h3>
                     <p class="text-xs text-slate-400">Engenharia de Software Especializada</p>
                 </div>
             </div>
 
             <!-- Lista de Serviços -->
             <ul class="space-y-3">
-                <li class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/5">
+                <li class="flex items-center gap-3 p-3 sm:p-3.5 rounded-2xl bg-white/5 border border-white/5">
                     <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
-                    <span class="text-sm font-medium text-slate-200">Sistemas Web & SaaS Sob Medida</span>
+                    <span class="text-xs sm:text-sm font-medium text-slate-200">Sistemas Web & SaaS Sob Medida</span>
                 </li>
-                <li class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/5">
+                <li class="flex items-center gap-3 p-3 sm:p-3.5 rounded-2xl bg-white/5 border border-white/5">
                     <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
-                    <span class="text-sm font-medium text-slate-200">Desenvolvimento de APIs & Integrações</span>
+                    <span class="text-xs sm:text-sm font-medium text-slate-200">Desenvolvimento de APIs & Integrações</span>
                 </li>
-                <li class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/5">
+                <li class="flex items-center gap-3 p-3 sm:p-3.5 rounded-2xl bg-white/5 border border-white/5">
                     <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
-                    <span class="text-sm font-medium text-slate-200">Aplicativos Nativos iOS e Android</span>
+                    <span class="text-xs sm:text-sm font-medium text-slate-200">Aplicativos Nativos iOS e Android</span>
                 </li>
-                <li class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/5">
+                <li class="flex items-center gap-3 p-3 sm:p-3.5 rounded-2xl bg-white/5 border border-white/5">
                     <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
-                    <span class="text-sm font-medium text-slate-200">Websites e Experiências em 3D</span>
+                    <span class="text-xs sm:text-sm font-medium text-slate-200">Websites e Experiências em 3D</span>
                 </li>
             </ul>
 
             <!-- Botão de Ação -->
-            <a href="https://wa.me/5597984475124?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20serviços." target="_blank" class="mt-6 w-full py-4 rounded-2xl btn-primary text-slate-950 font-extrabold flex items-center justify-center gap-2 text-sm shadow-lg">
+            <a href="https://wa.me/5597984475124?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20serviços." target="_blank" class="mt-6 w-full py-3.5 sm:py-4 rounded-2xl btn-primary text-slate-950 font-extrabold flex items-center justify-center gap-2 text-sm shadow-lg">
                 <i data-lucide="message-circle" class="w-5 h-5"></i> Solicitar Orçamento
             </a>
         </div>
     </div>
 
     <!-- Botão Flutuante do WhatsApp -->
-    <a href="https://wa.me/5597984475124?text=Olá!%20Vim%20pelo%20site%20da%20WNET." target="_blank" class="fixed bottom-6 right-6 z-50 btn-primary p-4 rounded-full text-slate-950 flex items-center justify-center shadow-2xl">
-        <i data-lucide="message-circle" class="w-7 h-7"></i>
+    <a href="https://wa.me/5597984475124?text=Olá!%20Vim%20pelo%20site%20da%20WNET." target="_blank" class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 btn-primary p-3.5 sm:p-4 rounded-full text-slate-950 flex items-center justify-center shadow-2xl">
+        <i data-lucide="message-circle" class="w-6 h-6 sm:w-7 sm:h-7"></i>
     </a>
 
     <!-- Rodapé -->
-    <footer class="relative z-10 border-t border-white/10 py-10 text-center text-slate-500 text-xs">
+    <footer class="relative z-10 border-t border-white/10 py-8 sm:py-10 text-center text-slate-500 text-[11px] sm:text-xs px-4">
         <p>© WNET — Todos os direitos reservados. Engenharia de Software e Desenvolvimento 3D.</p>
     </footer>
 
@@ -392,25 +396,25 @@
         }
 
         // ==========================================
-        // LOGO WNET 3D INTERATIVO E VIBRANTE NO CABEÇALHO
+        // LOGO WNET 3D INTERATIVO NO CABEÇALHO (Mouse + Touch)
         // ==========================================
         const logoContainer = document.getElementById('logo-container');
         const logoText = document.getElementById('logo-3d-text');
 
-        logoContainer.addEventListener('mousemove', (e) => {
+        function moverLogo(clientX, clientY) {
             const rect = logoContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
+            const x = clientX - rect.left - rect.width / 2;
+            const y = clientY - rect.top - rect.height / 2;
             logoText.style.transform = `rotateX(${-y * 1.8}deg) rotateY(${x * 1.8}deg) translateZ(30px) scale(1.12)`;
-        });
+        }
 
+        logoContainer.addEventListener('mousemove', (e) => moverLogo(e.clientX, e.clientY));
         logoContainer.addEventListener('mouseleave', () => {
             logoText.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0px) scale(1)';
         });
 
         // ==========================================
-        // INTERAÇÃO APENAS NOS CARDS DE SERVIÇOS
-        // (HERO PERMANECE TOTALMENTE ESTÁTICO)
+        // INTERAÇÃO NOS CARDS DE SERVIÇOS
         // ==========================================
         document.querySelectorAll('.glass-card-interactive').forEach(card => {
             card.addEventListener('mousemove', (e) => {
@@ -425,13 +429,12 @@
         });
 
         // ==========================================
-        // CENA 3D COM LETRA "W" EM 3D ANIMADA (Three.js)
+        // CENA 3D COM THREE.JS TOTALMENTE RESPONSIVA
         // ==========================================
         const container = document.getElementById('canvas-container');
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 7;
 
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -441,9 +444,25 @@
         const mainGroup = new THREE.Group();
         scene.add(mainGroup);
 
+        // Ajuste inicial de posição da câmera para mobile/desktop
+        function adaptarCamera3D() {
+            const width = window.innerWidth;
+            camera.aspect = width / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, window.innerHeight);
+
+            if (width < 640) {
+                camera.position.z = 10.5; // Afasta no celular para o 'W' não estourar a tela
+            } else if (width < 1024) {
+                camera.position.z = 8.5;
+            } else {
+                camera.position.z = 7;
+            }
+        }
+        adaptarCamera3D();
+
         // 1. CRIAR A LETRA "W" EM 3D EXTRUDADA
         const shapeW = new THREE.Shape();
-        // Desenhar vetor estilizado para o 'W'
         shapeW.moveTo(-1.8, 1.4);
         shapeW.lineTo(-1.1, -1.4);
         shapeW.lineTo(-0.5, -1.4);
@@ -470,9 +489,8 @@
         };
 
         const wGeometry = new THREE.ExtrudeGeometry(shapeW, extrudeSettings);
-        wGeometry.center(); // Centralizar a geometria no ponto 0,0,0
+        wGeometry.center();
 
-        // Material Metálico e Brilhante para o W
         const wMaterial = new THREE.MeshStandardMaterial({
             color: 0x10b981,
             metalness: 0.85,
@@ -485,7 +503,6 @@
         const wMesh = new THREE.Mesh(wGeometry, wMaterial);
         mainGroup.add(wMesh);
 
-        // Adicionar contorno de arame (Wireframe) sobre o W para efeito Sci-Fi
         const wWireframeMaterial = new THREE.MeshBasicMaterial({
             color: 0x60a5fa,
             wireframe: true,
@@ -496,7 +513,7 @@
         wWireframeMesh.scale.set(1.02, 1.02, 1.02);
         mainGroup.add(wWireframeMesh);
 
-        // 2. ESFERA ISOAÉDRICA EXTERNA ENVOLVENDO O W
+        // 2. ESFERA ISOAÉDRICA EXTERNA
         const outerGeometry = new THREE.IcosahedronGeometry(3.8, 2);
         const outerMaterial = new THREE.MeshBasicMaterial({
             color: 0x38bdf8,
@@ -518,14 +535,14 @@
         ringMesh.rotation.x = Math.PI / 3;
         mainGroup.add(ringMesh);
 
-        // Campo de Partículas Extenso por todo o Scroll
-        const particlesCount = 4000;
+        // Campo de Partículas Extenso
+        const particlesCount = window.innerWidth < 768 ? 2000 : 4000;
         const positions = new Float32Array(particlesCount * 3);
         const colors = new Float32Array(particlesCount * 3);
 
         for (let i = 0; i < particlesCount * 3; i += 3) {
             positions[i] = (Math.random() - 0.5) * 40;
-            positions[i + 1] = (Math.random() - 0.5) * 60; // Cobre toda a extensão da página
+            positions[i + 1] = (Math.random() - 0.5) * 60;
             positions[i + 2] = (Math.random() - 0.5) * 30;
 
             colors[i] = Math.random() * 0.2 + 0.1;
@@ -568,6 +585,13 @@
             mouseY = (e.clientY - window.innerHeight / 2) * 0.0004;
         });
 
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                mouseX = (e.touches[0].clientX - window.innerWidth / 2) * 0.0004;
+                mouseY = (e.touches[0].clientY - window.innerHeight / 2) * 0.0004;
+            }
+        }, { passive: true });
+
         window.addEventListener('scroll', () => {
             scrollY = window.scrollY;
         });
@@ -580,7 +604,6 @@
 
             const elapsedTime = clock.getElapsedTime();
 
-            // Rotação Fluida e Animada do W 3D
             wMesh.rotation.y = Math.sin(elapsedTime * 0.8) * 0.6;
             wMesh.rotation.x = Math.cos(elapsedTime * 0.6) * 0.2;
             wMesh.position.y = Math.sin(elapsedTime * 1.5) * 0.25;
@@ -589,16 +612,13 @@
             wWireframeMesh.rotation.x = wMesh.rotation.x;
             wWireframeMesh.position.y = wMesh.position.y;
 
-            // Rotação do Globo Externo e Anel
             outerMesh.rotation.x -= 0.001;
             outerMesh.rotation.y -= 0.003;
             ringMesh.rotation.z += 0.004;
 
-            // Translação suave da câmera no scroll
             const targetY = scrollY * 0.005;
             camera.position.y = -targetY;
 
-            // Animação Contínua do WNET Logo no Cabeçalho
             if (!logoContainer.matches(':hover')) {
                 logoText.style.transform = `rotateY(${Math.sin(elapsedTime * 2) * 12}deg) rotateX(${Math.cos(elapsedTime * 1.5) * 8}deg)`;
             }
@@ -613,11 +633,7 @@
 
         animate();
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        window.addEventListener('resize', adaptarCamera3D);
     </script>
 </body>
 </html>
